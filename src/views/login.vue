@@ -1,0 +1,142 @@
+<template>
+  <div class="login">
+    <el-form class="login-from" ref="login" :model="form" :rules="rules">
+      <h2 class="title">事业单位考试报名系统</h2>
+      <div class="notice">
+        <span>通知：</span>
+        <br />
+        <a href="#">[8月1日起广西再次提高部分优抚对象等人员抚恤和生活补助标准]</a>
+        <a href="#">广西考生请注意：2021年度全国会计专业技术中级资格考试打印准考证时间sedrhrh</a>
+      </div>
+      <el-form-item prop="username">
+        <el-input v-model="form.username" prefix-icon="el-icon-user-solid" placeholder="请输入手机号/邮箱"></el-input>
+      </el-form-item>
+      <el-form-item prop="password">
+        <el-input v-model="form.password" prefix-icon="el-icon-lock" placeholder="请输入密码"></el-input>
+      </el-form-item>
+      <el-form-item prop="code">
+        <el-input
+          style="width:63%"
+          prefix-icon="el-icon-circle-check"
+          v-model="form.code"
+          placeholder="验证码"
+        ></el-input>
+        <div class="login-code">
+          <img src="@/assets/img/code.gif" alt />
+        </div>
+      </el-form-item>
+      <el-form-item style="width:100%;">
+        <el-button
+          :loading="loading"
+          size="medium"
+          type="primary"
+          style="width:100%;"
+          @click.native.prevent="login"
+        >
+          <span v-if="!loading">登 录</span>
+          <span v-else>登 录 中...</span>
+        </el-button>
+      </el-form-item>
+      <el-form-item>
+        <div class="other">
+          <router-link to="register" class="noCount">没有账号？去注册</router-link>
+          <a class="noCount">忘记密码</a>
+        </div>
+      </el-form-item>
+    </el-form>
+  </div>
+</template>
+<script>
+import { encrypt, decrypt } from "@/utils/encrypt";
+import { validatePhone } from "@/utils/validator";
+export default {
+  data() {
+    return {
+      loading: false,
+      form: {
+        username: "",
+        password: "",
+        code: "",
+        codeUrl: ""
+      },
+      rules: {
+        username: [
+          { required: true, message: "用户名不能为空！", trigger: "blur" }
+        ],
+        password: [
+          { required: true, message: "密码不能为空！", trigger: "blur" }
+        ],
+        code: [{ required: true, trigger: "change", message: "验证码不能为空" }]
+      }
+    };
+  },
+  cremoated() {},
+  methods: {
+    login() {
+      this.$refs.login.validate(valid => {
+        if (valid) {
+          this.loading = true;
+          setTimeout(() => {
+            this.loading = false;
+            sessionStorage.setItem("login", true);
+            this.$router.push({
+              path: "/list"
+            });
+          }, 1000);
+        }
+      });
+    }
+  }
+};
+</script>
+<style lang="scss" scoped>
+.login {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  background-image: url("../assets/img/login_bg.jpg");
+  background-size: cover;
+
+  .login-from {
+    border-radius: 6px;
+    background: #ffffff;
+    width: 470px;
+    padding: 25px 25px 5px 25px;
+    .title {
+      margin: 0px auto 30px auto;
+      text-align: center;
+      color: #707070;
+    }
+    .notice {
+      margin-bottom: 10px;
+      a {
+        // a标签是行内元素，不能设置宽高。所以要转换下
+        display: inline-block;
+        width: 420px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        -o-text-overflow: ellipsis;
+        -webkit-text-overflow: ellipsis;
+        -moz-text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+    }
+    .login-code {
+      width: 33%;
+      height: 40px;
+      float: right;
+      display: flex;
+      img {
+        height: 100%;
+        cursor: pointer;
+      }
+    }
+    .other {
+      display: flex;
+      justify-content: space-between;
+      padding: 0 10px;
+    }
+  }
+}
+</style>

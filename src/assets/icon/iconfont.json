@@ -1,0 +1,149 @@
+{
+  "id": "",
+  "name": "",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "567715",
+      "name": "pay",
+      "font_class": "pay",
+      "unicode": "e621",
+      "unicode_decimal": 58913
+    },
+    {
+      "icon_id": "1163328",
+      "name": "打印",
+      "font_class": "print",
+      "unicode": "e61b",
+      "unicode_decimal": 58907
+    },
+    {
+      "icon_id": "1210087",
+      "name": "pay",
+      "font_class": "pay1",
+      "unicode": "e611",
+      "unicode_decimal": 58897
+    },
+    {
+      "icon_id": "5661121",
+      "name": "报名",
+      "font_class": "baoming",
+      "unicode": "e619",
+      "unicode_decimal": 58905
+    },
+    {
+      "icon_id": "5809111",
+      "name": "座位安排",
+      "font_class": "zuoweianpai",
+      "unicode": "e669",
+      "unicode_decimal": 58985
+    },
+    {
+      "icon_id": "5924894",
+      "name": "print",
+      "font_class": "print1",
+      "unicode": "e667",
+      "unicode_decimal": 58983
+    },
+    {
+      "icon_id": "7532866",
+      "name": "报名",
+      "font_class": "baoming1",
+      "unicode": "e664",
+      "unicode_decimal": 58980
+    },
+    {
+      "icon_id": "8062158",
+      "name": "成绩查询",
+      "font_class": "chengjichaxun",
+      "unicode": "e631",
+      "unicode_decimal": 58929
+    },
+    {
+      "icon_id": "8288827",
+      "name": "打印",
+      "font_class": "dayin",
+      "unicode": "e841",
+      "unicode_decimal": 59457
+    },
+    {
+      "icon_id": "10017356",
+      "name": "缴费记录",
+      "font_class": "icon_jiaofeijilu-copy",
+      "unicode": "e622",
+      "unicode_decimal": 58914
+    },
+    {
+      "icon_id": "10043875",
+      "name": "Notice",
+      "font_class": "Notice",
+      "unicode": "e629",
+      "unicode_decimal": 58921
+    },
+    {
+      "icon_id": "12549666",
+      "name": "成绩查询",
+      "font_class": "chengjichaxun-",
+      "unicode": "e62a",
+      "unicode_decimal": 58922
+    },
+    {
+      "icon_id": "13740358",
+      "name": "报名",
+      "font_class": "baoming2",
+      "unicode": "e605",
+      "unicode_decimal": 58885
+    },
+    {
+      "icon_id": "16408064",
+      "name": "缴费",
+      "font_class": "jiaofei",
+      "unicode": "e60f",
+      "unicode_decimal": 58895
+    },
+    {
+      "icon_id": "16426767",
+      "name": "notice",
+      "font_class": "notice",
+      "unicode": "e60a",
+      "unicode_decimal": 58890
+    },
+    {
+      "icon_id": "16667959",
+      "name": "报名",
+      "font_class": "baoming3",
+      "unicode": "e660",
+      "unicode_decimal": 58976
+    },
+    {
+      "icon_id": "18486384",
+      "name": "考试安排",
+      "font_class": "kaoshianpai",
+      "unicode": "e7ae",
+      "unicode_decimal": 59310
+    },
+    {
+      "icon_id": "18486631",
+      "name": "考试安排",
+      "font_class": "kaoshianpai1",
+      "unicode": "e7be",
+      "unicode_decimal": 59326
+    },
+    {
+      "icon_id": "18592477",
+      "name": "notice",
+      "font_class": "notice1",
+      "unicode": "e68c",
+      "unicode_decimal": 59020
+    },
+    {
+      "icon_id": "21014453",
+      "name": "打印",
+      "font_class": "dayin1",
+      "unicode": "e65a",
+      "unicode_decimal": 58970
+    }
+  ]
+}
