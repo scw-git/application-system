@@ -66,7 +66,68 @@
             </el-form-item>
           </el-form>
         </el-tab-pane>
-        <el-tab-pane label="邮箱注册" name="emailRegister">邮箱注册</el-tab-pane>
+        <el-tab-pane label="邮箱注册" name="emailRegister">
+          <el-form ref="emailRegister" :model="emailRegister" :rules="rules">
+            <el-form-item prop="email">
+              <el-input v-model="emailRegister.email" placeholder="请输入邮箱"></el-input>
+            </el-form-item>
+            <el-form-item prop="name">
+              <el-input v-model="emailRegister.name" placeholder="请输入真实姓名"></el-input>
+            </el-form-item>
+            <el-form-item prop="certificateType">
+              <el-select v-model="emailRegister.certificateType" placeholder="请选择证件类型">
+                <el-option
+                  v-for="item in certificateOptions"
+                  :key="item.value"
+                  :label="item.name"
+                  :value="item.value"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item prop="certificateNum">
+              <el-input v-model="emailRegister.certificateNum" placeholder="请输入证件号"></el-input>
+            </el-form-item>
+            <el-form-item prop="password">
+              <el-input
+                style="width:57%;"
+                type="password"
+                v-model="emailRegister.password"
+                placeholder="请输入密码"
+              ></el-input>
+              <div class="notice">密码格式为：由大写字母、小写字母、数字、特殊字符中至少3种组成8~20位的字符串</div>
+            </el-form-item>
+            <el-form-item prop="confirPassword">
+              <el-input
+                type="password"
+                v-model="emailRegister.confirPassword"
+                placeholder="请重新输入密码"
+              ></el-input>
+            </el-form-item>
+            <el-form-item prop="code">
+              <el-input
+                v-model="emailRegister.code"
+                @keydown.enter.native="handleEmailRegister"
+                placeholder="请输入验证码"
+              >
+                <el-button v-if="show" @click="getCode" slot="append">获取邮箱验证码</el-button>
+                <el-button disabled v-else slot="append">重发验证码 ({{time}} s)</el-button>
+              </el-input>
+            </el-form-item>
+
+            <el-form-item style="width:100%;">
+              <el-button
+                :loading="loading"
+                size="medium"
+                type="primary"
+                style="width:100%;"
+                @click.native.prevent="handleEmailRegister"
+              >
+                <span v-if="!loading">注册</span>
+                <span v-else>注 册 中...</span>
+              </el-button>
+            </el-form-item>
+          </el-form>
+        </el-tab-pane>
       </el-tabs>
     </div>
   </div>
@@ -124,6 +185,14 @@ export default {
       },
       emailRegister: {},
       rules: {
+        email: [
+          {
+            type: "email",
+            required: true,
+            message: "邮箱格式不正确",
+            trigger: "blur"
+          }
+        ],
         phone: [
           // 如果在写一个，会覆盖validator中的
           { required: true, message: "手机号不能为空", trigger: "blur" },
@@ -174,6 +243,18 @@ export default {
       }
     },
     changeRegister() {},
+    handleEmailRegister() {
+      this.$refs.emailRegister.validate(valid => {
+        if (valid) {
+          this.loading = true;
+          setTimeout(() => {
+            this.loading = false;
+            this.$message.success("注册成功");
+            this.$router.push("login");
+          }, 2000);
+        }
+      });
+    },
     handlePhoneRegister() {
       this.$refs.phoneRegister.validate(valid => {
         if (valid) {
