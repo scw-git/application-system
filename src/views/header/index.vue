@@ -31,7 +31,7 @@
             首成文，您好
             <i class="el-icon-arrow-down el-icon--right"></i>
           </el-button>
-          <el-dropdown-menu slot="dropdown">
+          <el-dropdown-menu style="width:100px" slot="dropdown">
             <el-dropdown-item command="info">基本信息</el-dropdown-item>
             <el-dropdown-item command="password">修改密码</el-dropdown-item>
             <el-dropdown-item command="logout">退出</el-dropdown-item>

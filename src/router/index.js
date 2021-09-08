@@ -21,37 +21,37 @@ const routes = [
     component: () => import('../views/index.vue'),
     children: [
       {
-        path: '/notice',
-        name: 'notice',
-        component: () => import('../views/page/notice.vue')
+        path: '/student-notice',
+        name: 'student-notice',
+        component: () => import('../views/page/student/notice.vue')
       },
       {
-        path: '/testRegistration',
-        name: 'testRegistration',
-        component: () => import('../views/page/testRegistration.vue')
+        path: '/student-testRegistration',
+        name: 'student-testRegistration',
+        component: () => import('../views/page/student/testRegistration.vue')
       },
       {
-        path: '/payment',
-        name: 'payment',
-        component: () => import('../views/page/payment.vue')
+        path: '/student-payment',
+        name: 'student-payment',
+        component: () => import('../views/page/student/payment.vue')
       }, {
-        path: '/writeTicket',
-        name: 'writeTicket',
-        component: () => import('../views/page/writeTicket.vue')
+        path: '/student-writeTicket',
+        name: 'student-writeTicket',
+        component: () => import('../views/page/student/writeTicket.vue')
       }, {
-        path: '/arrange',
-        name: 'arrange',
-        component: () => import('../views/page/arrange.vue')
+        path: '/student-arrange',
+        name: 'student-arrange',
+        component: () => import('../views/page/student/arrange.vue')
       },
       {
-        path: '/scoreQuery',
-        name: 'scoreQuery',
-        component: () => import('../views/page/scoreQuery.vue')
+        path: '/student-scoreQuery',
+        name: 'student-scoreQuery',
+        component: () => import('../views/page/student/scoreQuery.vue')
       },
       {
-        path: '/interviewTicket',
-        name: 'interviewTicket',
-        component: () => import('../views/page/interviewTicket.vue')
+        path: '/student-interviewTicket',
+        name: 'student-interviewTicket',
+        component: () => import('../views/page/student/interviewTicket.vue')
       },
     ]
   },

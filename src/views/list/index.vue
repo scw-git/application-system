@@ -1,5 +1,5 @@
 <template>
-  <div class="list">
+  <div class="index">
     <div class="header">
       <my-header />
     </div>
@@ -25,7 +25,7 @@
               <el-button
                 type="primary"
                 plain
-                @click="()=>this.$router.push('testRegistration')"
+                @click="()=>this.$router.push('student-testRegistration')"
               >点击报名</el-button>
             </div>
           </div>
@@ -53,94 +53,6 @@
           </div>
         </div>
       </div>
-      <div class="list">
-        <div class="content">
-          <div class="title">
-            <div class="left">
-              <i class="iconfont icon-kaoshianpai1"></i>
-              <span>2021年下半年软考</span>
-            </div>
-            <div class="right">
-              <div class="triangle"></div>未报名
-            </div>
-          </div>
-          <div class="detail">
-            <div class="left">
-              考生报名时间：2021-08-12 至 2021-08-19
-              <br />考生报名时间：2021-08-12 至 2021-08-19
-            </div>
-            <div class="right">
-              <el-button type="primary" plain>点击报名</el-button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="list">
-        <div class="content">
-          <div class="title">
-            <div class="left">
-              <i class="iconfont icon-kaoshianpai1"></i>
-              <span>2021年下半年软考</span>
-            </div>
-            <div class="right">
-              <div class="triangle"></div>未报名
-            </div>
-          </div>
-          <div class="detail">
-            <div class="left">
-              考生报名时间：2021-08-12 至 2021-08-19
-              <br />考生报名时间：2021-08-12 至 2021-08-19
-            </div>
-            <div class="right">
-              <el-button type="primary" plain>点击报名</el-button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="list">
-        <div class="content">
-          <div class="title">
-            <div class="left">
-              <i class="iconfont icon-kaoshianpai1"></i>
-              <span>2021年下半年软考</span>
-            </div>
-            <div class="right">
-              <div class="triangle"></div>未报名
-            </div>
-          </div>
-          <div class="detail">
-            <div class="left">
-              考生报名时间：2021-08-12 至 2021-08-19
-              <br />考生报名时间：2021-08-12 至 2021-08-19
-            </div>
-            <div class="right">
-              <el-button type="primary" plain>点击报名</el-button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="list">
-        <div class="content">
-          <div class="title">
-            <div class="left">
-              <i class="iconfont icon-kaoshianpai1"></i>
-              <span>2021年下半年软考</span>
-            </div>
-            <div class="right">
-              <div class="triangle"></div>未报名
-            </div>
-          </div>
-          <div class="detail">
-            <div class="left">
-              考生报名时间：2021-08-12 至 2021-08-19
-              <br />考生报名时间：2021-08-12 至 2021-08-19
-            </div>
-            <div class="right">
-              <el-button type="primary" plain>点击报名</el-button>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 </template>
@@ -157,22 +69,23 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.list {
+.index {
   background-color: #f3f3f3;
+  width: 100%;
+  min-width: 1300px;
+  // height: calc(100vh - 110px);
   .header {
     margin-bottom: 40px;
   }
   .body {
     .list {
       background-color: white;
-      width: 1200px;
-      padding: 20px 0;
+      padding: 20px;
       border: 1px solid #e6e6e6;
-      margin: 0 auto;
+      margin: 0 5%;
       margin-bottom: 80px;
       .content {
         height: 227px;
-        border: 1px solid #e6e6e6;
         border-width: 1px 0;
         .title {
           display: flex;

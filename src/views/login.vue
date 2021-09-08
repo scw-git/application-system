@@ -2,47 +2,79 @@
   <div class="login">
     <el-form class="login-from" ref="login" :model="form" :rules="rules">
       <h2 class="title">事业单位考试报名系统</h2>
-      <div class="notice">
-        <span>通知：</span>
-        <br />
-        <a href="#">[8月1日起广西再次提高部分优抚对象等人员抚恤和生活补助标准]</a>
-        <a href="#">广西考生请注意：2021年度全国会计专业技术中级资格考试打印准考证时间sedrhrh</a>
-      </div>
-      <el-form-item prop="username">
-        <el-input v-model="form.username" prefix-icon="el-icon-user-solid" placeholder="请输入手机号/邮箱"></el-input>
-      </el-form-item>
-      <el-form-item prop="password">
-        <el-input v-model="form.password" prefix-icon="el-icon-lock" placeholder="请输入密码"></el-input>
-      </el-form-item>
-      <el-form-item prop="code">
-        <el-input
-          style="width:63%"
-          prefix-icon="el-icon-circle-check"
-          v-model="form.code"
-          placeholder="验证码"
-        ></el-input>
-        <div class="login-code">
-          <img src="@/assets/img/code.gif" alt />
-        </div>
-      </el-form-item>
-      <el-form-item style="width:100%;">
-        <el-button
-          :loading="loading"
-          size="medium"
-          type="primary"
-          style="width:100%;"
-          @click.native.prevent="login"
-        >
-          <span v-if="!loading">登 录</span>
-          <span v-else>登 录 中...</span>
-        </el-button>
-      </el-form-item>
-      <el-form-item>
-        <div class="other">
-          <router-link to="register" class="noCount">没有账号？去注册</router-link>
-          <a class="noCount">忘记密码</a>
-        </div>
-      </el-form-item>
+      <el-tabs v-model="activeName" @tab-click="handleClick">
+        <el-tab-pane label="考试登录" name="student">
+          <div class="notice">
+            <span>通知：</span>
+            <br />
+            <a href="#">[8月1日起广西再次提高部分优抚对象等人员抚恤和生活补助标准]</a>
+            <a href="#">广西考生请注意：2021年度全国会计专业技术中级资格考试打印准考证时间sedrhrh</a>
+          </div>
+          <el-form-item prop="username">
+            <el-input
+              v-model="form.username"
+              prefix-icon="el-icon-user-solid"
+              placeholder="请输入手机号/邮箱"
+            ></el-input>
+          </el-form-item>
+          <el-form-item prop="password">
+            <el-input v-model="form.password" prefix-icon="el-icon-lock" placeholder="请输入密码"></el-input>
+          </el-form-item>
+          <el-form-item prop="code">
+            <el-input
+              style="width:63%"
+              prefix-icon="el-icon-circle-check"
+              v-model="form.code"
+              placeholder="验证码"
+            ></el-input>
+            <div class="login-code">
+              <img src="@/assets/img/code.gif" alt />
+            </div>
+          </el-form-item>
+          <el-form-item style="width:100%;">
+            <el-button
+              :loading="loading"
+              size="medium"
+              type="primary"
+              style="width:100%;"
+              @click.native.prevent="login"
+            >
+              <span v-if="!loading">登 录</span>
+              <span v-else>登 录 中...</span>
+            </el-button>
+          </el-form-item>
+          <el-form-item>
+            <div class="other">
+              <router-link to="register" class="noCount">没有账号？去注册</router-link>
+              <a class="noCount">忘记密码</a>
+            </div>
+          </el-form-item>
+        </el-tab-pane>
+        <el-tab-pane label="管理员登录" name="admin">
+          <el-form-item prop="username">
+            <el-input
+              v-model="form.username"
+              prefix-icon="el-icon-user-solid"
+              placeholder="请输入手机号/邮箱"
+            ></el-input>
+          </el-form-item>
+          <el-form-item prop="password">
+            <el-input v-model="form.password" prefix-icon="el-icon-lock" placeholder="请输入密码"></el-input>
+          </el-form-item>
+          <el-form-item style="width:100%;">
+            <el-button
+              :loading="loading"
+              size="medium"
+              type="primary"
+              style="width:100%;"
+              @click.native.prevent="login"
+            >
+              <span v-if="!loading">登 录</span>
+              <span v-else>登 录 中...</span>
+            </el-button>
+          </el-form-item>
+        </el-tab-pane>
+      </el-tabs>
     </el-form>
   </div>
 </template>
@@ -52,6 +84,7 @@ import { validatePhone } from "@/utils/validator";
 export default {
   data() {
     return {
+      activeName: "student",
       loading: false,
       form: {
         username: "",
@@ -99,9 +132,11 @@ export default {
   background-size: cover;
 
   .login-from {
+    // min-height: 500px;
     border-radius: 6px;
     background: #ffffff;
-    width: 470px;
+    min-width: 300px;
+    width: 33%;
     padding: 25px 25px 5px 25px;
     .title {
       margin: 0px auto 30px auto;

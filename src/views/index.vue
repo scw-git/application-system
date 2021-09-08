@@ -31,12 +31,11 @@ export default {
 </script>
 <style lang="scss" scoped>
 .index {
-  // width: 1440px;
   width: 100%;
   min-width: 1300px;
   margin: 0 auto;
   .header {
-    height: 80px;
+    // height: 70px;
   }
   .body {
     display: flex;
