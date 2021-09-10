@@ -9,9 +9,6 @@
       <el-form label-width="125px" :rules="rules" :model="form" ref="form">
         <el-row>
           <el-col :span="12">
-            <el-form-item label="报名序号:">
-              <el-input v-model="form.number"></el-input>
-            </el-form-item>
             <el-form-item label="报考单位:" prop="unit">
               <el-select v-model="form.unit">
                 <el-option label="单位一" :value="1"></el-option>

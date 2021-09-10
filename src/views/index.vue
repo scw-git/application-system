@@ -35,7 +35,7 @@ export default {
   min-width: 1300px;
   margin: 0 auto;
   .header {
-    // height: 70px;
+    height: 75px;
   }
   .body {
     display: flex;
@@ -43,9 +43,11 @@ export default {
     // height: calc(100% - 80px);
     .left {
       width: 200px;
+      flex-shrink: 0;
     }
     .right {
-      flex: 1;
+      // flex: 1;
+      width: calc(100% - 200px);
     }
   }
 }

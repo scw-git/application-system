@@ -37,7 +37,7 @@
               size="medium"
               type="primary"
               style="width:100%;"
-              @click.native.prevent="login"
+              @click.native.prevent="login('student')"
             >
               <span v-if="!loading">登 录</span>
               <span v-else>登 录 中...</span>
@@ -51,23 +51,23 @@
           </el-form-item>
         </el-tab-pane>
         <el-tab-pane label="管理员登录" name="admin">
-          <el-form-item prop="username">
+          <el-form-item style="margin:20px 0;">
             <el-input
               v-model="form.username"
               prefix-icon="el-icon-user-solid"
               placeholder="请输入手机号/邮箱"
             ></el-input>
           </el-form-item>
-          <el-form-item prop="password">
+          <el-form-item>
             <el-input v-model="form.password" prefix-icon="el-icon-lock" placeholder="请输入密码"></el-input>
           </el-form-item>
-          <el-form-item style="width:100%;">
+          <el-form-item style="width:100%;margin-top:30px;">
             <el-button
               :loading="loading"
               size="medium"
               type="primary"
               style="width:100%;"
-              @click.native.prevent="login"
+              @click.native.prevent="login('admin')"
             >
               <span v-if="!loading">登 录</span>
               <span v-else>登 录 中...</span>
@@ -89,6 +89,7 @@ export default {
       form: {
         username: "",
         password: "",
+
         code: "",
         codeUrl: ""
       },
@@ -99,25 +100,61 @@ export default {
         password: [
           { required: true, message: "密码不能为空！", trigger: "blur" }
         ],
+
         code: [{ required: true, trigger: "change", message: "验证码不能为空" }]
       }
     };
   },
   cremoated() {},
   methods: {
-    login() {
-      this.$refs.login.validate(valid => {
-        if (valid) {
+    handleClick() {
+      //this.form 必须要这么写，否则管理员登录不提示
+      this.form = {
+        username: "",
+        password: "",
+        code: "",
+        codeUrl: ""
+      };
+      this.$refs.login.resetFields();
+    },
+    setStorage(type) {
+      sessionStorage.setItem(
+        "loginInfo",
+        JSON.stringify({
+          login: true,
+          type
+        })
+      );
+    },
+    login(type) {
+      if (type == "student") {
+        this.$refs.login.validate(valid => {
+          if (valid) {
+            this.loading = true;
+            setTimeout(() => {
+              this.loading = false;
+              this.setStorage(type); //存储登录信息
+              this.$router.push({
+                path: "/list"
+              });
+            }, 1000);
+          }
+        });
+      } else if (type == "admin") {
+        console.log(55, this.form);
+        if (this.form.username == "" || this.form.password == "") {
+          this.$message.warning("账号或密码不能为空！");
+        } else {
           this.loading = true;
           setTimeout(() => {
             this.loading = false;
-            sessionStorage.setItem("login", true);
+            this.setStorage(type); //存储登录信息
             this.$router.push({
-              path: "/list"
+              path: "/admin-noticeManagement"
             });
           }, 1000);
         }
-      });
+      }
     }
   }
 };
@@ -132,10 +169,10 @@ export default {
   background-size: cover;
 
   .login-from {
-    // min-height: 500px;
+    min-height: 400px;
     border-radius: 6px;
     background: #ffffff;
-    min-width: 300px;
+    min-width: 350px;
     width: 33%;
     padding: 25px 25px 5px 25px;
     .title {

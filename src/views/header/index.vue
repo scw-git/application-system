@@ -59,7 +59,7 @@ export default {
       }
     },
     logout() {
-      sessionStorage.removeItem("login");
+      sessionStorage.removeItem("loginInfo");
       this.$router.push("login");
     }
   }
@@ -94,6 +94,7 @@ export default {
 // }
 .header {
   background-color: #4784e3;
+  height: 75px;
   .logo {
     height: 100%;
     padding: 0 20px;

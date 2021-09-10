@@ -43,18 +43,52 @@ export default {
         }
       ],
       admin: [
-        { icon: "icon-notice", title: "通知管理" },
-        { icon: "icon-kaoshianpai1", title: "考生管理" },
-        { icon: "icon-dayin1", title: "缴费管理" },
-        { icon: "icon-chengjichaxun-", title: "考场管理" },
-        { icon: "icon-pay1", title: "成绩管理" },
-        { icon: "icon-dayin1", title: "短信管理" }
+        {
+          icon: "icon-notice",
+          title: "通知管理",
+          index: "admin-noticeManagement"
+        },
+        {
+          icon: "icon-notice",
+          title: "考试计划",
+          index: "admin-examPlan"
+        },
+        {
+          icon: "icon-kaoshianpai1",
+          title: "考生管理",
+          index: "admin-examineeManagement"
+        },
+        {
+          icon: "icon-dayin1",
+          title: "缴费管理",
+          index: "admin-payManagement"
+        },
+        {
+          icon: "icon-chengjichaxun-",
+          title: "考场管理",
+          index: "admin-roomManagement"
+        },
+        {
+          icon: "icon-pay1",
+          title: "成绩管理",
+          index: "admin-scoreManagement"
+        },
+        {
+          icon: "icon-dayin1",
+          title: "短信管理",
+          index: "admin-noteManagement"
+        }
       ],
-      activeIndex: "notice"
+      activeIndex: "student-notice"
     };
   },
   created() {
-    this.list = this.student;
+    let loginInfo = JSON.parse(sessionStorage.getItem("loginInfo"));
+    if (loginInfo.type === "student") {
+      this.list = this.student;
+    } else if (loginInfo.type === "admin") {
+      this.list = this.admin;
+    }
     this.activeIndex = this.$router.currentRoute.name;
   },
   methods: {

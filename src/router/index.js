@@ -7,7 +7,7 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/',
-    redirect: '/list',
+    redirect: '/login',
   },
   {
     path: '/list',
@@ -20,6 +20,7 @@ const routes = [
     redirect: '/notice',
     component: () => import('../views/index.vue'),
     children: [
+      // 考生路由
       {
         path: '/student-notice',
         name: 'student-notice',
@@ -53,6 +54,39 @@ const routes = [
         name: 'student-interviewTicket',
         component: () => import('../views/page/student/interviewTicket.vue')
       },
+      // 管理员路由 
+      {
+        path: '/admin-noticeManagement',
+        name: 'admin-noticeManagement',
+        component: () => import('../views/page/admin/noticeManagement.vue')
+      },
+      {
+        path: '/admin-examPlan',
+        name: 'admin-examPlan',
+        component: () => import('../views/page/admin/examPlan.vue')
+      },
+      {
+        path: '/admin-examineeManagement',
+        name: 'admin-examineeManagement',
+        component: () => import('../views/page/admin/examineeManagement.vue')
+      }, {
+        path: '/admin-payManagement',
+        name: 'admin-payManagement',
+        component: () => import('../views/page/admin/payManagement.vue')
+      },
+      {
+        path: '/admin-roomManagement',
+        name: 'admin-roomManagement',
+        component: () => import('../views/page/admin/roomManagement.vue')
+      }, {
+        path: '/admin-scoreManagement',
+        name: 'admin-scoreManagement',
+        component: () => import('../views/page/admin/scoreManagement.vue')
+      }, {
+        path: '/admin-noteManagement',
+        name: 'admin-noteManagement',
+        component: () => import('../views/page/admin/noteManagement.vue')
+      },
     ]
   },
 
@@ -77,10 +111,18 @@ router.beforeEach(function (to, from, next) {
   // 白名单免登录
   if (whiteList.indexOf(to.name) != -1) {
     next()
+    console.log(11)
+
   } else {
-    if (sessionStorage.getItem('login')) {
+    let loginInfo = JSON.parse(sessionStorage.getItem('loginInfo'))
+    if (loginInfo) {
+      console.log(22)
+
       next()
+
     } else {
+      console.log(33)
+
       message.error('亲请先登录哦！')
       next({
         path: '/login'

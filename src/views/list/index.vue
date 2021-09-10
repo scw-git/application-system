@@ -81,7 +81,6 @@ export default {
     .list {
       background-color: white;
       padding: 20px;
-      border: 1px solid #e6e6e6;
       margin: 0 5%;
       margin-bottom: 80px;
       .content {

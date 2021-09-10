@@ -43,3 +43,15 @@ html {
 #app {
     height: 100%;
 }
+
+//修改表格的滚动条
+.el-table__body-wrapper::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+//滚动条的滑块
+.el-table__body-wrapper::-webkit-scrollbar-thumb {
+    background-color: #eaecf1;
+    border-radius: 3px;
+}
