@@ -6,6 +6,10 @@ import './assets/icon/iconfont.css'
 
 import './style/global.scss'
 
+// 电子签名
+import vueEsign from 'vue-esign'
+Vue.use(vueEsign)
+
 // ant-design组件
 import Antd from 'ant-design-vue';
 import 'ant-design-vue/dist/antd.css';

@@ -1,7 +1,12 @@
 <template>
   <div class="menu">
     <el-menu style="height:calc(100vh - 80px)" @select="handleSelect" :default-active="activeIndex">
-      <el-menu-item :index="item.index" v-for="item in list " :key="item.title">
+      <el-menu-item
+        style=" padding-left: 40px;"
+        :index="item.index"
+        v-for="item in list "
+        :key="item.title"
+      >
         <i :class="`${item.icon} iconfont`"></i>
         <span slot="title">{{item.title}}</span>
       </el-menu-item>
@@ -26,11 +31,11 @@ export default {
           title: "打印笔试准考证",
           index: "student-writeTicket"
         },
-        {
-          icon: "icon-kaoshianpai",
-          title: "考试安排",
-          index: "student-arrange"
-        },
+        // {
+        //   icon: "icon-kaoshianpai",
+        //   title: "考试安排",
+        //   index: "student-arrange"
+        // },
         {
           icon: "icon-chengjichaxun-",
           title: "成绩查询",

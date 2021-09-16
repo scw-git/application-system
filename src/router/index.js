@@ -68,7 +68,8 @@ const routes = [
       {
         path: '/admin-examineeManagement',
         name: 'admin-examineeManagement',
-        component: () => import('../views/page/admin/examineeManagement.vue')
+        component: () => import('../views/page/admin/examineeManagement.vue'),
+
       }, {
         path: '/admin-payManagement',
         name: 'admin-payManagement',
@@ -87,6 +88,13 @@ const routes = [
         name: 'admin-noteManagement',
         component: () => import('../views/page/admin/noteManagement.vue')
       },
+      // 报名表
+      {
+        path: '/applicationForm',
+        name: '/applicationForm',
+        component: () => import('../views/page/components/applicationForm.vue'),
+      }
+
     ]
   },
 
@@ -111,18 +119,11 @@ router.beforeEach(function (to, from, next) {
   // 白名单免登录
   if (whiteList.indexOf(to.name) != -1) {
     next()
-    console.log(11)
-
   } else {
     let loginInfo = JSON.parse(sessionStorage.getItem('loginInfo'))
     if (loginInfo) {
-      console.log(22)
-
       next()
-
     } else {
-      console.log(33)
-
       message.error('亲请先登录哦！')
       next({
         path: '/login'

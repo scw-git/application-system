@@ -3,7 +3,7 @@
     <el-form class="login-from" ref="login" :model="form" :rules="rules">
       <h2 class="title">事业单位考试报名系统</h2>
       <el-tabs v-model="activeName" @tab-click="handleClick">
-        <el-tab-pane label="考试登录" name="student">
+        <el-tab-pane label="考生登录" name="student">
           <div class="notice">
             <span>通知：</span>
             <br />

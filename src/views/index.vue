@@ -39,7 +39,7 @@ export default {
   }
   .body {
     display: flex;
-    padding: 0 20px;
+    padding: 0 20px 0 0;
     // height: calc(100% - 80px);
     .left {
       width: 200px;

@@ -2,8 +2,6 @@
   <div class="apply">
     <div class="title">
       <h1>2021年下半年全国事业单位考试报名表</h1>
-      <button @click="verify">验证</button>
-      <button @click="reset">reset</button>
     </div>
     <div class="form">
       <el-form label-width="125px" :rules="rules" :model="form" ref="form">
@@ -51,6 +49,9 @@
             </el-form-item>
             <el-form-item label="在职教育:">
               <el-input></el-input>
+            </el-form-item>
+            <el-form-item label="家庭住址:" prop="address">
+              <el-input v-model="form.address"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -108,9 +109,7 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-form-item label="家庭住址:" prop="address">
-          <el-input v-model="form.address"></el-input>
-        </el-form-item>
+
         <el-form-item class="lh25" label="现工作单位及(在职人员填写):">
           <el-input type="textarea" placeholder="请输入内容" :autosize="{ minRows: 3, maxRows: 5}"></el-input>
         </el-form-item>
@@ -178,10 +177,34 @@
             </template>
           </el-table-column>
         </el-table>
-      </el-form>
+        <el-form-item label-width="0" prop="confirReal">
+          <el-radio style="margin-top:20px;font-weight:700" v-model="form.confirReal" label="1">
+            <span>本人对以上内容的真实性、准确性和合法性负责，如有虚假，愿意承担责任。</span>
+          </el-radio>
+        </el-form-item>
 
+        <!-- <div class="sign">
+          <div class="left">
+            <span style="margin-left:2%;">本人对以上内容的真实性、准确性和合法性负责，如有虚假，愿意承担责任。</span>
+            <div style="text-align:right;padding-top:20px;">
+              <el-button type="mini" @click="()=>this.$refs.esign.reset()">重新签名</el-button>考生签名：
+            </div>
+          </div>
+          <div class="right">
+            <vue-esign
+              ref="esign"
+              :width="800"
+              :height="300"
+              :isCrop="isCrop"
+              :lineWidth="lineWidth"
+              :lineColor="lineColor"
+              :bgColor.sync="bgColor"
+            />
+          </div>
+        </div>-->
+      </el-form>
       <div class="btn">
-        <el-button type="primary">提交</el-button>
+        <el-button type="primary" @click="submitForm">提交</el-button>
       </div>
     </div>
   </div>
@@ -191,8 +214,17 @@ import { validatePhone } from "@/utils/validator.js";
 export default {
   data() {
     return {
+      // 电子签名
+      // sign: {
+      //   lineWidth: 6,
+      //   lineColor: "#000000",
+      //   bgColor: "",
+      //   resultImg: "",
+      //   isCrop: false
+      // },
       imageUrl: false,
       form: {
+        // signImg: "",
         dataList: [
           {
             relation: "",
@@ -218,6 +250,13 @@ export default {
         ]
       },
       rules: {
+        confirReal: [
+          {
+            required: true,
+            message: "请先勾选确认信息真实性",
+            trigger: "change"
+          }
+        ],
         unit: [
           { required: true, message: "请选择报考单位", trigger: "change" }
         ],
@@ -263,6 +302,20 @@ export default {
     };
   },
   methods: {
+    // 保存电子签名图片
+    // saveSignImg() {
+    //   this.$refs.esign
+    //     .generate()
+    //     .then(res => {
+    //       this.form.signImg = res;
+    //     })
+    //     .catch(err => {
+    //       this.$message.warning("请完成签名！");
+    //     });
+    // },
+    submitForm() {
+      this.verify();
+    },
     verify() {
       let obj = this.form.dataList[0];
       let n = 0;
@@ -275,13 +328,18 @@ export default {
         this.$message.error("请完善家庭主要成员及社会关系");
       }
       this.$refs.form.validate(valid => {
-        if (valid) {
-          console.log("ok");
+        if (valid && n == 5) {
+          this.$confirm(
+            "请确认您填写的信息无误，一旦选择提交将不可对报名信息进行修改?",
+            "提示",
+            {
+              confirmButtonText: "确定",
+              cancelButtonText: "取消",
+              type: "warning"
+            }
+          ).then(() => {});
         }
       });
-    },
-    reset() {
-      this.$refs.form.resetFields();
     },
 
     handlePreview() {},
@@ -317,6 +375,21 @@ export default {
     .lh25 {
       ::v-deep .el-form-item__label {
         line-height: 25px;
+      }
+    }
+
+    .sign {
+      border: 1px solid #ebeef5;
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-weight: 700;
+      display: flex;
+      .left {
+        width: 80%;
+      }
+      .right {
+        width: 20%;
+        background-color: #ebeef5;
       }
     }
     .btn {

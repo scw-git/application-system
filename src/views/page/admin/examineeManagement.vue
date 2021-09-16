@@ -11,7 +11,7 @@
         </el-radio-group>
       </div>
       <div class="right-menu">
-        <el-button type="primary">新建</el-button>
+        <el-button type="primary">批量审核</el-button>
         <el-button type="primary">批量导出</el-button>
         <el-button type="danger">批量删除</el-button>
         <el-button type="success">发送面试通知</el-button>
@@ -57,29 +57,50 @@
           @selection-change="selectionChange"
         ></el-table-column>
 
-        <el-table-column label="序号" width="80" align="center" type="index"></el-table-column>
+        <!-- <el-table-column label="序号" width="80" align="center" type="index"></el-table-column> -->
         <el-table-column fixed label="姓名" width="100" align="center" prop="name"></el-table-column>
         <el-table-column label="性别" width="80" align="center" prop="sex"></el-table-column>
-        <el-table-column label="手机号" width="120" align="center" prop="phone"></el-table-column>
-        <el-table-column label="出生年月" width="120" align="center" prop="birth"></el-table-column>
-        <el-table-column label="民族" width="80" align="center" prop="nation"></el-table-column>
+        <!-- <el-table-column label="手机号" width="120" align="center" prop="phone"></el-table-column> -->
+        <!-- <el-table-column label="出生年月" width="120" align="center" prop="birth"></el-table-column>
+        <el-table-column label="民族" width="80" align="center" prop="nation"></el-table-column>-->
         <el-table-column label="政治面貌" width="80" align="center" prop="politics"></el-table-column>
         <el-table-column label="学历" width="80" align="center" prop="education"></el-table-column>
         <el-table-column label="毕业学校" min-width="150" align="center" prop="school"></el-table-column>
         <el-table-column label="专业" width="150" align="center" prop="profession"></el-table-column>
         <el-table-column label="报名时间" width="100" align="center" prop="registrationTime"></el-table-column>
-        <el-table-column label="报考单位" width="100" align="center" prop="unit"></el-table-column>
+        <!-- <el-table-column label="报考单位" width="100" align="center" prop="unit"></el-table-column> -->
         <el-table-column label="报考岗位" width="80" align="center" prop="job"></el-table-column>
-        <el-table-column label="审核情况" width="80" align="center" prop="checkStatus"></el-table-column>
-
-        <el-table-column label="操作" width="180" align="center">
+        <el-table-column label="缴费状态" width="80" align="center" prop="payStatus">
           <template slot-scope="scope">
-            <el-button class="mr10" size="mini" type="success">详情</el-button>
+            <el-tag type="success" v-if="scope.row.payStatus=='已缴费'">{{scope.row.payStatus}}</el-tag>
+            <el-tag type="warning" v-else>{{scope.row.payStatus}}</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column label="审核状态" width="100" align="center" prop="checkStatus">
+          <template slot-scope="scope">
+            <el-tag
+              type="success"
+              v-if="scope.row.checkStatus=='审核通过'||scope.row.checkStatus=='面试人员'"
+            >{{scope.row.checkStatus}}</el-tag>
+            <el-tag type="warning" v-else>{{scope.row.checkStatus}}</el-tag>
+          </template>
+        </el-table-column>
+
+        <el-table-column label="操作" width="205" align="center">
+          <template slot-scope="scope">
+            <el-button
+              v-if="scope.row.checkStatus=='未审核'"
+              @click="toDetail(scope)"
+              size="mini"
+              type="danger"
+            >审核</el-button>
+            <el-button class="mr10" @click="toDetail(scope)" size="mini" type="success">详情</el-button>
             <el-dropdown>
               <el-button type="primary" size="mini">更多</el-button>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item>删除</el-dropdown-item>
+                <!-- <el-dropdown-item v-if="scope.row.checkStatus=='未审核'">审核</el-dropdown-item> -->
                 <el-dropdown-item>导出</el-dropdown-item>
+                <el-dropdown-item>删除</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
             <!-- <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button> -->
@@ -90,6 +111,7 @@
     <!-- <div class="pagination">
       <el-pagination background layout="prev, pager, next" :total="1000"></el-pagination>
     </div>-->
+    <!-- <router-view></router-view> -->
   </div>
 </template>
 <script>
@@ -120,7 +142,56 @@ export default {
           registrationTime: "2021-5-08",
           unit: "财政厅",
           job: "开发",
-          checkStatus: "通过"
+          payStatus: "未缴费",
+          checkStatus: "未审核"
+        },
+        {
+          name: "首成文",
+          sex: "男",
+          phone: "124334433",
+          birth: "2020-12-21",
+          nation: "瑶族",
+          politics: "群众",
+          education: "本科",
+          school: "广西民族大学",
+          profession: "计算机科学与技术",
+          registrationTime: "2021-5-08",
+          unit: "财政厅",
+          job: "开发",
+          payStatus: "已缴费",
+          checkStatus: "审核通过"
+        },
+        {
+          name: "首成文",
+          sex: "男",
+          phone: "124334433",
+          birth: "2020-12-21",
+          nation: "瑶族",
+          politics: "群众",
+          education: "本科",
+          school: "广西民族大学",
+          profession: "计算机科学与技术",
+          registrationTime: "2021-5-08",
+          unit: "财政厅",
+          job: "开发",
+          payStatus: "未缴费",
+          checkStatus: "审核未通过"
+        },
+        {
+          name: "首成文",
+          sex: "男",
+          phone: "124334433",
+          birth: "2020-12-21",
+          nation: "瑶族",
+          politics: "群众",
+          education: "本科",
+          school: "广西民族大学",
+          profession: "计算机科学与技术",
+          registrationTime: "2021-5-08",
+          unit: "财政厅",
+          job: "开发",
+          payStatus: "已缴费",
+          checkStatus: "面试人员"
         }
       ]
     };
@@ -132,6 +203,11 @@ export default {
     radio() {}
   },
   methods: {
+    toDetail() {
+      this.$router.push({
+        path: "/applicationForm"
+      });
+    },
     selectionChange() {},
     search() {
       console.log("search");
@@ -143,7 +219,7 @@ export default {
 .notice {
   width: 100%;
   .mr10 {
-    margin-right: 10px;
+    margin-right: 5px;
   }
   padding: 20px 30px;
   .menu {
