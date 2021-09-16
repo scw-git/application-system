@@ -1,6 +1,6 @@
 <template>
   <div class="applicationFrom">
-    <el-button @click="aa('#getPdf')">pdf</el-button>
+    <!-- <el-button @click="aa('#getPdf')">pdf</el-button> -->
 
     <div id="getPdf" class="wrap">
       <div class="title">
@@ -121,7 +121,7 @@
             <td></td>
             <td colspan="2"></td>
           </tr>
-          <tr>
+          <!-- <tr>
             <td class="tac">签名确认</td>
             <td colspan="6">
               <div>
@@ -130,7 +130,7 @@
                 <div style="text-align:right;margin-right:20%">年 月 日</div>
               </div>
             </td>
-          </tr>
+          </tr>-->
           <tr>
             <td class="tac" style="padding:5px 0;">
               招聘单位

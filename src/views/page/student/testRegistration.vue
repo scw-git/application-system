@@ -1,189 +1,196 @@
 <template>
   <div class="apply">
-    <div class="title">
-      <h1>2021年下半年全国事业单位考试报名表</h1>
-    </div>
-    <div class="form">
-      <el-form label-width="125px" :rules="rules" :model="form" ref="form">
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="报考单位:" prop="unit">
-              <el-select v-model="form.unit">
-                <el-option label="单位一" :value="1"></el-option>
-                <el-option label="单位二" :value="0"></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="报考岗位:" prop="job">
-              <el-select v-model="form.job">
-                <el-option label="单位一" :value="1"></el-option>
-                <el-option label="单位二" :value="0"></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="岗位代码:">
-              <el-select v-model="form.postCode">
-                <el-option label="代码一" :value="1"></el-option>
-                <el-option label="代码二" :value="0"></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="身份证号:" prop="id">
-              <el-input v-model="form.id"></el-input>
-            </el-form-item>
-            <el-form-item label="出生年月:" prop="birthYear">
-              <el-date-picker v-model="form.birthYear" type="date" placeholder="选择日期"></el-date-picker>
-            </el-form-item>
+    <div v-if="status==0||status==1" class="apply-content">
+      <div class="title">
+        <h1>2021年下半年全国事业单位考试报名表</h1>
+      </div>
+      <div class="form">
+        <el-form
+          label-width="125px"
+          :rules="rules"
+          :model="form"
+          :disabled="status!=0?true:false"
+          ref="form"
+        >
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="报考单位:" prop="unit">
+                <el-select v-model="form.unit">
+                  <el-option label="单位一" :value="1"></el-option>
+                  <el-option label="单位二" :value="0"></el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item label="报考岗位:" prop="job">
+                <el-select v-model="form.job">
+                  <el-option label="单位一" :value="1"></el-option>
+                  <el-option label="单位二" :value="0"></el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item label="岗位代码:">
+                <el-select v-model="form.postCode">
+                  <el-option label="代码一" :value="1"></el-option>
+                  <el-option label="代码二" :value="0"></el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item label="身份证号:" prop="id">
+                <el-input v-model="form.id"></el-input>
+              </el-form-item>
+              <el-form-item label="出生年月:" prop="birthYear">
+                <el-date-picker v-model="form.birthYear" type="date" placeholder="选择日期"></el-date-picker>
+              </el-form-item>
 
-            <el-form-item label="教育程度:" prop="educationLevel">
-              <el-select v-model="form.educationLevel">
-                <el-option label="小学" :value="1"></el-option>
-                <el-option label="初中" :value="2"></el-option>
-                <el-option label="高中" :value="3"></el-option>
-                <el-option label="大专" :value="4"></el-option>
-                <el-option label="本科" :value="5"></el-option>
-                <el-option label="硕士" :value="6"></el-option>
-                <el-option label="博士" :value="7"></el-option>
-                <el-option label="其他" :value="8"></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="健康状况:" prop="healthStatus">
-              <el-input v-model="form.healthStatus"></el-input>
-            </el-form-item>
-            <el-form-item label="在职教育:">
-              <el-input></el-input>
-            </el-form-item>
-            <el-form-item label="家庭住址:" prop="address">
-              <el-input v-model="form.address"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <a-row type="flex" justify="space-between">
-              <el-col :span="14">
-                <el-form-item label="姓名:" prop="name">
-                  <el-input v-model="form.name"></el-input>
-                </el-form-item>
-                <el-form-item label="民族:" prop="nation">
-                  <el-input v-model="form.nation"></el-input>
-                </el-form-item>
-                <el-form-item label="性别:" prop="sex">
-                  <el-select v-model="form.sex">
-                    <el-option label="男" :value="1"></el-option>
-                    <el-option label="女" :value="0"></el-option>
-                  </el-select>
-                </el-form-item>
-              </el-col>
-              <el-col :span="10">
-                <!-- accept属性，当你点击上传时，他会筛选更实用 -->
-                <el-upload
-                  accept=".jpg, .png"
-                  style="float:right;"
-                  class="avatar-uploader"
-                  action="#"
-                  :show-file-list="false"
-                  :on-success="handleAvatarSuccess"
-                  :before-upload="beforeAvatarUpload"
-                >
-                  <img v-if="form.imageUrl" :src="form.imageUrl" class="avatar" />
-                  <div v-else>
-                    <i class="el-icon-plus avatar-uploader-icon"></i>
-                    <div style="padding-bottom:15px;" class="el-upload__text">上传头像</div>
-                  </div>
-                </el-upload>
-              </el-col>
-            </a-row>
-            <el-form-item label="籍贯:" prop="native">
-              <el-input v-model="form.native"></el-input>
-            </el-form-item>
-            <el-form-item label="政治面貌:" prop="politics">
-              <el-input v-model="form.politics"></el-input>
-            </el-form-item>
-            <el-form-item label="手机号:" prop="phone">
-              <el-input v-model="form.phone"></el-input>
-            </el-form-item>
-            <el-form-item label="电子邮箱:" prop="email">
-              <el-input v-model="form.email"></el-input>
-            </el-form-item>
-            <el-form-item label="专业技术职称:">
-              <el-input></el-input>
-            </el-form-item>
-            <el-form-item label="毕业院校及专业:" prop="graduateSchool">
-              <el-input v-model="form.graduateSchool"></el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
+              <el-form-item label="教育程度:" prop="educationLevel">
+                <el-select v-model="form.educationLevel">
+                  <el-option label="小学" :value="1"></el-option>
+                  <el-option label="初中" :value="2"></el-option>
+                  <el-option label="高中" :value="3"></el-option>
+                  <el-option label="大专" :value="4"></el-option>
+                  <el-option label="本科" :value="5"></el-option>
+                  <el-option label="硕士" :value="6"></el-option>
+                  <el-option label="博士" :value="7"></el-option>
+                  <el-option label="其他" :value="8"></el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item label="健康状况:" prop="healthStatus">
+                <el-input v-model="form.healthStatus"></el-input>
+              </el-form-item>
+              <el-form-item label="在职教育:">
+                <el-input></el-input>
+              </el-form-item>
+              <el-form-item label="家庭住址:" prop="address">
+                <el-input v-model="form.address"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <a-row type="flex" justify="space-between">
+                <el-col :span="14">
+                  <el-form-item label="姓名:" prop="name">
+                    <el-input v-model="form.name"></el-input>
+                  </el-form-item>
+                  <el-form-item label="民族:" prop="nation">
+                    <el-input v-model="form.nation"></el-input>
+                  </el-form-item>
+                  <el-form-item label="性别:" prop="sex">
+                    <el-select v-model="form.sex">
+                      <el-option label="男" :value="1"></el-option>
+                      <el-option label="女" :value="0"></el-option>
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="10">
+                  <!-- accept属性，当你点击上传时，他会筛选更实用 -->
+                  <el-upload
+                    accept=".jpg, .png"
+                    style="float:right;"
+                    class="avatar-uploader"
+                    action="#"
+                    :show-file-list="false"
+                    :on-success="handleAvatarSuccess"
+                    :before-upload="beforeAvatarUpload"
+                  >
+                    <img v-if="form.imageUrl" :src="form.imageUrl" class="avatar" />
+                    <div v-else>
+                      <i class="el-icon-plus avatar-uploader-icon"></i>
+                      <div style="padding-bottom:15px;" class="el-upload__text">上传头像</div>
+                    </div>
+                  </el-upload>
+                </el-col>
+              </a-row>
+              <el-form-item label="籍贯:" prop="native">
+                <el-input v-model="form.native"></el-input>
+              </el-form-item>
+              <el-form-item label="政治面貌:" prop="politics">
+                <el-input v-model="form.politics"></el-input>
+              </el-form-item>
+              <el-form-item label="手机号:" prop="phone">
+                <el-input v-model="form.phone"></el-input>
+              </el-form-item>
+              <el-form-item label="电子邮箱:" prop="email">
+                <el-input v-model="form.email"></el-input>
+              </el-form-item>
+              <el-form-item label="专业技术职称:">
+                <el-input></el-input>
+              </el-form-item>
+              <el-form-item label="毕业院校及专业:" prop="graduateSchool">
+                <el-input v-model="form.graduateSchool"></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
 
-        <el-form-item class="lh25" label="现工作单位及(在职人员填写):">
-          <el-input type="textarea" placeholder="请输入内容" :autosize="{ minRows: 3, maxRows: 5}"></el-input>
-        </el-form-item>
-        <el-form-item class="lh25" prop="wordExperience" label="学习及工作简历(从大学开始填写):">
-          <el-input
-            type="textarea"
-            v-model="form.wordExperience"
-            placeholder="请输入内容"
-            :autosize="{ minRows: 3, maxRows: 5}"
-          ></el-input>
-        </el-form-item>
-        <el-form-item label="奖惩情况:">
-          <el-input type="textarea" placeholder="请输入内容" :autosize="{ minRows: 3, maxRows: 5}"></el-input>
-        </el-form-item>
-        <el-form-item label="个人特长:">
-          <el-input type="textarea" placeholder="请输入内容" :autosize="{ minRows: 3, maxRows: 5}"></el-input>
-        </el-form-item>
-        <el-form-item label="附件:">
-          <el-upload
-            class="upload-demo"
-            action="https://jsonplaceholder.typicode.com/posts/"
-            :on-preview="handlePreview"
-            :on-remove="handleRemove"
-            :before-remove="beforeRemove"
-            multiple
-            :limit="3"
-            :on-exceed="handleExceed"
-            :file-list="form.fileList"
-          >
-            <el-button size="small" type="primary">点击上传</el-button>
-            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
-          </el-upload>
-        </el-form-item>
-        <!-- 表格 -->
-        <el-table :data="form.dataList" border style="width: 100%">
-          <el-table-column align="center" width="200" type="index">
-            <template slot="header">
-              <span style="color:red;">* &nbsp;</span>
-              <span>家庭主要成员及社会关系（至少填一个）</span>
-            </template>
-          </el-table-column>
-          <el-table-column align="center" prop="relation" label="关系">
-            <template slot-scope="scope">
-              <el-input v-model="form.dataList[scope.$index].relation"></el-input>
-            </template>
-          </el-table-column>
-          <el-table-column align="center" label="姓名" prop="name">
-            <template slot-scope="scope">
-              <el-input v-model="form.dataList[scope.$index].name"></el-input>
-            </template>
-          </el-table-column>
-          <el-table-column align="center" label="政治面貌" prop="politics">
-            <template slot-scope="scope">
-              <el-input v-model="form.dataList[scope.$index].politics"></el-input>
-            </template>
-          </el-table-column>
-          <el-table-column align="center" label="出生年月" prop="birth">
-            <template slot-scope="scope">
-              <el-input v-model="form.dataList[scope.$index].birth"></el-input>
-            </template>
-          </el-table-column>
-          <el-table-column align="center" label="工作单位和职位" prop="job">
-            <template slot-scope="scope">
-              <el-input v-model="form.dataList[scope.$index].job"></el-input>
-            </template>
-          </el-table-column>
-        </el-table>
-        <el-form-item label-width="0" prop="confirReal">
-          <el-radio style="margin-top:20px;font-weight:700" v-model="form.confirReal" label="1">
-            <span>本人对以上内容的真实性、准确性和合法性负责，如有虚假，愿意承担责任。</span>
-          </el-radio>
-        </el-form-item>
+          <el-form-item class="lh25" label="现工作单位及(在职人员填写):">
+            <el-input type="textarea" placeholder="请输入内容" :autosize="{ minRows: 3, maxRows: 5}"></el-input>
+          </el-form-item>
+          <el-form-item class="lh25" prop="wordExperience" label="学习及工作简历(从大学开始填写):">
+            <el-input
+              type="textarea"
+              v-model="form.wordExperience"
+              placeholder="请输入内容"
+              :autosize="{ minRows: 3, maxRows: 5}"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="奖惩情况:">
+            <el-input type="textarea" placeholder="请输入内容" :autosize="{ minRows: 3, maxRows: 5}"></el-input>
+          </el-form-item>
+          <el-form-item label="个人特长:">
+            <el-input type="textarea" placeholder="请输入内容" :autosize="{ minRows: 3, maxRows: 5}"></el-input>
+          </el-form-item>
+          <el-form-item label="附件:">
+            <el-upload
+              class="upload-demo"
+              action="https://jsonplaceholder.typicode.com/posts/"
+              :on-preview="handlePreview"
+              :on-remove="handleRemove"
+              :before-remove="beforeRemove"
+              multiple
+              :limit="3"
+              :on-exceed="handleExceed"
+              :file-list="form.fileList"
+            >
+              <el-button size="small" type="primary">点击上传</el-button>
+              <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+            </el-upload>
+          </el-form-item>
+          <!-- 表格 -->
+          <el-table :data="form.dataList" border style="width: 100%">
+            <el-table-column align="center" width="200" type="index">
+              <template slot="header">
+                <span style="color:red;">* &nbsp;</span>
+                <span>家庭主要成员及社会关系（至少填一个）</span>
+              </template>
+            </el-table-column>
+            <el-table-column align="center" prop="relation" label="关系">
+              <template slot-scope="scope">
+                <el-input v-model="form.dataList[scope.$index].relation"></el-input>
+              </template>
+            </el-table-column>
+            <el-table-column align="center" label="姓名" prop="name">
+              <template slot-scope="scope">
+                <el-input v-model="form.dataList[scope.$index].name"></el-input>
+              </template>
+            </el-table-column>
+            <el-table-column align="center" label="政治面貌" prop="politics">
+              <template slot-scope="scope">
+                <el-input v-model="form.dataList[scope.$index].politics"></el-input>
+              </template>
+            </el-table-column>
+            <el-table-column align="center" label="出生年月" prop="birth">
+              <template slot-scope="scope">
+                <el-input v-model="form.dataList[scope.$index].birth"></el-input>
+              </template>
+            </el-table-column>
+            <el-table-column align="center" label="工作单位和职位" prop="job">
+              <template slot-scope="scope">
+                <el-input v-model="form.dataList[scope.$index].job"></el-input>
+              </template>
+            </el-table-column>
+          </el-table>
+          <el-form-item label-width="0" prop="confirReal">
+            <el-radio style="margin-top:20px;font-weight:700" v-model="form.confirReal" label="1">
+              <span>本人对以上内容的真实性、准确性和合法性负责，如有虚假，愿意承担责任。</span>
+            </el-radio>
+          </el-form-item>
 
-        <!-- <div class="sign">
+          <!-- <div class="sign">
           <div class="left">
             <span style="margin-left:2%;">本人对以上内容的真实性、准确性和合法性负责，如有虚假，愿意承担责任。</span>
             <div style="text-align:right;padding-top:20px;">
@@ -201,19 +208,40 @@
               :bgColor.sync="bgColor"
             />
           </div>
-        </div>-->
-      </el-form>
-      <div class="btn">
-        <el-button type="primary" @click="submitForm">提交</el-button>
+          </div>-->
+        </el-form>
+        <div class="btn" v-if="status==0">
+          <el-button type="primary" @click="submitForm">提交</el-button>
+        </div>
       </div>
+    </div>
+    <div v-if="status==1" class="status">
+      <span style="color:#2bd6a9;font-size:60px;" class="el-icon-time"></span>
+      <span>资料审核中</span>
+    </div>
+
+    <div v-else-if="status==2" class="pass">
+      <div class="pass-tip">
+        <img src="@/assets/img/pass.png" alt />
+      </div>
+      <application-form />
+    </div>
+    <div v-else-if="status==3" class="noPass">
+      <img src="@/assets/img/nopass.png" alt />
+      <div class="nopass-tip">审核意见：资料不全</div>
     </div>
   </div>
 </template>
 <script>
+import applicationForm from "@/views/page/components/applicationForm";
 import { validatePhone } from "@/utils/validator.js";
 export default {
+  components: {
+    applicationForm
+  },
   data() {
     return {
+      status: 3, //0报名、1审核、2报名成功、3审核不通过
       // 电子签名
       // sign: {
       //   lineWidth: 6,
@@ -317,29 +345,33 @@ export default {
       this.verify();
     },
     verify() {
-      let obj = this.form.dataList[0];
-      let n = 0;
-      for (let key in obj) {
-        if (obj[key]) {
-          n++;
-        }
-      }
-      if (n != 5) {
-        this.$message.error("请完善家庭主要成员及社会关系");
-      }
-      this.$refs.form.validate(valid => {
-        if (valid && n == 5) {
-          this.$confirm(
-            "请确认您填写的信息无误，一旦选择提交将不可对报名信息进行修改?",
-            "提示",
-            {
-              confirmButtonText: "确定",
-              cancelButtonText: "取消",
-              type: "warning"
-            }
-          ).then(() => {});
-        }
-      });
+      this.status = 1;
+      // this.$refs.form.
+      // let obj = this.form.dataList[0];
+      // let n = 0;
+      // for (let key in obj) {
+      //   if (obj[key]) {
+      //     n++;
+      //   }
+      // }
+      // if (n != 5) {
+      //   this.$message.error("请完善家庭主要成员及社会关系");
+      // }
+      // this.$refs.form.validate(valid => {
+      //   if (valid && n == 5) {
+      //     this.$confirm(
+      //       "请确认您填写的信息无误，一旦选择提交将不可对报名信息进行修改?",
+      //       "提示",
+      //       {
+      //         confirmButtonText: "确定",
+      //         cancelButtonText: "取消",
+      //         type: "warning"
+      //       }
+      //     ).then(() => {
+      //       this.status = 1;
+      //     });
+      //   }
+      // });
     },
 
     handlePreview() {},
@@ -355,7 +387,31 @@ export default {
 .apply {
   padding: 20px 30px;
   margin: auto;
+  position: relative;
 
+  .pass {
+    .pass-tip {
+      width: 200px;
+      position: absolute;
+      top: 22px;
+      left: 100px;
+      img {
+        width: 100%;
+      }
+    }
+  }
+  .noPass {
+    position: absolute;
+    top: 22px;
+    left: 100px;
+    img {
+      width: 200px;
+    }
+    .nopass-tip {
+      font-size: 30px;
+      font-weight: 700;
+    }
+  }
   .title {
     text-align: center;
     margin-bottom: 50px;
