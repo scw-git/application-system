@@ -1,79 +1,80 @@
 <template>
   <div class="payment">
-    <el-tabs v-model="activeName" @tab-click="handleClick">
-      <el-tab-pane label="待支付" name="first">
-        <!-- <el-empty description="暂无待支付订单"></el-empty> -->
-        <div class="list">
-          <div class="title">
-            <h3>报考费用</h3>
-          </div>
-          <div class="content">
-            <span>考试名称：2021年下半年事业单位考试</span>
-            <span>报考岗位：会计管理</span>
-            <span>报考科目：基础知识、应用技术</span>
-            <div class="pay">
-              缴费时间：2021年3月18日08:00至2021年3月28日08:00
-              <div>
-                考试费用：
-                <span class="triangle"></span>
-                <span class="num">136.00元</span>
-              </div>
+    <el-empty v-if="status==0" description="暂无待支付订单"></el-empty>
+    <div v-else-if="status==1" class="nopay">
+      <div class="list">
+        <div class="title">
+          <h3>报考费用</h3>
+        </div>
+        <div class="content">
+          <span>考试名称：2021年下半年事业单位考试</span>
+          <span>报考岗位：会计管理</span>
+          <div class="pay">
+            缴费时间：2021年3月18日08:00至2021年3月28日08:00
+            <div>
+              考试费用：
+              <span class="triangle"></span>
+              <span class="num">136.00元</span>
             </div>
-          </div>
-          <div class="btn">
-            <el-button type="primary">点击缴费</el-button>
           </div>
         </div>
-      </el-tab-pane>
-      <el-tab-pane label="已支付" name="second">
-        <div class="list">
-          <div class="title">
-            <h3>报考费用</h3>
+        <div class="btn">
+          <el-button type="primary" @click="payment">点击缴费</el-button>
+        </div>
+      </div>
+    </div>
+    <di v-else-if="status==2" class="pay">
+      <div class="list">
+        <div class="title">
+          <h3>报考费用</h3>
+        </div>
+        <div class="content">
+          <span>考试名称：2021年下半年事业单位考试</span>
+          <span>报考岗位：会计管理</span>
+
+          <div class="pay">
+            缴费时间：2021年3月18日08:00至2021年3月28日08:00
+            <div>
+              考试费用：
+              <span class="triangle"></span>
+              <span class="num">136.00元</span>
+            </div>
+          </div>
+        </div>
+        <div class="payStatus">
+          <div class="title" style="margin:40px 0 10px 0;">
+            <h3>缴费状态</h3>
           </div>
           <div class="content">
-            <span>考试名称：2021年下半年事业单位考试</span>
-            <span>报考岗位：会计管理</span>
-            <span>报考科目：基础知识、应用技术</span>
+            <span>支付订单：454577473009825</span>
+            <span>支付网关：支付宝</span>
+            <span>支付时间：2021-3-18 08:00</span>
+            <span>支付金额：136.00元</span>
             <div class="pay">
-              缴费时间：2021年3月18日08:00至2021年3月28日08:00
               <div>
-                考试费用：
+                支付结果：
                 <span class="triangle"></span>
-                <span class="num">136.00元</span>
-              </div>
-            </div>
-          </div>
-          <div class="payStatus">
-            <div class="title" style="margin:40px 0 10px 0;">
-              <h3>缴费状态</h3>
-            </div>
-            <div class="content">
-              <span>支付订单：454577473009825</span>
-              <span>支付网关：支付宝</span>
-              <span>支付时间：2021-3-18 08:00</span>
-              <span>支付金额：136.00元</span>
-              <div class="pay">
-                <div>
-                  支付结果：
-                  <span class="triangle"></span>
-                  <span class="num">缴费成功</span>
-                </div>
+                <span class="num">缴费成功</span>
               </div>
             </div>
           </div>
         </div>
-      </el-tab-pane>
-    </el-tabs>
+      </div>
+    </di>
   </div>
 </template>
 <script>
 export default {
   data() {
     return {
-      activeName: "first"
+      status: 1
     };
   },
-  methods: {}
+  methods: {
+    payment() {
+      this.status = 2;
+    }
+  }
 };
 </script>
 <style lang="scss" scoped>

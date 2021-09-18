@@ -1,6 +1,7 @@
 <template>
   <div class="apply">
-    <div v-if="status==0||status==1" class="apply-content">
+    <div v-if="status==3" class="nopass-tip">审核意见：资料不全（在报名未截止请，可修改再次报名）</div>
+    <div v-if="status==0||status==1||status==3" class="apply-content">
       <div class="title">
         <h1>2021年下半年全国事业单位考试报名表</h1>
       </div>
@@ -9,7 +10,7 @@
           label-width="125px"
           :rules="rules"
           :model="form"
-          :disabled="status!=0?true:false"
+          :disabled="(status==0||status==3)?false:true"
           ref="form"
         >
           <el-row>
@@ -189,46 +190,25 @@
               <span>本人对以上内容的真实性、准确性和合法性负责，如有虚假，愿意承担责任。</span>
             </el-radio>
           </el-form-item>
-
-          <!-- <div class="sign">
-          <div class="left">
-            <span style="margin-left:2%;">本人对以上内容的真实性、准确性和合法性负责，如有虚假，愿意承担责任。</span>
-            <div style="text-align:right;padding-top:20px;">
-              <el-button type="mini" @click="()=>this.$refs.esign.reset()">重新签名</el-button>考生签名：
-            </div>
-          </div>
-          <div class="right">
-            <vue-esign
-              ref="esign"
-              :width="800"
-              :height="300"
-              :isCrop="isCrop"
-              :lineWidth="lineWidth"
-              :lineColor="lineColor"
-              :bgColor.sync="bgColor"
-            />
-          </div>
-          </div>-->
         </el-form>
-        <div class="btn" v-if="status==0">
+        <div class="btn" v-if="status==0||status==3">
           <el-button type="primary" @click="submitForm">提交</el-button>
         </div>
       </div>
     </div>
-    <div v-if="status==1" class="status">
-      <span style="color:#2bd6a9;font-size:60px;" class="el-icon-time"></span>
-      <span>资料审核中</span>
+    <div v-if="status==1" class="shz">
+      <img src="@/assets/img/shz.png" alt />
     </div>
 
     <div v-else-if="status==2" class="pass">
-      <div class="pass-tip">
+      <div class="pass-img">
         <img src="@/assets/img/pass.png" alt />
       </div>
+      <div class="pass-tip">tip：请尽快缴费哦！</div>
       <application-form />
     </div>
     <div v-else-if="status==3" class="noPass">
       <img src="@/assets/img/nopass.png" alt />
-      <div class="nopass-tip">审核意见：资料不全</div>
     </div>
   </div>
 </template>
@@ -241,15 +221,8 @@ export default {
   },
   data() {
     return {
-      status: 3, //0报名、1审核、2报名成功、3审核不通过
-      // 电子签名
-      // sign: {
-      //   lineWidth: 6,
-      //   lineColor: "#000000",
-      //   bgColor: "",
-      //   resultImg: "",
-      //   isCrop: false
-      // },
+      status: 0, //0报名、1审核中、2报名成功、3审核不通过
+
       imageUrl: false,
       form: {
         // signImg: "",
@@ -330,22 +303,17 @@ export default {
     };
   },
   methods: {
-    // 保存电子签名图片
-    // saveSignImg() {
-    //   this.$refs.esign
-    //     .generate()
-    //     .then(res => {
-    //       this.form.signImg = res;
-    //     })
-    //     .catch(err => {
-    //       this.$message.warning("请完成签名！");
-    //     });
-    // },
     submitForm() {
       this.verify();
     },
     verify() {
       this.status = 1;
+      setTimeout(() => {
+        this.status = 2;
+        setTimeout(() => {
+          this.status = 3;
+        }, 3000);
+      }, 3000);
       // this.$refs.form.
       // let obj = this.form.dataList[0];
       // let n = 0;
@@ -388,28 +356,45 @@ export default {
   padding: 20px 30px;
   margin: auto;
   position: relative;
-
-  .pass {
-    .pass-tip {
-      width: 200px;
-      position: absolute;
-      top: 22px;
-      left: 100px;
-      img {
-        width: 100%;
-      }
-    }
+  .nopass-tip {
+    font-size: 20px;
+    font-weight: 700;
+    color: red;
+    margin-bottom: 15px;
+    text-align: center;
   }
-  .noPass {
+  .shz {
+    width: 200px;
     position: absolute;
     top: 22px;
     left: 100px;
     img {
-      width: 200px;
+      width: 100%;
     }
-    .nopass-tip {
-      font-size: 30px;
+  }
+  .pass {
+    .pass-img {
+      width: 200px;
+      position: absolute;
+      top: 65px;
+      left: 140px;
+      img {
+        width: 100%;
+      }
+    }
+    .pass-tip {
+      color: red;
+      text-align: center;
+      font-size: 20px;
       font-weight: 700;
+    }
+  }
+  .noPass {
+    position: absolute;
+    top: 9px;
+    left: 28px;
+    img {
+      width: 200px;
     }
   }
   .title {
