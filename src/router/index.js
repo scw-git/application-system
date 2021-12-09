@@ -17,75 +17,95 @@ const routes = [
   {
     path: '/index',
     name: 'index',
-    redirect: '/notice',
+    redirect: '/student_notice',
     component: () => import('../views/index.vue'),
     children: [
       // 考生路由
       {
-        path: '/student-notice',
-        name: 'student-notice',
+        path: '/student_notice',
+        name: 'student_notice',
         component: () => import('../views/page/student/notice.vue')
       },
       {
-        path: '/student-testRegistration',
-        name: 'student-testRegistration',
+        path: '/student_info_image',
+        name: 'student_info_image',
+        component: () => import('../views/page/student/info/image.vue')
+      },
+      {
+        path: '/student_info_basic',
+        name: 'student_info_basic',
+        component: () => import('../views/page/student/info/basic.vue')
+      },
+      {
+        path: '/student_info_work',
+        name: 'student_info_work',
+        component: () => import('../views/page/student/info/work.vue')
+      },
+      {
+        path: '/student_info_home',
+        name: 'student_info_home',
+        component: () => import('../views/page/student/info/home.vue')
+      },
+      {
+        path: '/student_testRegistration',
+        name: 'student_testRegistration',
         component: () => import('../views/page/student/testRegistration.vue')
       },
       {
-        path: '/student-payment',
-        name: 'student-payment',
+        path: '/student_payment',
+        name: 'student_payment',
         component: () => import('../views/page/student/payment.vue')
       }, {
-        path: '/student-writeTicket',
-        name: 'student-writeTicket',
+        path: '/student_writeTicket',
+        name: 'student_writeTicket',
         component: () => import('../views/page/student/writeTicket.vue')
       }, {
-        path: '/student-arrange',
-        name: 'student-arrange',
+        path: '/student_arrange',
+        name: 'student_arrange',
         component: () => import('../views/page/student/arrange.vue')
       },
       {
-        path: '/student-scoreQuery',
-        name: 'student-scoreQuery',
+        path: '/student_scoreQuery',
+        name: 'student_scoreQuery',
         component: () => import('../views/page/student/scoreQuery.vue')
       },
       {
-        path: '/student-interviewTicket',
-        name: 'student-interviewTicket',
+        path: '/student_interviewTicket',
+        name: 'student_interviewTicket',
         component: () => import('../views/page/student/interviewTicket.vue')
       },
       // 管理员路由 
       {
-        path: '/admin-noticeManagement',
-        name: 'admin-noticeManagement',
+        path: '/admin_noticeManagement',
+        name: 'admin_noticeManagement',
         component: () => import('../views/page/admin/noticeManagement.vue')
       },
       {
-        path: '/admin-examPlan',
-        name: 'admin-examPlan',
+        path: '/admin_examPlan',
+        name: 'admin_examPlan',
         component: () => import('../views/page/admin/examPlan.vue')
       },
       {
-        path: '/admin-examineeManagement',
-        name: 'admin-examineeManagement',
+        path: '/admin_examineeManagement',
+        name: 'admin_examineeManagement',
         component: () => import('../views/page/admin/examineeManagement.vue'),
 
       }, {
-        path: '/admin-payManagement',
-        name: 'admin-payManagement',
+        path: '/admin_payManagement',
+        name: 'admin_payManagement',
         component: () => import('../views/page/admin/payManagement.vue')
       },
       {
-        path: '/admin-roomManagement',
-        name: 'admin-roomManagement',
+        path: '/admin_roomManagement',
+        name: 'admin_roomManagement',
         component: () => import('../views/page/admin/roomManagement.vue')
       }, {
-        path: '/admin-scoreManagement',
-        name: 'admin-scoreManagement',
+        path: '/admin_scoreManagement',
+        name: 'admin_scoreManagement',
         component: () => import('../views/page/admin/scoreManagement.vue')
       }, {
-        path: '/admin-noteManagement',
-        name: 'admin-noteManagement',
+        path: '/admin_noteManagement',
+        name: 'admin_noteManagement',
         component: () => import('../views/page/admin/noteManagement.vue')
       },
       // 报名表

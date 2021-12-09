@@ -7,8 +7,12 @@
           <div class="notice">
             <span>通知：</span>
             <br />
-            <a href="#">[8月1日起广西再次提高部分优抚对象等人员抚恤和生活补助标准]</a>
-            <a href="#">广西考生请注意：2021年度全国会计专业技术中级资格考试打印准考证时间sedrhrh</a>
+            <a href="#"
+              >[8月1日起广西再次提高部分优抚对象等人员抚恤和生活补助标准]</a
+            >
+            <a href="#"
+              >广西考生请注意：2021年度全国会计专业技术中级资格考试打印准考证时间sedrhrh</a
+            >
           </div>
           <el-form-item prop="username">
             <el-input
@@ -18,11 +22,15 @@
             ></el-input>
           </el-form-item>
           <el-form-item prop="password">
-            <el-input v-model="form.password" prefix-icon="el-icon-lock" placeholder="请输入密码"></el-input>
+            <el-input
+              v-model="form.password"
+              prefix-icon="el-icon-lock"
+              placeholder="请输入密码"
+            ></el-input>
           </el-form-item>
           <el-form-item prop="code">
             <el-input
-              style="width:63%"
+              style="width: 63%"
               prefix-icon="el-icon-circle-check"
               v-model="form.code"
               placeholder="验证码"
@@ -31,12 +39,12 @@
               <img src="@/assets/img/code.gif" alt />
             </div>
           </el-form-item>
-          <el-form-item style="width:100%;">
+          <el-form-item style="width: 100%">
             <el-button
               :loading="loading"
               size="medium"
               type="primary"
-              style="width:100%;"
+              style="width: 100%"
               @click.native.prevent="login('student')"
             >
               <span v-if="!loading">登 录</span>
@@ -45,13 +53,15 @@
           </el-form-item>
           <el-form-item>
             <div class="other">
-              <router-link to="register" class="noCount">没有账号？去注册</router-link>
+              <router-link to="register" class="noCount"
+                >没有账号？去注册</router-link
+              >
               <a class="noCount">忘记密码</a>
             </div>
           </el-form-item>
         </el-tab-pane>
         <el-tab-pane label="管理员登录" name="admin">
-          <el-form-item style="margin:20px 0;">
+          <el-form-item style="margin: 20px 0">
             <el-input
               v-model="form.username"
               prefix-icon="el-icon-user-solid"
@@ -59,14 +69,18 @@
             ></el-input>
           </el-form-item>
           <el-form-item>
-            <el-input v-model="form.password" prefix-icon="el-icon-lock" placeholder="请输入密码"></el-input>
+            <el-input
+              v-model="form.password"
+              prefix-icon="el-icon-lock"
+              placeholder="请输入密码"
+            ></el-input>
           </el-form-item>
-          <el-form-item style="width:100%;margin-top:30px;">
+          <el-form-item style="width: 100%; margin-top: 30px">
             <el-button
               :loading="loading"
               size="medium"
               type="primary"
-              style="width:100%;"
+              style="width: 100%"
               @click.native.prevent="login('admin')"
             >
               <span v-if="!loading">登 录</span>
@@ -91,18 +105,20 @@ export default {
         password: "",
 
         code: "",
-        codeUrl: ""
+        codeUrl: "",
       },
       rules: {
         username: [
-          { required: true, message: "用户名不能为空！", trigger: "blur" }
+          { required: true, message: "用户名不能为空！", trigger: "blur" },
         ],
         password: [
-          { required: true, message: "密码不能为空！", trigger: "blur" }
+          { required: true, message: "密码不能为空！", trigger: "blur" },
         ],
 
-        code: [{ required: true, trigger: "change", message: "验证码不能为空" }]
-      }
+        code: [
+          { required: true, trigger: "change", message: "验证码不能为空" },
+        ],
+      },
     };
   },
   cremoated() {},
@@ -113,7 +129,7 @@ export default {
         username: "",
         password: "",
         code: "",
-        codeUrl: ""
+        codeUrl: "",
       };
       this.$refs.login.resetFields();
     },
@@ -122,20 +138,20 @@ export default {
         "loginInfo",
         JSON.stringify({
           login: true,
-          type
+          type,
         })
       );
     },
     login(type) {
       if (type == "student") {
-        this.$refs.login.validate(valid => {
+        this.$refs.login.validate((valid) => {
           if (valid) {
             this.loading = true;
             setTimeout(() => {
               this.loading = false;
               this.setStorage(type); //存储登录信息
               this.$router.push({
-                path: "/list"
+                path: "/student_notice",
               });
             }, 1000);
           }
@@ -150,13 +166,13 @@ export default {
             this.loading = false;
             this.setStorage(type); //存储登录信息
             this.$router.push({
-              path: "/admin-noticeManagement"
+              path: "/admin-noticeManagement",
             });
           }, 1000);
         }
       }
-    }
-  }
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>
