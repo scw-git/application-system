@@ -11,6 +11,22 @@
         <i class="icon-notice iconfont"></i>
         <span slot="title">考试须知</span>
       </el-menu-item>
+
+      <el-submenu index="student_operation">
+        <template slot="title">
+          <i class="el-icon-s-order"></i>
+          <span>业务办理</span>
+        </template>
+        <el-menu-item-group>
+          <el-menu-item index="student_operation_queryAndApply"
+            >岗位查询与报名</el-menu-item
+          >
+          <el-menu-item index="student_operation_pay">考试缴费</el-menu-item>
+          <el-menu-item index="student_operation_print"
+            >打印准考证</el-menu-item
+          >
+        </el-menu-item-group>
+      </el-submenu>
       <el-submenu index="student_info">
         <template slot="title">
           <i class="el-icon-s-custom"></i>

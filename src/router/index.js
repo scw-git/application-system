@@ -26,6 +26,7 @@ const routes = [
         name: 'student_notice',
         component: () => import('../views/page/student/notice.vue')
       },
+      // 个人资料
       {
         path: '/student_info_image',
         name: 'student_info_image',
@@ -45,6 +46,22 @@ const routes = [
         path: '/student_info_home',
         name: 'student_info_home',
         component: () => import('../views/page/student/info/home.vue')
+      },
+      // 业务办理
+      {
+        path: '/student_operation_queryAndApply',
+        name: 'student_operation_queryAndApply',
+        component: () => import('../views/page/student/operation/queryAndApply.vue')
+      },
+      {
+        path: '/student_operation_pay',
+        name: 'student_operation_pay',
+        component: () => import('../views/page/student/operation/pay.vue')
+      },
+      {
+        path: '/student_operation_print',
+        name: 'student_operation_print',
+        component: () => import('../views/page/student/operation/print.vue')
       },
       {
         path: '/student_testRegistration',
