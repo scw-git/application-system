@@ -1,6 +1,7 @@
 <template>
   <div class="menu">
     <el-menu
+      v-if="type == 'student'"
       style="height: calc(100vh - 80px)"
       :default-active="activeIndex"
       @open="handleOpen"
@@ -23,14 +24,18 @@
           >
           <el-menu-item index="student_operation_pay">考试缴费</el-menu-item>
           <el-menu-item index="student_operation_print"
-            >打印准考证</el-menu-item
+            >打印笔试准考证</el-menu-item
+          >
+          <el-menu-item index="student_operation_score">成绩查询</el-menu-item>
+          <el-menu-item index="student_operation_interview"
+            >打印面试准考证</el-menu-item
           >
         </el-menu-item-group>
       </el-submenu>
       <el-submenu index="student_info">
         <template slot="title">
           <i class="el-icon-s-custom"></i>
-          <span>个人资料</span>
+          <span>资料填写</span>
         </template>
         <el-menu-item-group>
           <el-menu-item index="student_info_image">上传照片</el-menu-item>
@@ -39,15 +44,34 @@
           <el-menu-item index="student_info_home">家庭情况</el-menu-item>
         </el-menu-item-group>
       </el-submenu>
-      <!-- <el-menu-item
-        style="padding-left: 40px"
-        :index="item.index"
-        v-for="item in list"
-        :key="item.title"
-      >
-        <i :class="`${item.icon} iconfont`"></i>
-        <span slot="title">{{ item.title }}</span>
-      </el-menu-item> -->
+    </el-menu>
+    <el-menu
+      router
+      v-if="type == 'admin'"
+      style="height: calc(100vh - 80px)"
+      :default-active="adminActiveIndex"
+    >
+      <el-submenu index="examinee">
+        <template slot="title">
+          <i class="el-icon-s-custom"></i>
+          <span>考生管理</span>
+        </template>
+        <el-menu-item-group>
+          <el-menu-item index="admin_examinee_check">报名审核</el-menu-item>
+          <el-menu-item index="admin_examinee_written">笔试统计</el-menu-item>
+          <el-menu-item index="admin_examinee_interview">面试统计</el-menu-item>
+        </el-menu-item-group>
+      </el-submenu>
+      <el-submenu index="examinee">
+        <template slot="title">
+          <i class="el-icon-s-custom"></i>
+          <span>考试管理</span>
+        </template>
+        <el-menu-item-group>
+          <el-menu-item index="admin_exam_testPaper">考卷设置</el-menu-item>
+          <el-menu-item index="admin_exam_test">考试设置</el-menu-item>
+        </el-menu-item-group>
+      </el-submenu>
     </el-menu>
   </div>
 </template>
@@ -55,90 +79,28 @@
 export default {
   data() {
     return {
+      type: "",
       list: [],
-      student: [
-        { icon: "icon-notice", title: "考试须知", index: "student-notice" },
-        {
-          icon: "icon-kaoshianpai1",
-          title: "考试报名",
-          index: "student-testRegistration",
-        },
-        { icon: "icon-pay1", title: "网上缴费", index: "student-payment" },
-        {
-          icon: "icon-dayin1",
-          title: "打印笔试准考证",
-          index: "student-writeTicket",
-        },
-        // {
-        //   icon: "icon-kaoshianpai",
-        //   title: "考试安排",
-        //   index: "student-arrange"
-        // },
-        {
-          icon: "icon-chengjichaxun-",
-          title: "成绩查询",
-          index: "student-scoreQuery",
-        },
-        {
-          icon: "icon-print",
-          title: "打印面试准考证",
-          index: "student-interviewTicket",
-        },
-      ],
-      admin: [
-        {
-          icon: "icon-notice",
-          title: "通知管理",
-          index: "admin-noticeManagement",
-        },
-        {
-          icon: "icon-notice",
-          title: "考试计划",
-          index: "admin-examPlan",
-        },
-        {
-          icon: "icon-kaoshianpai1",
-          title: "考生管理",
-          index: "admin-examineeManagement",
-        },
-        {
-          icon: "icon-dayin1",
-          title: "缴费管理",
-          index: "admin-payManagement",
-        },
-        {
-          icon: "icon-chengjichaxun-",
-          title: "考场管理",
-          index: "admin-roomManagement",
-        },
-        {
-          icon: "icon-pay1",
-          title: "成绩管理",
-          index: "admin-scoreManagement",
-        },
-        {
-          icon: "icon-dayin1",
-          title: "短信管理",
-          index: "admin-noteManagement",
-        },
-      ],
       activeIndex: "student-notice",
+      adminActiveIndex: "admin_examinee_check",
     };
   },
   watch: {
     $route(to, from) {
       this.activeIndex = this.$router.currentRoute.name;
+      this.adminActiveIndex = this.$router.currentRoute.name;
     },
   },
 
   created() {
     let loginInfo = JSON.parse(sessionStorage.getItem("loginInfo"));
     if (loginInfo.type === "student") {
-      this.list = this.student;
+      this.type = "student";
     } else if (loginInfo.type === "admin") {
-      this.list = this.admin;
+      this.type = "admin";
     }
     this.activeIndex = this.$router.currentRoute.name;
+    this.adminActiveIndex = this.$router.currentRoute.name;
   },
   methods: {
     handleOpen(key, keyPath) {

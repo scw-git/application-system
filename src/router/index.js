@@ -64,66 +64,45 @@ const routes = [
         component: () => import('../views/page/student/operation/print.vue')
       },
       {
+        path: '/student_operation_score',
+        name: 'student_operation_score',
+        component: () => import('../views/page/student/operation/score.vue')
+      },
+      {
+        path: '/student_operation_interview',
+        name: 'student_operation_interview',
+        component: () => import('../views/page/student/operation/interview.vue')
+      },
+      {
         path: '/student_testRegistration',
         name: 'student_testRegistration',
         component: () => import('../views/page/student/testRegistration.vue')
       },
-      {
-        path: '/student_payment',
-        name: 'student_payment',
-        component: () => import('../views/page/student/payment.vue')
-      }, {
-        path: '/student_writeTicket',
-        name: 'student_writeTicket',
-        component: () => import('../views/page/student/writeTicket.vue')
-      }, {
-        path: '/student_arrange',
-        name: 'student_arrange',
-        component: () => import('../views/page/student/arrange.vue')
-      },
-      {
-        path: '/student_scoreQuery',
-        name: 'student_scoreQuery',
-        component: () => import('../views/page/student/scoreQuery.vue')
-      },
-      {
-        path: '/student_interviewTicket',
-        name: 'student_interviewTicket',
-        component: () => import('../views/page/student/interviewTicket.vue')
-      },
+
       // 管理员路由 
       {
-        path: '/admin_noticeManagement',
-        name: 'admin_noticeManagement',
-        component: () => import('../views/page/admin/noticeManagement.vue')
+        path: '/admin_examinee_check',
+        name: 'admin_examinee_check',
+        component: () => import('../views/page/admin/examinee/check.vue')
       },
       {
-        path: '/admin_examPlan',
-        name: 'admin_examPlan',
-        component: () => import('../views/page/admin/examPlan.vue')
+        path: '/admin_examinee_written',
+        name: 'admin_examinee_written',
+        component: () => import('../views/page/admin/examinee/written.vue')
       },
       {
-        path: '/admin_examineeManagement',
-        name: 'admin_examineeManagement',
-        component: () => import('../views/page/admin/examineeManagement.vue'),
-
-      }, {
-        path: '/admin_payManagement',
-        name: 'admin_payManagement',
-        component: () => import('../views/page/admin/payManagement.vue')
+        path: '/admin_examinee_interview',
+        name: 'admin_examinee_interview',
+        component: () => import('../views/page/admin/examinee/interview.vue')
       },
       {
-        path: '/admin_roomManagement',
-        name: 'admin_roomManagement',
-        component: () => import('../views/page/admin/roomManagement.vue')
+        path: '/admin_exam_test',
+        name: 'admin_exam_test',
+        component: () => import('../views/page/admin/exam/test.vue')
       }, {
-        path: '/admin_scoreManagement',
-        name: 'admin_scoreManagement',
-        component: () => import('../views/page/admin/scoreManagement.vue')
-      }, {
-        path: '/admin_noteManagement',
-        name: 'admin_noteManagement',
-        component: () => import('../views/page/admin/noteManagement.vue')
+        path: '/admin_exam_testPaper',
+        name: 'admin_exam_testPaper',
+        component: () => import('../views/page/admin/exam/testPaper.vue')
       },
       // 报名表
       {

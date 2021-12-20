@@ -51,6 +51,7 @@
           </el-form-item>
           <el-form-item label="毕业时间:" prop="graduationTime">
             <el-date-picker
+              value-format="yyyy-MM-dd"
               v-model="form.studyAndWork.graduationTime"
               type="date"
               placeholder="选择日期"

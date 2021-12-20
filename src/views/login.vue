@@ -93,6 +93,7 @@
   </div>
 </template>
 <script>
+import { login } from "@/api/login";
 import { encrypt, decrypt } from "@/utils/encrypt";
 import { validatePhone } from "@/utils/validator";
 export default {
@@ -101,10 +102,10 @@ export default {
       activeName: "student",
       loading: false,
       form: {
-        username: "",
-        password: "",
+        username: "19911292544",
+        password: "123456",
 
-        code: "",
+        code: "11",
         codeUrl: "",
       },
       rules: {
@@ -133,12 +134,13 @@ export default {
       };
       this.$refs.login.resetFields();
     },
-    setStorage(type) {
+    setStorage(type, token) {
       sessionStorage.setItem(
         "loginInfo",
         JSON.stringify({
           login: true,
           type,
+          token,
         })
       );
     },
@@ -146,14 +148,22 @@ export default {
       if (type == "student") {
         this.$refs.login.validate((valid) => {
           if (valid) {
+            let params = {
+              username: this.form.username,
+              password: this.form.password,
+            };
             this.loading = true;
-            setTimeout(() => {
-              this.loading = false;
-              this.setStorage(type); //存储登录信息
-              this.$router.push({
-                path: "/student_notice",
-              });
-            }, 1000);
+            this.setStorage(type); //存储登录信息
+            this.$router.push({
+              path: "/student_notice",
+            });
+            // login(params).then((res) => {
+            //   this.loading = false;
+            //   this.setStorage(type, res.token); //存储登录信息
+            //   this.$router.push({
+            //     path: "/student_notice",
+            //   });
+            // });
           }
         });
       } else if (type == "admin") {
@@ -166,7 +176,7 @@ export default {
             this.loading = false;
             this.setStorage(type); //存储登录信息
             this.$router.push({
-              path: "/admin-noticeManagement",
+              path: "/admin_examinee_check",
             });
           }, 1000);
         }

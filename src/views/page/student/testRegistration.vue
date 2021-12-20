@@ -1,7 +1,9 @@
 <template>
   <div class="apply">
-    <div v-if="status==3" class="nopass-tip">审核意见：资料不全（在报名未截止请，可修改再次报名）</div>
-    <div v-if="status==0||status==1||status==3" class="apply-content">
+    <div v-if="status == 3" class="nopass-tip">
+      审核意见：资料不全（在报名未截止请，可修改再次报名）
+    </div>
+    <div v-if="status == 0 || status == 1 || status == 3" class="apply-content">
       <div class="title">
         <h1>2021年下半年全国事业单位考试报名表</h1>
       </div>
@@ -10,7 +12,7 @@
           label-width="125px"
           :rules="rules"
           :model="form"
-          :disabled="(status==0||status==3)?false:true"
+          :disabled="status == 0 || status == 3 ? false : true"
           ref="form"
         >
           <el-row>
@@ -37,7 +39,12 @@
                 <el-input v-model="form.id"></el-input>
               </el-form-item>
               <el-form-item label="出生年月:" prop="birthYear">
-                <el-date-picker v-model="form.birthYear" type="date" placeholder="选择日期"></el-date-picker>
+                <el-date-picker
+                  value-format="yyyy-MM-dd"
+                  v-model="form.birthYear"
+                  type="date"
+                  placeholder="选择日期"
+                ></el-date-picker>
               </el-form-item>
 
               <el-form-item label="教育程度:" prop="educationLevel">
@@ -82,17 +89,23 @@
                   <!-- accept属性，当你点击上传时，他会筛选更实用 -->
                   <el-upload
                     accept=".jpg, .png"
-                    style="float:right;"
+                    style="float: right"
                     class="avatar-uploader"
                     action="#"
                     :show-file-list="false"
                     :on-success="handleAvatarSuccess"
                     :before-upload="beforeAvatarUpload"
                   >
-                    <img v-if="form.imageUrl" :src="form.imageUrl" class="avatar" />
+                    <img
+                      v-if="form.imageUrl"
+                      :src="form.imageUrl"
+                      class="avatar"
+                    />
                     <div v-else>
                       <i class="el-icon-plus avatar-uploader-icon"></i>
-                      <div style="padding-bottom:15px;" class="el-upload__text">上传头像</div>
+                      <div style="padding-bottom: 15px" class="el-upload__text">
+                        上传头像
+                      </div>
                     </div>
                   </el-upload>
                 </el-col>
@@ -119,21 +132,37 @@
           </el-row>
 
           <el-form-item class="lh25" label="现工作单位及(在职人员填写):">
-            <el-input type="textarea" placeholder="请输入内容" :autosize="{ minRows: 3, maxRows: 5}"></el-input>
+            <el-input
+              type="textarea"
+              placeholder="请输入内容"
+              :autosize="{ minRows: 3, maxRows: 5 }"
+            ></el-input>
           </el-form-item>
-          <el-form-item class="lh25" prop="wordExperience" label="学习及工作简历(从大学开始填写):">
+          <el-form-item
+            class="lh25"
+            prop="wordExperience"
+            label="学习及工作简历(从大学开始填写):"
+          >
             <el-input
               type="textarea"
               v-model="form.wordExperience"
               placeholder="请输入内容"
-              :autosize="{ minRows: 3, maxRows: 5}"
+              :autosize="{ minRows: 3, maxRows: 5 }"
             ></el-input>
           </el-form-item>
           <el-form-item label="奖惩情况:">
-            <el-input type="textarea" placeholder="请输入内容" :autosize="{ minRows: 3, maxRows: 5}"></el-input>
+            <el-input
+              type="textarea"
+              placeholder="请输入内容"
+              :autosize="{ minRows: 3, maxRows: 5 }"
+            ></el-input>
           </el-form-item>
           <el-form-item label="个人特长:">
-            <el-input type="textarea" placeholder="请输入内容" :autosize="{ minRows: 3, maxRows: 5}"></el-input>
+            <el-input
+              type="textarea"
+              placeholder="请输入内容"
+              :autosize="{ minRows: 3, maxRows: 5 }"
+            ></el-input>
           </el-form-item>
           <el-form-item label="附件:">
             <el-upload
@@ -148,20 +177,24 @@
               :file-list="form.fileList"
             >
               <el-button size="small" type="primary">点击上传</el-button>
-              <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+              <div slot="tip" class="el-upload__tip">
+                只能上传jpg/png文件，且不超过500kb
+              </div>
             </el-upload>
           </el-form-item>
           <!-- 表格 -->
           <el-table :data="form.dataList" border style="width: 100%">
             <el-table-column align="center" width="200" type="index">
               <template slot="header">
-                <span style="color:red;">* &nbsp;</span>
+                <span style="color: red">* &nbsp;</span>
                 <span>家庭主要成员及社会关系（至少填一个）</span>
               </template>
             </el-table-column>
             <el-table-column align="center" prop="relation" label="关系">
               <template slot-scope="scope">
-                <el-input v-model="form.dataList[scope.$index].relation"></el-input>
+                <el-input
+                  v-model="form.dataList[scope.$index].relation"
+                ></el-input>
               </template>
             </el-table-column>
             <el-table-column align="center" label="姓名" prop="name">
@@ -171,12 +204,16 @@
             </el-table-column>
             <el-table-column align="center" label="政治面貌" prop="politics">
               <template slot-scope="scope">
-                <el-input v-model="form.dataList[scope.$index].politics"></el-input>
+                <el-input
+                  v-model="form.dataList[scope.$index].politics"
+                ></el-input>
               </template>
             </el-table-column>
             <el-table-column align="center" label="出生年月" prop="birth">
               <template slot-scope="scope">
-                <el-input v-model="form.dataList[scope.$index].birth"></el-input>
+                <el-input
+                  v-model="form.dataList[scope.$index].birth"
+                ></el-input>
               </template>
             </el-table-column>
             <el-table-column align="center" label="工作单位和职位" prop="job">
@@ -186,28 +223,34 @@
             </el-table-column>
           </el-table>
           <el-form-item label-width="0" prop="confirReal">
-            <el-radio style="margin-top:20px;font-weight:700" v-model="form.confirReal" label="1">
-              <span>本人对以上内容的真实性、准确性和合法性负责，如有虚假，愿意承担责任。</span>
+            <el-radio
+              style="margin-top: 20px; font-weight: 700"
+              v-model="form.confirReal"
+              label="1"
+            >
+              <span
+                >本人对以上内容的真实性、准确性和合法性负责，如有虚假，愿意承担责任。</span
+              >
             </el-radio>
           </el-form-item>
         </el-form>
-        <div class="btn" v-if="status==0||status==3">
+        <div class="btn" v-if="status == 0 || status == 3">
           <el-button type="primary" @click="submitForm">提交</el-button>
         </div>
       </div>
     </div>
-    <div v-if="status==1" class="shz">
+    <div v-if="status == 1" class="shz">
       <img src="@/assets/img/shz.png" alt />
     </div>
 
-    <div v-else-if="status==2" class="pass">
+    <div v-else-if="status == 2" class="pass">
       <div class="pass-img">
         <img src="@/assets/img/pass.png" alt />
       </div>
       <div class="pass-tip">tip：请尽快缴费哦！</div>
       <application-form />
     </div>
-    <div v-else-if="status==3" class="noPass">
+    <div v-else-if="status == 3" class="noPass">
       <img src="@/assets/img/nopass.png" alt />
     </div>
   </div>
@@ -217,7 +260,7 @@ import applicationForm from "@/views/page/components/applicationForm";
 import { validatePhone } from "@/utils/validator.js";
 export default {
   components: {
-    applicationForm
+    applicationForm,
   },
   data() {
     return {
@@ -232,54 +275,54 @@ export default {
             name: "",
             politics: "",
             birth: "",
-            job: ""
+            job: "",
           },
           {
             relation: "",
             name: "",
             politics: "",
             birth: "",
-            job: ""
+            job: "",
           },
           {
             relation: "",
             name: "",
             politics: "",
             birth: "",
-            job: ""
-          }
-        ]
+            job: "",
+          },
+        ],
       },
       rules: {
         confirReal: [
           {
             required: true,
             message: "请先勾选确认信息真实性",
-            trigger: "change"
-          }
+            trigger: "change",
+          },
         ],
         unit: [
-          { required: true, message: "请选择报考单位", trigger: "change" }
+          { required: true, message: "请选择报考单位", trigger: "change" },
         ],
         job: [{ required: true, message: "请选择报考岗位", trigger: "change" }],
         id: [
-          { required: true, message: "请输入身份证号码", trigger: "change" }
+          { required: true, message: "请输入身份证号码", trigger: "change" },
         ],
         birthYear: [
-          { required: true, message: "请选择出生年月", trigger: "change" }
+          { required: true, message: "请选择出生年月", trigger: "change" },
         ],
         healthStatus: [
-          { required: true, message: "请输入健康状态", trigger: "change" }
+          { required: true, message: "请输入健康状态", trigger: "change" },
         ],
         educationLevel: [
-          { required: true, message: "请选择教育程度", trigger: "change" }
+          { required: true, message: "请选择教育程度", trigger: "change" },
         ],
         name: [{ required: true, message: "请输入姓名", trigger: "change" }],
         nation: [{ required: true, message: "请输入民族", trigger: "change" }],
         sex: [{ required: true, message: "请选择性别", trigger: "change" }],
         native: [{ required: true, message: "请输入籍贯", trigger: "change" }],
         politics: [
-          { required: true, message: "请输入政治面貌", trigger: "change" }
+          { required: true, message: "请输入政治面貌", trigger: "change" },
         ],
         phone: [{ required: true, validator: validatePhone, trigger: "blur" }],
         email: [
@@ -287,19 +330,27 @@ export default {
             type: "email",
             required: true,
             message: "请输入正确的邮箱格式",
-            trigger: "blur"
-          }
+            trigger: "blur",
+          },
         ],
         graduateSchool: [
-          { required: true, message: "请输入毕业学校及专业", trigger: "change" }
+          {
+            required: true,
+            message: "请输入毕业学校及专业",
+            trigger: "change",
+          },
         ],
         address: [
-          { required: true, message: "请输入家庭住址", trigger: "change" }
+          { required: true, message: "请输入家庭住址", trigger: "change" },
         ],
         wordExperience: [
-          { required: true, message: "请输入学习及工作简历", trigger: "change" }
-        ]
-      }
+          {
+            required: true,
+            message: "请输入学习及工作简历",
+            trigger: "change",
+          },
+        ],
+      },
     };
   },
   methods: {
@@ -347,8 +398,8 @@ export default {
     handleExceed() {},
     handleRemove() {},
     handleAvatarSuccess() {},
-    beforeAvatarUpload() {}
-  }
+    beforeAvatarUpload() {},
+  },
 };
 </script>
 <style lang="scss" scoped>

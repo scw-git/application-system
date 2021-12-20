@@ -3,10 +3,11 @@
     <div class="frame_title">个人照片：</div>
     <div class="content">
       <el-upload
-        style="margin: 0.625rem 0 0 0.625rem"
+        style="margin: 10px 0 0 10px"
         accept=".jpg, .png"
         class="avatar-uploader"
-        action="#"
+        action="/examinee/get-personal-picture"
+        :data="{ userId: 100 }"
         :show-file-list="false"
         :on-success="handleAvatarSuccess"
         :before-upload="beforeAvatarUpload"
@@ -14,7 +15,7 @@
         <img v-if="imageUrl" :src="imageUrl" class="avatar" />
         <div v-else>
           <i class="el-icon-plus avatar-uploader-icon"></i>
-          <div style="padding-bottom: 0.9375rem" class="el-upload__text">
+          <div style="padding-bottom: 15px" class="el-upload__text">
             上传头像
           </div>
         </div>
@@ -34,6 +35,8 @@
   </div>
 </template>
 <script>
+import { profile } from "@/api/info";
+
 export default {
   data() {
     return {
@@ -41,8 +44,10 @@ export default {
     };
   },
   methods: {
-    handleAvatarSuccess() {},
-    beforeAvatarUpload() {},
+    handleAvatarSuccess(res) {
+      console.log(55, res);
+    },
+    beforeAvatarUpload(res) {},
   },
 };
 </script>
@@ -52,16 +57,16 @@ export default {
     display: flex;
     align-items: center;
     p {
-      margin-left: 3.125rem;
-      line-height: 1.875rem;
+      margin-left: 50px;
+      line-height: 30px;
     }
   }
 }
 </style>
 <style lang="scss" >
 .avatar-uploader .el-upload {
-  border: 0.0625rem dashed #d9d9d9;
-  border-radius: 0.375rem;
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
   cursor: pointer;
   position: relative;
   overflow: hidden;
@@ -70,16 +75,16 @@ export default {
   border-color: #409eff;
 }
 .avatar-uploader-icon {
-  font-size: 1.75rem;
+  font-size: 28px;
   color: #8c939d;
-  width: 11.125rem;
-  height: 8.625rem;
-  line-height: 11.125rem;
+  width: 178px;
+  height: 138px;
+  line-height: 178px;
   text-align: center;
 }
 .avatar {
-  width: 11.125rem;
-  height: 11.125rem;
+  width: 178px;
+  height: 178px;
   display: block;
 }
 </style>

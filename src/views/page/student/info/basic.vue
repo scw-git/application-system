@@ -40,6 +40,7 @@
           </el-form-item>
           <el-form-item label="出生日期:" prop="birthday">
             <el-date-picker
+              value-format="yyyy-MM-dd"
               v-model="form.birthday"
               type="date"
               placeholder="选择日期"
@@ -248,7 +249,7 @@ export default {
         },
         {
           id: "36",
-          name: "毛难族",
+          name: "毛南族",
         },
         {
           id: "37",
