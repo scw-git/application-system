@@ -8,7 +8,7 @@
       @close="handleClose"
       router
     >
-      <el-menu-item style="padding-left: 40px" index="student_notice">
+      <el-menu-item style="padding-left: 23px" index="student_notice">
         <i class="icon-notice iconfont"></i>
         <span slot="title">考试须知</span>
       </el-menu-item>
@@ -51,7 +51,7 @@
       style="height: calc(100vh - 80px)"
       :default-active="adminActiveIndex"
     >
-      <el-submenu index="examinee">
+      <el-submenu index="admin_examinee_check">
         <template slot="title">
           <i class="el-icon-s-custom"></i>
           <span>考生管理</span>
@@ -62,7 +62,7 @@
           <el-menu-item index="admin_examinee_interview">面试统计</el-menu-item>
         </el-menu-item-group>
       </el-submenu>
-      <el-submenu index="examinee">
+      <el-submenu index="admin_exam_testPaper">
         <template slot="title">
           <i class="el-icon-s-custom"></i>
           <span>考试管理</span>
@@ -70,6 +70,38 @@
         <el-menu-item-group>
           <el-menu-item index="admin_exam_testPaper">考卷设置</el-menu-item>
           <el-menu-item index="admin_exam_test">考试设置</el-menu-item>
+        </el-menu-item-group>
+      </el-submenu>
+      <el-submenu index="admin_site_written">
+        <template slot="title">
+          <i class="el-icon-s-custom"></i>
+          <span>考场管理</span>
+        </template>
+        <el-menu-item-group>
+          <el-menu-item index="admin_site_written">笔试考场设置</el-menu-item>
+          <el-menu-item index="admin_site_interview">面试考场设置</el-menu-item>
+        </el-menu-item-group>
+      </el-submenu>
+      <el-submenu index="admin_user_role">
+        <template slot="title">
+          <i class="el-icon-s-custom"></i>
+          <span>用户管理</span>
+        </template>
+        <el-menu-item-group>
+          <el-menu-item index="admin_user_role">角色管理</el-menu-item>
+          <el-menu-item index="admin_user_user">用户管理</el-menu-item>
+        </el-menu-item-group>
+      </el-submenu>
+      <el-submenu index="admin_system_notice">
+        <template slot="title">
+          <i class="el-icon-s-custom"></i>
+          <span>系统配置</span>
+        </template>
+        <el-menu-item-group>
+          <el-menu-item index="admin_system_notice">通知管理</el-menu-item>
+          <el-menu-item index="admin_system_time">时间设置</el-menu-item>
+          <el-menu-item index="admin_system_log">操作日志</el-menu-item>
+          <el-menu-item index="admin_system_other">其他</el-menu-item>
         </el-menu-item-group>
       </el-submenu>
     </el-menu>

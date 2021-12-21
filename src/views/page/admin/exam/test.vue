@@ -5,9 +5,7 @@
         <el-option label="岗位一" value="1"> </el-option>
         <el-option label="岗位二" value="2"> </el-option>
       </el-select>
-      <el-button type="primary"> 新建</el-button>
-      <el-button type="primary"> 编辑</el-button>
-      <el-button type="primary"> 发布</el-button>
+      <el-button type="primary" @click="add(1)"> 新建</el-button>
     </div>
     <div class="table">
       <el-table :data="dataList" border>
@@ -62,30 +60,63 @@
           prop="status"
           label="发布状态"
         ></el-table-column>
-        <el-table-column align="center" label="操作">
+        <el-table-column width="300px" align="center" label="操作">
           <template slot-scope="scope">
-            <el-button
-              @click="add('edit', scope.row)"
-              type="primary"
-              size="small"
-              >编辑</el-button
+            <el-button size="small" type="primary" @click="add(2)">
+              查看</el-button
             >
-            <el-button type="danger" size="small">删除</el-button>
+            <el-button size="small" type="warning" @click="add(3)">
+              编辑</el-button
+            >
+            <el-button size="small" type="success"> 发布</el-button>
+            <el-button size="small" type="danger">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
     </div>
-    <el-dialog :title="title" :visible.sync="dialogVisible" width="35%">
-      <el-form label-width="80px" :model="form" :rules="rules">
-        <el-form-item label="考卷类型">
+    <el-dialog :title="title" :visible.sync="dialogVisible" width="40%">
+      <el-form inline label-width="90px" :model="form" :rules="rules">
+        <el-form-item label="报考单位">
+          <el-input v-model="form.unit"></el-input>
+        </el-form-item>
+        <el-form-item label="考试名称">
           <el-input v-model="form.name"></el-input>
+        </el-form-item>
+        <el-form-item label="考卷类型">
+          <el-select v-model="form.type" placeholder="选择岗位">
+            <el-option label="岗位一" value="1"> </el-option>
+            <el-option label="岗位二" value="2"> </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="招考岗位">
+          <el-input v-model="form.job"></el-input>
+        </el-form-item>
+        <el-form-item label="招考人数">
+          <el-input v-model="form.total"></el-input>
+        </el-form-item>
+        <el-form-item label="报名时间段">
+          <el-date-picker
+            v-model="form.time"
+            type="datetimerange"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+          >
+          </el-date-picker>
+        </el-form-item>
+        <el-form-item label="是否免费">
+          <el-select v-model="form.free">
+            <el-option label="是" value="1"> </el-option>
+            <el-option label="否" value="2"> </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="考试费用">
+          <el-input v-model="form.monney"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogVisible = false"
-          >确 定</el-button
-        >
+        <el-button @click="submitData" type="primary">提交</el-button>
+        <el-button @click="dialogVisible = false">取消</el-button>
       </span>
     </el-dialog>
   </div>
@@ -96,7 +127,7 @@ export default {
     return {
       value: "",
       title: "新建",
-      dialogVisible: true,
+      dialogVisible: false,
       rules: [],
       form: {},
       dataList: [
@@ -114,7 +145,27 @@ export default {
       ],
     };
   },
-  methods: {},
+  methods: {
+    submitData() {
+      this.dialogVisible = false;
+    },
+    add(type) {
+      this.dialogVisible = true;
+      switch (type) {
+        case 1:
+          this.title = "新建考试";
+          break;
+        case 2:
+          this.title = "查看考试";
+
+          break;
+        case 3:
+          this.title = "编辑考试";
+
+          break;
+      }
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>

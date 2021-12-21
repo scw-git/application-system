@@ -153,17 +153,17 @@ export default {
               password: this.form.password,
             };
             this.loading = true;
-            this.setStorage(type); //存储登录信息
-            this.$router.push({
-              path: "/student_notice",
-            });
-            // login(params).then((res) => {
-            //   this.loading = false;
-            //   this.setStorage(type, res.token); //存储登录信息
-            //   this.$router.push({
-            //     path: "/student_notice",
-            //   });
+            // this.setStorage(type); //存储登录信息
+            // this.$router.push({
+            //   path: "/student_notice",
             // });
+            login(params).then((res) => {
+              this.loading = false;
+              this.setStorage(type, res.token); //存储登录信息
+              this.$router.push({
+                path: "/student_notice",
+              });
+            });
           }
         });
       } else if (type == "admin") {

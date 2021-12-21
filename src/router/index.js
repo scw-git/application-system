@@ -104,6 +104,48 @@ const routes = [
         name: 'admin_exam_testPaper',
         component: () => import('../views/page/admin/exam/testPaper.vue')
       },
+      // 考场管理
+      {
+        path: '/admin_site_written',
+        name: 'admin_exam_written',
+        component: () => import('../views/page/admin/site/written.vue')
+      },
+      {
+        path: '/admin_site_interview',
+        name: 'admin_exam_interview',
+        component: () => import('../views/page/admin/site/interview.vue')
+      },
+      // 用户管理
+      {
+        path: '/admin_user_role',
+        name: 'admin_user_role',
+        component: () => import('../views/page/admin/user/role.vue')
+      },
+      {
+        path: '/admin_user_user',
+        name: 'admin_user_user',
+        component: () => import('../views/page/admin/user/user.vue')
+      },
+      // 系统及配置
+      {
+        path: '/admin_system_notice',
+        name: 'admin_system_notice',
+        component: () => import('../views/page/admin/system/notice.vue')
+      },
+      {
+        path: '/admin_system_log',
+        name: 'admin_system_log',
+        component: () => import('../views/page/admin/system/log.vue')
+      }, {
+        path: '/admin_system_time',
+        name: 'admin_system_time',
+        component: () => import('../views/page/admin/system/time.vue')
+      },
+      {
+        path: '/admin_system_other',
+        name: 'admin_system_other',
+        component: () => import('../views/page/admin/system/other.vue')
+      },
       // 报名表
       {
         path: '/applicationForm',

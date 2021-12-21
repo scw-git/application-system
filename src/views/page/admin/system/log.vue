@@ -1,14 +1,10 @@
 <template>
-  <div class="notice"></div>
+  <div class="log p15"></div>
 </template>
 <script>
-import QRCode from "qrcodejs2";
 export default {
   data() {
     return {};
-  },
-  mounted() {
-    this.createQrCode();
   },
   methods: {},
 };
