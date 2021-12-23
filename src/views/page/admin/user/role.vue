@@ -82,7 +82,7 @@
 export default {
   data() {
     return {
-      dialogVisible: false,
+      dialogVisible: true,
       rules: {},
       form: {
         status: 1,

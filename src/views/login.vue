@@ -102,7 +102,7 @@ export default {
       activeName: "student",
       loading: false,
       form: {
-        username: "19911292544",
+        username: "17677400644",
         password: "123456",
 
         code: "11",
@@ -167,7 +167,6 @@ export default {
           }
         });
       } else if (type == "admin") {
-        console.log(55, this.form);
         if (this.form.username == "" || this.form.password == "") {
           this.$message.warning("账号或密码不能为空！");
         } else {

@@ -2,15 +2,21 @@
   <div class="basic">
     <div class="jbqk frame">
       <div class="frame_title">基本情况：</div>
-      <el-form class="form" label-width="125px" :rules="rules" :model="form">
+      <el-form
+        class="form"
+        label-width="125px"
+        ref="ruleForm"
+        :rules="rules"
+        :model="form"
+      >
         <div class="left">
           <el-form-item label="姓名:" prop="name">
             <el-input placeholder="请输入名字" v-model="form.name"></el-input>
           </el-form-item>
           <el-form-item label="性别:" prop="sex">
             <el-select v-model="form.sex" placeholder="请选择">
-              <el-option label="男" :value="1"></el-option>
-              <el-option label="女" :value="0"></el-option>
+              <el-option label="男" value="1"></el-option>
+              <el-option label="女" value="0"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="民族:" prop="nation">
@@ -35,8 +41,8 @@
           </el-form-item>
         </div>
         <div class="right">
-          <el-form-item label="身份证号:" prop="id">
-            <el-input v-model="form.id"></el-input>
+          <el-form-item label="身份证号:" prop="certificateNumber">
+            <el-input v-model="form.certificateNumber"></el-input>
           </el-form-item>
           <el-form-item label="出生日期:" prop="birthday">
             <el-date-picker
@@ -47,38 +53,50 @@
             >
             </el-date-picker>
           </el-form-item>
-          <el-form-item label="婚姻状况:" prop="marry">
-            <el-select filterable v-model="form.marry" placeholder="请选择">
+          <el-form-item label="婚姻状况:" prop="maritalStatus">
+            <el-select
+              filterable
+              v-model="form.maritalStatus"
+              placeholder="请选择"
+            >
               <el-option label="未婚" :value="1"></el-option>
               <el-option label="已婚" :value="2"></el-option>
               <el-option label="丧偶" :value="3"></el-option>
               <el-option label="离婚" :value="4"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="籍贯:" prop="native">
-            <el-cascader
-              v-model="form.native"
-              :options="nativeData"
-            ></el-cascader>
+          <el-form-item label="籍贯:" prop="nativePlace">
+            <el-input
+              placeholder="请输入"
+              v-model="form.nativePlace"
+            ></el-input>
           </el-form-item>
         </div>
       </el-form>
     </div>
     <div class="contact frame">
       <div class="frame_title">联系方式：</div>
-      <el-form class="form" label-width="125px" :rules="rules" :model="form">
+      <el-form
+        ref="ruleForm1"
+        class="form"
+        label-width="125px"
+        :rules="rules"
+        :model="form"
+      >
         <div class="left">
-          <el-form-item label="手机号码:" prop="phone">
+          <el-form-item label="手机号码:" prop="phoneNumber">
             <el-input
-              v-model="form.phone"
+              v-model="form.phoneNumber"
               placeholder="请输入手机号码"
             ></el-input>
           </el-form-item>
           <el-form-item label="通讯地址:" prop="address">
-            <el-cascader
+            <el-input placeholder="请输入" v-model="form.address"></el-input>
+
+            <!-- <el-cascader
               v-model="form.address"
               :options="nativeData"
-            ></el-cascader>
+            ></el-cascader> -->
           </el-form-item>
         </div>
         <div class="right">
@@ -94,15 +112,14 @@
       ></el-form>
     </div>
     <div class="next">
-      <el-button type="primary" size="small" @click="next"
-        >保存并下一步</el-button
-      >
+      <el-button type="primary" @click="next">保存</el-button>
     </div>
   </div>
 </template>
 <script>
 import { validatePhone, validateId } from "@/utils/validator.js";
 import { regionData } from "element-china-area-data";
+import { basic, getBasic } from "@/api/info";
 export default {
   data() {
     return {
@@ -392,12 +409,16 @@ export default {
         name: [{ required: true, message: "请输入姓名", trigger: "change" }],
         sex: [{ required: true, message: "请选择性别", trigger: "change" }],
         nation: [{ required: true, message: "请选择民族", trigger: "change" }],
-        id: [{ required: true, validator: validateId, trigger: "change" }],
-        native: [{ required: true, message: "请选择籍贯", trigger: "change" }],
+        certificateNumber: [
+          { required: true, validator: validateId, trigger: "change" },
+        ],
+        nativePlace: [
+          { required: true, message: "请选择籍贯", trigger: "change" },
+        ],
         address: [
           { required: true, message: "请选择通讯地址", trigger: "change" },
         ],
-        phone: [
+        phoneNumber: [
           { required: true, validator: validatePhone, trigger: "change" },
         ],
         emergencyPhone: [
@@ -421,9 +442,27 @@ export default {
       },
     };
   },
+  created() {
+    getBasic().then((res) => {
+      this.form = res.data;
+    });
+  },
   methods: {
     next() {
-      this.$router.push("student_info_work");
+      this.$refs.ruleForm.validate((valid) => {
+        if (valid) {
+          this.$refs.ruleForm1.validate((valid1) => {
+            if (valid1) {
+              basic(this.form).then((res) => {
+                if (res.code == 200) {
+                  this.$message.success("保存成功");
+                  // this.$router.push("student_info_work");
+                }
+              });
+            }
+          });
+        }
+      });
     },
   },
 };

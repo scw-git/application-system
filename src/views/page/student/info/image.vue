@@ -6,13 +6,18 @@
         style="margin: 10px 0 0 10px"
         accept=".jpg, .png"
         class="avatar-uploader"
-        action="/examinee/get-personal-picture"
-        :data="{ userId: 100 }"
+        action="/api/examinee/personal-picture-upload"
+        :headers="headers"
         :show-file-list="false"
         :on-success="handleAvatarSuccess"
         :before-upload="beforeAvatarUpload"
       >
-        <img v-if="imageUrl" :src="imageUrl" class="avatar" />
+        <img
+          style="width: 153px; height: 230px"
+          v-if="imageUrl"
+          :src="imageUrl"
+          class="avatar"
+        />
         <div v-else>
           <i class="el-icon-plus avatar-uploader-icon"></i>
           <div style="padding-bottom: 15px" class="el-upload__text">
@@ -35,17 +40,28 @@
   </div>
 </template>
 <script>
-import { profile } from "@/api/info";
+import { getImage } from "@/api/info";
 
 export default {
   data() {
     return {
       imageUrl: "",
+      headers: {
+        Authorization: JSON.parse(sessionStorage.getItem("loginInfo")).token,
+      },
     };
+  },
+  created() {
+    this.getImage();
   },
   methods: {
     handleAvatarSuccess(res) {
-      console.log(55, res);
+      this.imageUrl = res.url;
+    },
+    getImage() {
+      getImage().then((res) => {
+        this.imageUrl = res.msg;
+      });
     },
     beforeAvatarUpload(res) {},
   },
