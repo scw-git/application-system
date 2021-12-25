@@ -15,27 +15,33 @@
     </div>
     <div class="frame" v-if="progressTag == 1">
       <div class="frame_title">
-        岗位查询与报名 <span style="color: red">(注意只能报考一个岗位)</span> ：
+        考试查询与报名 <span style="color: red">(注意只能报考一个岗位)</span> ：
       </div>
       <div class="table">
         <el-table border :data="dataList">
           <el-table-column
             align="center"
-            prop="job"
-            label="考试岗位"
+            prop="examUnit"
+            label="报考单位"
           ></el-table-column>
           <el-table-column
             align="center"
-            prop="time"
-            label="报名时间"
+            prop="examName"
+            label="考试岗位"
           ></el-table-column>
+          <el-table-column align="center" prop="time" label="报名时间">
+            <template slot-scope="scope"
+              >{{ scope.row.applyStartDate }} <br />
+              {{ scope.row.applyEndDate }}
+            </template></el-table-column
+          >
 
           <el-table-column align="center" width="200" label="操作">
             <template slot-scope="scope">
               <el-button
                 size="mini"
                 type="danger"
-                @click="toApplicationForm(scope)"
+                @click="toApplicationForm(scope.row.id)"
                 >报名</el-button
               >
             </template>
@@ -58,6 +64,7 @@
   </div>
 </template>
 <script>
+import * as api from "@/api/operation";
 import applicationForm from "@/views/page/components/applicationForm";
 export default {
   components: {
@@ -65,14 +72,20 @@ export default {
   },
   data() {
     return {
-      progressTag: 2,
-      dataList: [
-        { job: "前端开发", time: "2021-02-12" },
-        { job: "java开发", time: "2021-02-12" },
-      ],
+      progressTag: 1,
+      dataList: [],
     };
   },
+  created() {
+    this.getExamList();
+  },
   methods: {
+    //获取考试列表
+    getExamList() {
+      api.getExamList().then((res) => {
+        this.dataList = res.rows;
+      });
+    },
     signUp() {
       this.$confirm(
         "请确认报名信息都填写完整了，每个账号只有一次机会！",
@@ -87,8 +100,9 @@ export default {
         this.progressTag = 3;
       });
     },
-    toApplicationForm() {
+    toApplicationForm(id) {
       this.progressTag = 2;
+      api.getConfirmForm(id).then((res) => {});
     },
   },
 };

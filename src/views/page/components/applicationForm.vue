@@ -14,8 +14,8 @@
           <tr>
             <td class="tac">报考单位</td>
             <td colspan="5">广西财会培训考试中心</td>
-            <td rowspan="5" style="height:156px;width:169px;">
-              <img style="width:100%;" src="@/assets/img/aa.jpg" alt />
+            <td rowspan="5" style="height: 156px; width: 169px">
+              <img style="width: 100%" src="@/assets/img/aa.jpg" alt />
             </td>
           </tr>
           <tr>
@@ -41,22 +41,22 @@
             <td>群众</td>
           </tr>
           <tr>
-            <td class="tac">个人特长</td>
-            <td>玩游戏</td>
+            <!-- <td class="tac">个人特长</td>
+            <td>玩游戏</td> -->
             <td>健康状态</td>
-            <td>良好</td>
+            <td colspan="2">良好</td>
             <td class="tac">专业技术职务</td>
-            <td>前端开发</td>
+            <td colspan="2">前端开发</td>
           </tr>
           <tr>
             <td class="tac" rowspan="2">身份证号码</td>
             <td rowspan="2" colspan="3">2322222222222222222</td>
-            <td class="tac" style="height:25px;">手机号码</td>
-            <td style="height:17px;" colspan="2">12455555555</td>
+            <td class="tac" style="height: 25px">手机号码</td>
+            <td style="height: 17px" colspan="2">12455555555</td>
           </tr>
           <tr>
-            <td class="tac" style="height:25px;">电子邮箱</td>
-            <td style="height:17px;" colspan="2">1324555555@qq.com</td>
+            <td class="tac" style="height: 25px">电子邮箱</td>
+            <td style="height: 17px" colspan="2">1324555555@qq.com</td>
           </tr>
           <tr>
             <td class="tac">教育程度</td>
@@ -77,19 +77,22 @@
             <td colspan="6"></td>
           </tr>
           <tr>
-            <td style="padding:10px 0;height:200px;" class="tac">
+            <td style="padding: 10px 0; height: 200px" class="tac">
               学习及工作简历
               <br />(从大大学开始填写)
             </td>
-            <td style="vertical-middle:top;" colspan="6">
+            <td style="vertical-middle: top" colspan="6">
               2021-02-23 在xxxxxxxxxxx
-              <br />2021-02-23 在xxxxxxxxxxx
-              <br />2021-02-23 在xxxxxxxxxxx
+              <br />2021-02-23 在xxxxxxxxxxx <br />2021-02-23 在xxxxxxxxxxx
               <br />
             </td>
           </tr>
           <tr>
-            <td style="height:100px;" class="tac">奖惩情况</td>
+            <td style="height: 100px" class="tac">奖惩情况</td>
+            <td colspan="6"></td>
+          </tr>
+          <tr>
+            <td style="height: 50px" class="tac">个人特长</td>
             <td colspan="6"></td>
           </tr>
           <tr>
@@ -132,7 +135,7 @@
             </td>
           </tr>-->
           <tr>
-            <td class="tac" style="padding:5px 0;">
+            <td class="tac" style="padding: 5px 0">
               招聘单位
               <br />审核意见
             </td>
@@ -150,16 +153,16 @@ export default {
     return {
       dataList: [
         {
-          unit: "广西财会培训考试中心"
-        }
-      ]
+          unit: "广西财会培训考试中心",
+        },
+      ],
     };
   },
   methods: {
     aa(id) {
       getPdf(id);
-    }
-  }
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>

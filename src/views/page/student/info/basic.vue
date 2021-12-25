@@ -112,7 +112,8 @@
       ></el-form>
     </div>
     <div class="next">
-      <el-button type="primary" @click="next">保存</el-button>
+      <el-button type="primary" @click="next(1)">保存并上一步</el-button>
+      <el-button type="primary" @click="next(2)">保存并下一步</el-button>
     </div>
   </div>
 </template>
@@ -448,7 +449,7 @@ export default {
     });
   },
   methods: {
-    next() {
+    next(n) {
       this.$refs.ruleForm.validate((valid) => {
         if (valid) {
           this.$refs.ruleForm1.validate((valid1) => {
@@ -456,7 +457,12 @@ export default {
               basic(this.form).then((res) => {
                 if (res.code == 200) {
                   this.$message.success("保存成功");
-                  // this.$router.push("student_info_work");
+                  this.$router.push("student_info_work");
+                  if (n == 1) {
+                    this.$router.push("student_info_image");
+                  } else {
+                    this.$router.push("student_info_work");
+                  }
                 }
               });
             }

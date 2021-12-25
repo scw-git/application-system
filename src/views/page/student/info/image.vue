@@ -37,6 +37,9 @@
         3、如因照片模糊、不符合规范导致无法参加考试的，由考生本人负责。
       </p>
     </div>
+    <div class="btn">
+      <el-button type="primary" @click="next">下一步</el-button>
+    </div>
   </div>
 </template>
 <script>
@@ -64,6 +67,9 @@ export default {
       });
     },
     beforeAvatarUpload(res) {},
+    next() {
+      this.$router.push("student_info_basic");
+    },
   },
 };
 </script>
@@ -76,6 +82,9 @@ export default {
       margin-left: 50px;
       line-height: 30px;
     }
+  }
+  .btn {
+    text-align: center;
   }
 }
 </style>

@@ -48,8 +48,8 @@
               v-model="studyAndWork.educationType"
               placeholder="请选择"
             >
-              <el-option label="是" :value="1"></el-option>
-              <el-option label="否" :value="0"></el-option>
+              <el-option label="是" value="1"></el-option>
+              <el-option label="否" value="0"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="毕业时间:" prop="graduatedTime">
@@ -155,7 +155,7 @@
         <el-table-column
           width="150"
           align="center"
-          prop="entryWork"
+          prop="entryDate"
           label="入职日期"
         ></el-table-column>
         <el-table-column
@@ -285,10 +285,10 @@
           :rules="rules"
           :model="addWork"
         >
-          <el-form-item label="入职日期:" prop="admissionDate">
+          <el-form-item label="入职日期:" prop="entryDate">
             <el-date-picker
               value-format="yyyy-MM-dd"
-              v-model="addWork.entryWork"
+              v-model="addWork.entryDate"
               type="date"
               placeholder="选择日期"
             >
@@ -330,10 +330,10 @@
       </el-dialog>
     </div>
     <div class="next">
-      <!-- <el-button type="primary" size="small" @click="next(1)"
+      <el-button type="primary" size="small" @click="next(1)"
         >保存并上一步</el-button
-      > -->
-      <el-button type="primary" @click="next(2)">保存</el-button>
+      >
+      <el-button type="primary" @click="next(2)">保存下一步</el-button>
     </div>
   </div>
 </template>
@@ -343,11 +343,15 @@ import * as api from "@/api/info";
 export default {
   data() {
     return {
+      textarea: "",
       workDialog: false,
       studyDialog: false,
       rules: {
         admissionDate: [
-          { required: true, message: "请选择日期", trigger: "blur" },
+          { required: true, message: "请选择日期", trigger: "change" },
+        ],
+        entryDate: [
+          { required: true, message: "请选择日期", trigger: "change" },
         ],
         graduationDate: [
           { required: true, message: "请选择日期", trigger: "blur" },
@@ -363,14 +367,16 @@ export default {
           { required: true, message: "请填写专业", trigger: "blur" },
         ],
         major: [{ required: true, message: "请填写专业", trigger: "blur" }],
-        education: [{ required: true, message: "请选择学历", trigger: "blur" }],
-        degree: [{ required: true, message: "请选择学位", trigger: "blur" }],
+        education: [
+          { required: true, message: "请选择学历", trigger: "change" },
+        ],
+        degree: [{ required: true, message: "请选择学位", trigger: "change" }],
         currentUnit: [
           { required: true, message: "请输入单位", trigger: "blur" },
         ],
         jobTitle: [{ required: true, message: "请输入职位", trigger: "blur" }],
         educationType: [
-          { required: true, message: "请选择教育类别", trigger: "blur" },
+          { required: true, message: "请选择教育类别", trigger: "change" },
         ],
       },
       allStatus: {
@@ -409,25 +415,22 @@ export default {
       // 用于存储“添加学习经历”的数据
       addStudy: {},
       addWork: {},
+      // 用于更新
+      updStudy: {},
+      updWork: {},
       form: {},
       // 学习/工作经历
       studyAndWork: {},
       // 学习经历
       studyData: [],
       // 工作经历
-      workData: [
-        {
-          entryWork: "2021-09-08",
-          resignationDate: "2021-12-03",
-          currentUnit: "广西民族大学",
-          jobTitle: "学生",
-        },
-      ],
+      workData: [],
     };
   },
   created() {
     this.getStudyWork();
     this.getStudyData();
+    this.getWorkData();
   },
   methods: {
     // 删除
@@ -444,29 +447,50 @@ export default {
               this.$message.success("删除成功");
             }
           });
+        } else {
+          api.delWork(id).then((res) => {
+            if (res.code == 200) {
+              this.getWorkData();
+              this.$message.success("删除成功");
+            }
+          });
         }
       });
     },
-    // 编辑学习经历或工作经历
+    // 更新学习经历或工作经历
     editData(type) {
       if (type == "study") {
-        console.log(77, { ...this.addStudy });
         api.updateStudy({ ...this.addStudy }).then((res) => {
-          console.log(res);
+          if (res.code == 200) {
+            this.studyDialog = false;
+            this.$message.success("更新成功");
+            this.getStudyData();
+          }
+        });
+      } else {
+        api.updateWork({ ...this.addWork }).then((res) => {
+          if (res.code == 200) {
+            this.$message.success("更新成功");
+            this.workDialog = false;
+            this.getWorkData();
+          }
         });
       }
     },
     // 点击编辑时打开弹框
     openEditDialog(type, data) {
+      console.log(data);
       if (type == "study") {
-        this.studyDialog = true;
         this.title = "编辑学习经历";
-        this.addStudy = data;
-        console.log(data);
+        this.studyDialog = true;
+        // this.addStudy = data;
+        // 不能像上面那么写，点击编辑出过来的是地址。弹框改变了表格里面的数据也会改变
+        this.addStudy = { ...data };
       } else {
-        this.workDialog = true;
         this.title = "编辑工作经历";
-        this.workData = data;
+        this.workDialog = true;
+        // this.addWork = data ;
+        this.addWork = { ...data };
       }
     },
     // 点击新增时打开弹框
@@ -474,11 +498,11 @@ export default {
       this.addStudy = [];
       this.addWork = [];
       if (type == "study") {
-        this.studyDialog = true;
         this.title = "添加学习经历";
+        this.studyDialog = true;
       } else if (type == "work") {
-        this.workDialog = true;
         this.title = "添加工作经历";
+        this.workDialog = true;
       }
     },
     formatterStatus(type, data) {
@@ -501,11 +525,11 @@ export default {
             if (res.code == 200) {
               this.$message.success("保存成功");
               this.getStudyWork();
-              // if (n == 1) {
-              //   this.$router.push("student_info_basic");
-              // } else {
-              //   this.$router.push("student_info_home");
-              // }
+              if (n == 1) {
+                this.$router.push("student_info_basic");
+              } else {
+                this.$router.push("student_info_other");
+              }
             }
           });
         }
@@ -517,22 +541,40 @@ export default {
         this.studyData = res.data;
       });
     },
-    // 添加学习经历
-    addStudyData() {
-      this.$refs.addStudy.validate((valid) => {
-        if (valid) {
-          api.saveStudy({ ...this.addStudy }).then((res) => {
-            if (res.code == 200) {
-              this.studyDialog = false;
-              this.$message.success("添加成功");
-              this.getStudyData();
-            }
-          });
-        }
+    // 获取工作经历
+    getWorkData() {
+      api.getWork().then((res) => {
+        this.workData = res.data;
       });
     },
-    handleEdit() {},
-    handleDelete() {},
+    // 添加学习经历和工作经历
+    addData(type) {
+      if (type == "study") {
+        this.$refs.addStudy.validate((valid) => {
+          if (valid) {
+            api.saveStudy({ ...this.addStudy }).then((res) => {
+              if (res.code == 200) {
+                this.$message.success("添加成功");
+                this.studyDialog = false;
+                this.getStudyData();
+              }
+            });
+          }
+        });
+      } else {
+        this.$refs.addWork.validate((valid) => {
+          if (valid) {
+            api.saveWork({ ...this.addWork }).then((res) => {
+              if (res.code == 200) {
+                this.$message.success("添加成功");
+                this.workDialog = false;
+                this.getWorkData();
+              }
+            });
+          }
+        });
+      }
+    },
   },
 };
 </script>

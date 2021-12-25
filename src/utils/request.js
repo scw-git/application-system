@@ -9,7 +9,7 @@ service.interceptors.request.use(config => {
     if (sessionStorage.getItem('loginInfo')) {
         config.headers.Authorization = JSON.parse(sessionStorage.getItem('loginInfo')).token
     }
-
+    console.log(config);
     return config
 })
 service.interceptors.response.use(

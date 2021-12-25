@@ -26,6 +26,13 @@ const originalPush = VueRouter.prototype.push
 VueRouter.prototype.push = function push(location) {
   return originalPush.call(this, location).catch(err => err)
 }
+// 百度富文本
+import '../public/UEditor/ueditor.config.js'
+import '../public/UEditor/ueditor.all.min.js'
+import '../public/UEditor/lang/zh-cn/zh-cn.js'
+import '../public/UEditor/ueditor.parse.min.js'
+
+
 
 Vue.config.productionTip = false
 

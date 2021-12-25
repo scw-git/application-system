@@ -28,7 +28,7 @@
               placeholder="请输入密码"
             ></el-input>
           </el-form-item>
-          <el-form-item prop="code">
+          <!-- <el-form-item prop="code">
             <el-input
               style="width: 63%"
               prefix-icon="el-icon-circle-check"
@@ -38,7 +38,7 @@
             <div class="login-code">
               <img src="@/assets/img/code.gif" alt />
             </div>
-          </el-form-item>
+          </el-form-item> -->
           <el-form-item style="width: 100%">
             <el-button
               :loading="loading"
@@ -167,17 +167,28 @@ export default {
           }
         });
       } else if (type == "admin") {
+        let params = {
+          username: this.form.username,
+          password: this.form.password,
+        };
         if (this.form.username == "" || this.form.password == "") {
           this.$message.warning("账号或密码不能为空！");
         } else {
           this.loading = true;
-          setTimeout(() => {
+          login(params).then((res) => {
             this.loading = false;
-            this.setStorage(type); //存储登录信息
+            this.setStorage(type, res.token); //存储登录信息
             this.$router.push({
               path: "/admin_examinee_check",
             });
-          }, 1000);
+          });
+          // setTimeout(() => {
+          //   this.loading = false;
+          //   this.setStorage(type); //存储登录信息
+          //   this.$router.push({
+          //     path: "/admin_examinee_check",
+          //   });
+          // }, 1000);
         }
       }
     },

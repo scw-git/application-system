@@ -20,7 +20,7 @@
         </template>
         <el-menu-item-group>
           <el-menu-item index="student_operation_queryAndApply"
-            >岗位查询与报名</el-menu-item
+            >考试查询与报名</el-menu-item
           >
           <el-menu-item index="student_operation_pay">考试缴费</el-menu-item>
           <el-menu-item index="student_operation_print"
@@ -41,6 +41,7 @@
           <el-menu-item index="student_info_image">上传照片</el-menu-item>
           <el-menu-item index="student_info_basic">个人基本情况</el-menu-item>
           <el-menu-item index="student_info_work">学习/工作情况</el-menu-item>
+          <el-menu-item index="student_info_other">奖惩/特长情况</el-menu-item>
           <el-menu-item index="student_info_home">家庭情况</el-menu-item>
         </el-menu-item-group>
       </el-submenu>

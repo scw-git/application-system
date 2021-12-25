@@ -43,6 +43,11 @@ const routes = [
         component: () => import('../views/page/student/info/work.vue')
       },
       {
+        path: '/student_info_other',
+        name: 'student_info_other',
+        component: () => import('../views/page/student/info/other.vue')
+      },
+      {
         path: '/student_info_home',
         name: 'student_info_home',
         component: () => import('../views/page/student/info/home.vue')
