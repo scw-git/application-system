@@ -16,7 +16,7 @@
                 v-for="item in education"
                 :label="item.name"
                 :key="item.value"
-                :value="item.value"
+                :value="item.name"
               ></el-option>
             </el-select>
           </el-form-item>
@@ -26,7 +26,7 @@
                 v-for="item in degree"
                 :label="item.name"
                 :key="item.value"
-                :value="item.value"
+                :value="item.name"
               ></el-option>
             </el-select>
           </el-form-item>
@@ -113,17 +113,20 @@
         ></el-table-column>
         <el-table-column align="center" prop="education" label="学历">
           <template slot-scope="scope">
-            {{ formatterStatus("education", scope.row.education) }}
+            {{ scope.row.education }}
+            <!-- {{ formatterStatus("education", scope.row.education) }} -->
           </template>
         </el-table-column>
         <el-table-column align="center" prop="degree" label="学位">
           <template slot-scope="scope">
-            {{ formatterStatus("degree", scope.row.degree) }}
+            {{ scope.row.degree }}
+            <!-- {{ formatterStatus("degree", scope.row.degree) }} -->
           </template>
         </el-table-column>
         <el-table-column align="center" prop="educationType" label="教育类别">
           <template slot-scope="scoped">
-            {{ scoped.row.educationType == "1" ? "全日制" : "非全日制" }}
+            {{ scoped.row.educationType }}
+            <!-- {{ scoped.row.educationType == "1" ? "全日制" : "非全日制" }} -->
           </template></el-table-column
         >
         <el-table-column align="center" width="200" label="操作">
@@ -232,7 +235,7 @@
                 v-for="item in education"
                 :label="item.name"
                 :key="item.value"
-                :value="item.value"
+                :value="item.name"
               ></el-option>
             </el-select>
           </el-form-item>
@@ -242,14 +245,14 @@
                 v-for="item in degree"
                 :label="item.name"
                 :key="item.value"
-                :value="item.value"
+                :value="item.name"
               ></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="教育类别" prop="educationType">
             <el-select v-model="addStudy.educationType" placeholder="请选择">
-              <el-option label="全日制" value="1"></el-option>
-              <el-option label="非全日制" value="0"></el-option>
+              <el-option label="全日制" value="全日制"></el-option>
+              <el-option label="非全日制" value="非全日制"></el-option>
             </el-select>
           </el-form-item>
         </el-form>

@@ -15,3 +15,43 @@ export function getConfirmForm(id) {
 
     })
 }
+// 获取附件文件
+export function getFj() {
+    return request({
+        url: '/examinee/get-annex',
+        method: 'get',
+
+    })
+}
+export function delFj(id) {
+    return request({
+        url: '/examinee/del-annex/' + id,
+        method: 'get',
+
+    })
+}
+// 最后确认报名
+export function signUp(id) {
+    return request({
+        url: '/examinee/confirm_registration/' + id,
+        method: 'get',
+
+    })
+}
+// 考试缴费
+export function payment() {
+    return request({
+        url: '/examinee/pay-list',
+        method: 'get',
+
+    })
+}
+// 查询报名状态
+export function queryStatus() {
+    return request({
+        url: '/examinee/get-exam-status',
+        method: 'get',
+
+    })
+}
+

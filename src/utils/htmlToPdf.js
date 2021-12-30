@@ -4,7 +4,8 @@ function getPdf(id, name) {
     // var title = this.htmlTitle
     var title = name || '个人信息表格'
     html2Canvas(document.querySelector(id), {
-        allowTaint: true
+        allowTaint: false, //要设置成false或者不写。允许污染 'HTMLCanvasElement': Tainted canvases may not be exported.
+        useCORS: true //允许跨域
     }).then(function (canvas) {
         let contentWidth = canvas.width
         let contentHeight = canvas.height

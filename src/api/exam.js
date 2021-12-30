@@ -64,3 +64,17 @@ export function releaseExam(id) {
 
     })
 }
+export function saveExamTime(data) {
+    return request({
+        url: '/exam-info/time-set',
+        method: 'post',
+        data
+    })
+}
+export function getExamTimeList() {
+    return request({
+        url: '/exam-info/get-time',
+        method: 'get',
+
+    })
+}

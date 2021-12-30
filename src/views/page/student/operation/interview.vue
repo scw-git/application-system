@@ -49,13 +49,7 @@
           </table>
         </div>
         <div class="tip">
-          面试须知：<br />
-          1、考生持本人身份原件、面试准考证参加面,。考生持本人身份原件、面试准考证参加面,考生持本人身份原件、面试准考证参加面,考生持本人身份原件、面试准考证参加面,
-          <br />
-          1、考生持本人身份原件、面试准考证参加面试。 <br />
-          1、考生持本人身份原件、面试准考证参加面试。 <br />
-          1、考生持本人身份原件、面试准考证参加面试。 <br />
-          1、考生持本人身份原件、面试准考证参加面试。 <br />
+          <p v-html="msg"></p>
         </div>
       </div>
       <el-button class="btn" type="primary" @click="downLoad"
@@ -65,12 +59,23 @@
   </div>
 </template>
 <script>
+import * as api from "@/api/system";
 import { getPdf } from "@/utils/htmlToPdf";
 export default {
   data() {
-    return {};
+    return {
+      msg: "",
+    };
+  },
+  created() {
+    this.getOther();
   },
   methods: {
+    getOther() {
+      api.getOther().then((res) => {
+        this.msg = res.data[0].faceNote;
+      });
+    },
     downLoad() {
       getPdf("#getPdf");
     },

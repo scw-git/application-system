@@ -13,7 +13,7 @@
         <el-breadcrumb-item> 完成报考 </el-breadcrumb-item>
       </el-breadcrumb> -->
     </div>
-    <div class="frame" v-if="progressTag == 1">
+    <div class="frame" v-show="progressTag == 1">
       <div class="frame_title">
         考试查询与报名 <span style="color: red">(注意只能报考一个岗位)</span> ：
       </div>
@@ -49,7 +49,7 @@
         </el-table>
       </div>
     </div>
-    <div class="personData" v-if="progressTag == 2">
+    <div class="personData" v-show="progressTag == 2">
       <el-button
         style="margin-left: 45px"
         size="small"
@@ -58,9 +58,31 @@
         >返回</el-button
       >
       <el-button size="small" type="danger" @click="signUp">报名</el-button>
-      <application-form></application-form>
+
+      <el-upload
+        style="margin-left: 45px; margin-top: 10px"
+        class="upload-demo"
+        action="/api/examinee/upload-annex"
+        :headers="headers"
+        :on-preview="handlePreview"
+        :on-remove="handleRemove"
+        :before-remove="beforeRemove"
+        multiple
+        :limit="3"
+        :on-exceed="handleExceed"
+        :file-list="fileList"
+      >
+        <el-button size="small" type="primary">附件上传</el-button>
+        <div slot="tip" class="el-upload__tip">最多上传三个文件</div>
+      </el-upload>
+
+      <application-form :data="dataList"></application-form>
     </div>
-    <div class="finish" v-if="progressTag == 3">完成报考</div>
+    <div class="finish" v-show="progressTag == 3">
+      <p style="text-align: center; font-size: 22px; color: red">
+        您已经完成报考，请耐心等待审核
+      </p>
+    </div>
   </div>
 </template>
 <script>
@@ -74,12 +96,33 @@ export default {
     return {
       progressTag: 1,
       dataList: [],
+      fileList: [],
+      id: "", //要报考的岗位id
+      headers: {
+        Authorization: JSON.parse(sessionStorage.getItem("loginInfo")).token,
+      },
     };
   },
   created() {
     this.getExamList();
+    this.getFj();
   },
   methods: {
+    // 删除附件
+    handleRemove(file, fileList) {
+      api.delFj(file.id).then((res) => {
+        this.$message.success("删除成功");
+      });
+    },
+    // 获取附件
+    getFj() {
+      api.getFj().then((res) => {
+        res.data.forEach((item, i) => {
+          res.data[i].name = item.fileName;
+        });
+        this.fileList = res.data;
+      });
+    },
     //获取考试列表
     getExamList() {
       api.getExamList().then((res) => {
@@ -96,13 +139,23 @@ export default {
           type: "warning",
         }
       ).then(() => {
-        this.$message({ type: "success", message: "报名成功！" });
-        this.progressTag = 3;
+        api.signUp(this.id).then((res) => {
+          if (res.code == 200) {
+            this.$message({ type: "success", message: "报名成功！" });
+            this.progressTag = 3;
+          }
+        });
       });
     },
     toApplicationForm(id) {
-      this.progressTag = 2;
-      api.getConfirmForm(id).then((res) => {});
+      this.id = id;
+
+      api.getConfirmForm(id).then((res) => {
+        if (res.code != 500) {
+          this.progressTag = 2;
+          this.dataList = res.data;
+        }
+      });
     },
   },
 };

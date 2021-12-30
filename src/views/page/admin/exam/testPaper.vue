@@ -2,7 +2,6 @@
   <div class="testPaper p15">
     <el-button
       style="margin-bottom: 10px"
-      size="small"
       type="primary"
       @click="openDialog('add')"
       >新建</el-button

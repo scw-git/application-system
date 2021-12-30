@@ -8,6 +8,16 @@ function validatePhone(rule, value, callback) {
         callback()
     }
 }
+function validateFourNumber(rule, value, callback) {
+    if (value === "") {
+        callback("编号不能为空！");
+    } else if (!/^\d{4}$/.test(value)) {
+        callback('请输入4位的编号！')
+    } else {
+        //成功的情况一定要写，否则校验成功不执行代码
+        callback()
+    }
+}
 function validateId(rule, value, callback) {
     const reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/
     if (value === '') {
@@ -31,4 +41,4 @@ function validateId(rule, value, callback) {
 //     }
 // }
 
-export { validatePhone, validateId }
+export { validateFourNumber, validatePhone, validateId }

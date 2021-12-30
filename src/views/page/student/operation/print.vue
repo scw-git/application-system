@@ -1,68 +1,107 @@
 <template>
   <div class="b">
     <div class="print">
-      <el-empty v-if="isShow">
-        <div slot="description">
-          <span style="font-size: 20px; color: #dc851f"
-            >准考证打印时间未开放，请于2021-5-12至2021-7-12</span
-          >
-        </div>
-      </el-empty>
-      <div v-else id="getPdf" class="printForm">
+      <el-table :data="dataList">
+        <el-table-column
+          label="序号"
+          align="center"
+          type="index"
+        ></el-table-column>
+        <el-table-column
+          label="考试单位"
+          align="center"
+          prop=""
+        ></el-table-column>
+        <el-table-column
+          label="考试岗位"
+          align="center"
+          prop=""
+        ></el-table-column>
+        <el-table-column
+          label="考试名称"
+          align="center"
+          prop=""
+        ></el-table-column>
+        <el-table-column
+          label="打印时间"
+          align="center"
+          prop=""
+        ></el-table-column>
+        <el-table-column label="操作" align="center">
+          <template slot-scope="scope">
+            <el-button type="primary"> 查看</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+
+      <div v-show="!isShow" id="getPdf" class="printForm">
         <div class="applicationForm">
           <div class="left">
             <div class="title">
               <span>广西壮族自治区财政厅事业部</span> <br />
-              <span> 2021年下半年全国事业单位考试报名表</span><br />
+              <span>
+                {{ time.year }}年{{ time.stage }}全国事业单位考试报名表</span
+              ><br />
               <span>准 考 证</span>
             </div>
-            <img src="@/assets/img/aa.jpg" alt="" />
+            <img
+              crossOrigin="Anonymous"
+              :src="`http://10.9.2.15:8080${personalData.picture}`"
+              alt=""
+            />
+
             <div class="table">
               <table border="1">
                 <tr>
                   <td>姓 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 名：</td>
-                  <td class="w230">首成文</td>
+                  <td class="w230">{{ personalData.name }}</td>
                   <td>性 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;别：</td>
-                  <td class="tl" style="width: 133px">男</td>
+                  <td class="tl" style="width: 133px">
+                    {{ personalData.sex }}
+                  </td>
                 </tr>
                 <tr>
                   <td>身份证号：</td>
-                  <td class="tl">232324555666770989</td>
+                  <td class="tl">{{ personalData.certificateNumber }}</td>
                   <td>准考证号：</td>
-                  <td class="tl">34345789</td>
+                  <td class="tl">{{ personalData.admissionTicketNumber }}</td>
                 </tr>
                 <tr>
                   <td>报考单位：</td>
-                  <td class="tl" colspan="3">广西壮族自治区财政厅事业部</td>
+                  <td class="tl" colspan="3">{{ personalData.examUnit }}</td>
                 </tr>
                 <tr>
                   <td>报考岗位：</td>
-                  <td class="tl" colspan="3">前端开发</td>
+                  <td class="tl" colspan="3">
+                    {{ personalData.recruitmentJob }}
+                  </td>
                 </tr>
-                <tr>
+                <!-- <tr>
                   <td>考&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;区：</td>
                   <td class="tl" colspan="3">南宁市</td>
-                </tr>
+                </tr> -->
                 <tr>
                   <td>考点名称：</td>
-                  <td class="tl" colspan="3">广西壮族自治区财政厅事业部</td>
+                  <td class="tl" colspan="3">{{ personalData.placeName }}</td>
                 </tr>
                 <tr>
-                  <td>报点地址：</td>
-                  <td class="tl" colspan="3">广西民族大学</td>
+                  <td>考点地址：</td>
+                  <td class="tl" colspan="3">
+                    {{ personalData.placeAddress }}
+                  </td>
                 </tr>
                 <tr>
                   <td>&nbsp;&nbsp;&nbsp;考场号：</td>
-                  <td class="tl">88</td>
+                  <td class="tl">{{ personalData.examination }}</td>
                   <td>座位号：</td>
-                  <td class="tl">88</td>
+                  <td class="tl">{{ personalData.seatNumber }}</td>
                 </tr>
                 <tr>
                   <td class="tl" colspan="4">
-                    &nbsp;&nbsp; 考试时间及科目：<br />
+                    &nbsp;&nbsp; 考试时间：<br />
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    2021年12月30日下午9：30-12：30 前端开发
+                    {{ personalData.startTime + " 至 " + personalData.endTime }}
                   </td>
                 </tr>
               </table>
@@ -72,17 +111,7 @@
           <div class="right">
             <div class="title">考生须知</div>
             <div class="content">
-              <p>
-                1、敬请诚信参考，反对考试作弊，共同维护公平公正！敬请诚信参考，反对考试作弊，共同维护公平公正！敬请诚信参考，反对考试作弊，共同维护公平公正！敬请诚信参考，反对考试作弊，共同维护公平公正！敬请诚信参考，反对考试作弊，共同维护公平公正！敬请诚信参考，反对考试作弊，共同维护公平公正！
-                <br />
-                1、敬请诚信参考，反对考试作弊，共同维护公平公正！敬请诚信参考，反对考试作弊，共同维护公平公正！敬请诚信参考，反对考试作弊，共同维护公平公正！敬请诚信参考，反对考试作弊，共同维护公平公正！敬请诚信参考，反对考试作弊，共同维护公平公正！敬请诚信参考，反对考试作弊，共同维护公平公正！
-                <br />
-                1、敬请诚信参考，反对考试作弊，共同维护公平公正！敬请诚信参考，反对考试作弊，共同维护公平公正！敬请诚信参考，反对考试作弊，共同维护公平公正！敬请诚信参考，反对考试作弊，共同维护公平公正！敬请诚信参考，反对考试作弊，共同维护公平公正！敬请诚信参考，反对考试作弊，共同维护公平公正！
-                1、敬请诚信参考，反对考试作弊，共同维护公平公正！敬请诚信参考，反对考试作弊，共同维护公平公正！敬请诚信参考，反对考试作弊，共同维护公平公正！敬请诚信参考，反对考试作弊，共同维护公平公正！敬请诚信参考，反对考试作弊，共同维护公平公正！敬请诚信参考，反对考试作弊，共同维护公平公正！
-                <br />
-                1、敬请诚信参考，反对考试作弊，共同维护公平公正！敬请诚信参考，反对考试作弊，共同维护公平公正！敬请诚信参考，反对考试作弊，共同维护公平公正！敬请诚信参考，反对考试作弊，共同维护公平公正！敬请诚信参考，反对考试作弊，共同维护公平公正！敬请诚信参考，反对考试作弊，共同维护公平公正！
-                1、敬请诚信参考，反对考试作弊，共同维护公平公正！敬请诚信参考，反对考试作弊，共同维护公平公正！敬请诚信参考，反对考试作弊，共同维护公平公正！敬请诚信参考，反对考试作弊，共同维护公平公正！敬请诚信参考，反对考试作弊，共同维护公平公正！敬请诚信参考，反对考试作弊，共同维护公平公正！
-              </p>
+              <p v-html="msg"></p>
             </div>
           </div>
         </div>
@@ -91,6 +120,7 @@
         </div>
       </div>
       <el-button
+        v-show="!isShow"
         @click="downLoad"
         style="margin-top: 20px; margin-left: 45%"
         type="primary"
@@ -100,14 +130,49 @@
   </div>
 </template>
 <script>
+import * as api from "@/api/system";
 import { getPdf } from "@/utils/htmlToPdf";
 export default {
   data() {
     return {
-      isShow: false,
+      dataList: [],
+      isShow: true,
+      msg: "",
+      personalData: {},
+      time: {},
     };
   },
+  created() {
+    this.getOther();
+    this.getWrittenInfo();
+    this.getTime();
+  },
   methods: {
+    getTime() {
+      this.time.year = new Date().getFullYear();
+      let month = new Date().getMonth() + 1;
+      if (month >= 7) {
+        this.time.stage = "下半年";
+      } else {
+        this.time.stage = "下半年";
+      }
+    },
+    getOther() {
+      api.getOther().then((res) => {
+        this.msg = res.data[0].writtenNote;
+      });
+    },
+    getWrittenInfo() {
+      api.getWrittenInfo().then((res) => {
+        console.log(11, res);
+        if (res == undefined) {
+          this.isShow = true; //未到打印准考证时间
+        } else {
+          this.isShow = false;
+          this.personalData = res.data;
+        }
+      });
+    },
     downLoad() {
       getPdf("#getPdf");
     },

@@ -287,7 +287,7 @@ export default {
           break;
         case 3:
           this.title = "编辑考试";
-          console.log(22, data);
+
           this.form = { ...data };
           break;
       }

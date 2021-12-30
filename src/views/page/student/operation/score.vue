@@ -1,10 +1,44 @@
 <template>
-  <div class="scoreQuery">
+  <div class="scoreQuery p15">
     <!-- <el-empty>
       <div slot="description">
         <span style="font-size:20px;color:#02a7f0">成绩查询时间未开放，请于2021-5-12至2021-7-12</span>
       </div>
     </el-empty>-->
+    <el-table :data="dataList">
+      <el-table-column
+        label="序号"
+        align="center"
+        type="index"
+      ></el-table-column>
+      <el-table-column
+        label="考试名称"
+        align="center"
+        prop=""
+      ></el-table-column>
+      <el-table-column
+        label="报考岗位"
+        align="center"
+        prop=""
+      ></el-table-column>
+      <el-table-column
+        label="准考证号"
+        align="center"
+        prop=""
+      ></el-table-column>
+      <el-table-column
+        label="身份证号"
+        align="center"
+        prop=""
+      ></el-table-column>
+      <el-table-column label="姓名" align="center" prop=""></el-table-column>
+      <el-table-column label="成绩" align="center" prop=""></el-table-column>
+      <el-table-column
+        label="是否进入面试"
+        align="center"
+        prop=""
+      ></el-table-column>
+    </el-table>
     <div class="result">
       <h1 style="font-weight: 700; text-align: center">
         2021年下半年全国事业单位考试
@@ -37,7 +71,9 @@
 <script>
 export default {
   data() {
-    return {};
+    return {
+      dataList: [],
+    };
   },
   methods: {
     toInterview() {

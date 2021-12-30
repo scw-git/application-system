@@ -7,31 +7,12 @@
       @open="handleOpen"
       @close="handleClose"
       router
+      :default-openeds="['student_operation', 'student_info']"
     >
       <el-menu-item style="padding-left: 23px" index="student_notice">
-        <i class="icon-notice iconfont"></i>
+        <i class="el-icon-message-solid iconfont"></i>
         <span slot="title">考试须知</span>
       </el-menu-item>
-
-      <el-submenu index="student_operation">
-        <template slot="title">
-          <i class="el-icon-s-order"></i>
-          <span>业务办理</span>
-        </template>
-        <el-menu-item-group>
-          <el-menu-item index="student_operation_queryAndApply"
-            >考试查询与报名</el-menu-item
-          >
-          <el-menu-item index="student_operation_pay">考试缴费</el-menu-item>
-          <el-menu-item index="student_operation_print"
-            >打印笔试准考证</el-menu-item
-          >
-          <el-menu-item index="student_operation_score">成绩查询</el-menu-item>
-          <el-menu-item index="student_operation_interview"
-            >打印面试准考证</el-menu-item
-          >
-        </el-menu-item-group>
-      </el-submenu>
       <el-submenu index="student_info">
         <template slot="title">
           <i class="el-icon-s-custom"></i>
@@ -45,6 +26,28 @@
           <el-menu-item index="student_info_home">家庭情况</el-menu-item>
         </el-menu-item-group>
       </el-submenu>
+      <el-submenu index="student_operation">
+        <template slot="title">
+          <i class="el-icon-s-order"></i>
+          <span>业务办理</span>
+        </template>
+        <el-menu-item-group>
+          <el-menu-item index="student_operation_queryAndApply"
+            >考试查询与报名</el-menu-item
+          >
+          <el-menu-item index="student_operation_queryStatus"
+            >报名状态查询</el-menu-item
+          >
+          <el-menu-item index="student_operation_pay">考试缴费</el-menu-item>
+          <el-menu-item index="student_operation_print"
+            >打印笔试准考证</el-menu-item
+          >
+          <el-menu-item index="student_operation_score">成绩查询</el-menu-item>
+          <el-menu-item index="student_operation_interview"
+            >打印面试准考证</el-menu-item
+          >
+        </el-menu-item-group>
+      </el-submenu>
     </el-menu>
     <el-menu
       router
@@ -54,7 +57,7 @@
     >
       <el-submenu index="admin_examinee_check">
         <template slot="title">
-          <i class="el-icon-s-custom"></i>
+          <i class="el-icon-coordinate"></i>
           <span>考生管理</span>
         </template>
         <el-menu-item-group>
@@ -65,17 +68,18 @@
       </el-submenu>
       <el-submenu index="admin_exam_testPaper">
         <template slot="title">
-          <i class="el-icon-s-custom"></i>
+          <i class="el-icon-edit-outline"></i>
           <span>考试管理</span>
         </template>
         <el-menu-item-group>
           <el-menu-item index="admin_exam_testPaper">考卷设置</el-menu-item>
           <el-menu-item index="admin_exam_test">考试设置</el-menu-item>
+          <el-menu-item index="admin_exam_time">时间设置</el-menu-item>
         </el-menu-item-group>
       </el-submenu>
       <el-submenu index="admin_site_written">
         <template slot="title">
-          <i class="el-icon-s-custom"></i>
+          <i class="el-icon-office-building"></i>
           <span>考场管理</span>
         </template>
         <el-menu-item-group>
@@ -85,7 +89,7 @@
       </el-submenu>
       <el-submenu index="admin_user_role">
         <template slot="title">
-          <i class="el-icon-s-custom"></i>
+          <i class="el-icon-user"></i>
           <span>用户管理</span>
         </template>
         <el-menu-item-group>
@@ -95,14 +99,13 @@
       </el-submenu>
       <el-submenu index="admin_system_notice">
         <template slot="title">
-          <i class="el-icon-s-custom"></i>
+          <i class="el-icon-setting"></i>
           <span>系统配置</span>
         </template>
         <el-menu-item-group>
           <el-menu-item index="admin_system_notice">通知管理</el-menu-item>
-          <el-menu-item index="admin_system_time">时间设置</el-menu-item>
           <el-menu-item index="admin_system_log">操作日志</el-menu-item>
-          <el-menu-item index="admin_system_other">其他</el-menu-item>
+          <el-menu-item index="admin_system_other">其他设置</el-menu-item>
         </el-menu-item-group>
       </el-submenu>
     </el-menu>

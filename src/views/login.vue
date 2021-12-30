@@ -93,7 +93,7 @@
   </div>
 </template>
 <script>
-import { login } from "@/api/login";
+import { login, loginAdmin } from "@/api/login";
 import { encrypt, decrypt } from "@/utils/encrypt";
 import { validatePhone } from "@/utils/validator";
 export default {
@@ -175,20 +175,13 @@ export default {
           this.$message.warning("账号或密码不能为空！");
         } else {
           this.loading = true;
-          login(params).then((res) => {
+          loginAdmin(params).then((res) => {
             this.loading = false;
             this.setStorage(type, res.token); //存储登录信息
             this.$router.push({
               path: "/admin_examinee_check",
             });
           });
-          // setTimeout(() => {
-          //   this.loading = false;
-          //   this.setStorage(type); //存储登录信息
-          //   this.$router.push({
-          //     path: "/admin_examinee_check",
-          //   });
-          // }, 1000);
         }
       }
     },

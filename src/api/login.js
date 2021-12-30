@@ -7,3 +7,10 @@ export function login(data) {
         data
     })
 }
+export function loginAdmin(data) {
+    return request({
+        url: '/admin-login',
+        method: 'post',
+        data
+    })
+}

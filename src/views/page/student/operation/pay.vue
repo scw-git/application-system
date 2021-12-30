@@ -1,44 +1,110 @@
 <template>
   <div class="pay frame">
-    <div class="frame_title">报考费用</div>
-    <div class="list">
-      <div class="content">
-        <span>考试名称： 2021年下半年事业单位考试</span>
-        <span>报考岗位： 会计管理</span>
-        <div class="pay">
-          缴费时间： 2021年3月18日08:00至2021年3月28日08:00
-          <div>
-            考试费用： <span class="triangle"></span>
-            <span class="num">136.00元</span>
+    <el-table :data="dataList">
+      <el-table-column
+        label="序号"
+        align="center"
+        type="index"
+      ></el-table-column>
+      <el-table-column
+        label="考试名称"
+        align="center"
+        prop="examName"
+      ></el-table-column>
+      <el-table-column
+        label="考试岗位"
+        align="center"
+        prop="recruitmentJob"
+      ></el-table-column>
+      <el-table-column label="考试费用" align="center" prop="free">
+        <template slot-scope="scope">
+          {{ scope.row.free }}
+        </template></el-table-column
+      >
+      <el-table-column label="缴费状态" align="center">
+        <template slot-scope="scope">
+          <el-tag
+            :type="
+              Number(scope.row.payStatus) == 2
+                ? 'primary'
+                : Number(scope.row.payStatus) == 1
+                ? 'success'
+                : 'warning'
+            "
+            >{{
+              Number(scope.row.payStatus) == 2
+                ? "免费"
+                : Number(scope.row.payStatus) == 1
+                ? "已缴费"
+                : "待缴费"
+            }}</el-tag
+          >
+        </template>
+      </el-table-column>
+      <el-table-column label="操作" align="center">
+        <template slot-scope="scope">
+          <el-button size="small" type="primary"> 查看</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+    <el-empty v-if="isShow" description="暂无需要缴费的项目"></el-empty>
+    <div v-else>
+      <div class="frame_title">报考费用</div>
+      <div class="list">
+        <div class="content">
+          <span>考试名称： 2021年下半年事业单位考试</span>
+          <span>报考岗位： 会计管理</span>
+          <div class="pay">
+            缴费时间： 2021年3月18日08:00至2021年3月28日08:00
+            <div>
+              考试费用： <span class="triangle"></span>
+              <span class="num">136.00元</span>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="payType">
-        <span>支付方式： </span>
-        <el-radio-group v-model="payType">
-          <el-radio :label="1">
-            <img src="@/assets/img/wxpay.png" alt="" />
-          </el-radio>
-          <el-radio :label="2">
-            <img src="@/assets/img/alipay.png" alt="" />
-          </el-radio>
-        </el-radio-group>
-      </div>
-      <div class="btn">
-        <el-button type="primary" @click="payment">点击缴费</el-button>
+        <div class="payType">
+          <span>支付方式： </span>
+          <el-radio-group v-model="payType">
+            <el-radio :label="1">
+              <img src="@/assets/img/wxpay.png" alt="" />
+            </el-radio>
+            <el-radio :label="2">
+              <img src="@/assets/img/alipay.png" alt="" />
+            </el-radio>
+          </el-radio-group>
+        </div>
+        <div class="btn">
+          <el-button type="primary" @click="payment">点击缴费</el-button>
+        </div>
       </div>
     </div>
   </div>
 </template>
+
 <script>
+import * as api from "@/api/operation";
 export default {
   data() {
     return {
+      isShow: true,
       payType: 1,
+      dataList: [],
     };
   },
+  created() {
+    this.payment();
+  },
   methods: {
-    payment() {},
+    payment() {
+      api.payment().then((res) => {
+        this.dataList = res.data;
+        // if (res.code == 200) {
+
+        // } else {
+        //   this.isShow = false;
+        // }
+      });
+    },
   },
 };
 </script>

@@ -1,6 +1,8 @@
 <template>
   <div class="notice p15">
-    <el-button type="primary" @click="add">发布通知</el-button>
+    <el-button style="margin-bottom: 10px" type="primary" @click="add"
+      >发布通知</el-button
+    >
     <div class="table">
       <el-table :data="dataList" border>
         <el-table-column
@@ -31,7 +33,7 @@
         </el-table-column>
       </el-table>
     </div>
-    <el-dialog :title="title" :visible.sync="dialogVisible" width="40%">
+    <el-dialog title="发布通知" :visible.sync="dialogVisible" width="40%">
       <el-form label-width="100px" :model="form" :rules="rules">
         <el-form-item label="通知标题">
           <el-input v-model="form.title"></el-input>
@@ -55,10 +57,12 @@
           </el-input>
         </el-form-item>
       </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="submitData" type="primary">提交</el-button>
-        <el-button @click="dialogVisible = false">取消</el-button>
-      </span>
+      <div class="center">
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="submitData" type="primary">提交</el-button>
+          <el-button @click="dialogVisible = false">取消</el-button>
+        </span>
+      </div>
     </el-dialog>
   </div>
 </template>
@@ -82,4 +86,7 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+.center {
+  text-align: center;
+}
 </style>

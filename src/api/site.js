@@ -29,3 +29,24 @@ export function getImage() {
 
     })
 }
+
+// 获取安排考场
+export function getArrangeSite() {
+    return request({
+        url: '/exam-info/get-recruitment-job-info',
+        method: 'get',
+
+    })
+}
+
+// 确认安排考场
+
+export function confirArrangeSite(data) {
+    return request({
+        url: '/exam-info/arrange-place',
+        method: 'post',
+        data
+    })
+}
+
+

@@ -25,7 +25,7 @@
                 v-for="item in nation"
                 :key="item.id"
                 :label="item.name"
-                :value="item.id"
+                :value="item.name"
               ></el-option>
             </el-select>
           </el-form-item>
@@ -35,7 +35,7 @@
                 v-for="item in politics"
                 :key="item.id"
                 :label="item.name"
-                :value="item.id"
+                :value="item.name"
               ></el-option>
             </el-select>
           </el-form-item>
@@ -59,10 +59,10 @@
               v-model="form.maritalStatus"
               placeholder="请选择"
             >
-              <el-option label="未婚" :value="1"></el-option>
-              <el-option label="已婚" :value="2"></el-option>
-              <el-option label="丧偶" :value="3"></el-option>
-              <el-option label="离婚" :value="4"></el-option>
+              <el-option label="未婚" value="未婚"></el-option>
+              <el-option label="已婚" value="已婚"></el-option>
+              <el-option label="丧偶" value="丧偶"></el-option>
+              <el-option label="离婚" value="离婚"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="籍贯:" prop="nativePlace">

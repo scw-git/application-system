@@ -5,7 +5,9 @@
         <el-option label="岗位一" value="1"> </el-option>
         <el-option label="岗位二" value="2"> </el-option>
       </el-select>
-      <el-button type="primary" @click="add(1)"> 新建用户</el-button>
+      <el-button style="margin-left: 10px" type="primary" @click="add(1)">
+        新建用户</el-button
+      >
     </div>
     <div class="table">
       <el-table :data="dataList" border>
