@@ -32,4 +32,37 @@ export function checkNoPass(data) {
         data
     })
 }
+// 获取面试统计列表
+export function getWrittenList(data) {
+    return request({
+        url: '/apply-info/written-score-list',
+        method: 'post',
+        data
+    })
+}
+// 填写笔试成绩
+export function writtenScore(data) {
+    return request({
+        url: '/apply-info/written-score-import',
+        method: 'post',
+        data
+    })
+}
+// 批量导出获得文件名称
+export function exportTemplate(data) {
+    return request({
+        url: '/apply-info/written-score-template',
+        method: 'post',
+        data
+    })
+}
+// 通过文件名称下载文件
+export function downloadFile(params) {
+    return request({
+        url: '/common/download',
+        method: 'get',
+        responseType: 'blob',
+        params
+    })
+}
 

@@ -482,7 +482,6 @@ export default {
     },
     // 点击编辑时打开弹框
     openEditDialog(type, data) {
-      console.log(data);
       if (type == "study") {
         this.title = "编辑学习经历";
         this.studyDialog = true;

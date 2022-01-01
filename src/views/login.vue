@@ -23,6 +23,7 @@
           </el-form-item>
           <el-form-item prop="password">
             <el-input
+              @keydown.enter.native="login('student')"
               v-model="form.password"
               prefix-icon="el-icon-lock"
               placeholder="请输入密码"
@@ -70,6 +71,7 @@
           </el-form-item>
           <el-form-item>
             <el-input
+              @keydown.enter.native="login('admin')"
               v-model="form.password"
               prefix-icon="el-icon-lock"
               placeholder="请输入密码"

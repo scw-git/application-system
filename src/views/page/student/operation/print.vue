@@ -1,39 +1,44 @@
 <template>
-  <div class="b">
+  <div class="b p15">
+    <el-table v-show="isShow" :data="dataList">
+      <el-table-column
+        label="序号"
+        align="center"
+        type="index"
+      ></el-table-column>
+      <el-table-column
+        label="考试单位"
+        align="center"
+        prop="examUnit"
+      ></el-table-column>
+      <el-table-column
+        label="考试岗位"
+        align="center"
+        prop="recruitmentJob"
+      ></el-table-column>
+      <el-table-column
+        label="考试名称"
+        align="center"
+        prop="examName"
+      ></el-table-column>
+      <el-table-column
+        label="打印时间"
+        align="center"
+        prop="printTime"
+      ></el-table-column>
+      <el-table-column label="操作" align="center">
+        <template slot-scope="scope">
+          <el-button
+            size="small"
+            @click="getWrittenInfo(scope.row.id)"
+            type="primary"
+          >
+            打印</el-button
+          >
+        </template>
+      </el-table-column>
+    </el-table>
     <div class="print">
-      <el-table :data="dataList">
-        <el-table-column
-          label="序号"
-          align="center"
-          type="index"
-        ></el-table-column>
-        <el-table-column
-          label="考试单位"
-          align="center"
-          prop=""
-        ></el-table-column>
-        <el-table-column
-          label="考试岗位"
-          align="center"
-          prop=""
-        ></el-table-column>
-        <el-table-column
-          label="考试名称"
-          align="center"
-          prop=""
-        ></el-table-column>
-        <el-table-column
-          label="打印时间"
-          align="center"
-          prop=""
-        ></el-table-column>
-        <el-table-column label="操作" align="center">
-          <template slot-scope="scope">
-            <el-button type="primary"> 查看</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-
       <div v-show="!isShow" id="getPdf" class="printForm">
         <div class="applicationForm">
           <div class="left">
@@ -126,6 +131,9 @@
         type="primary"
         >下载打印</el-button
       >
+      <el-button v-show="!isShow" @click="isShow = true" type="primary"
+        >返回</el-button
+      >
     </div>
   </div>
 </template>
@@ -144,10 +152,15 @@ export default {
   },
   created() {
     this.getOther();
-    this.getWrittenInfo();
     this.getTime();
+    this.getList();
   },
   methods: {
+    getList() {
+      api.getList().then((res) => {
+        this.dataList = res.data;
+      });
+    },
     getTime() {
       this.time.year = new Date().getFullYear();
       let month = new Date().getMonth() + 1;
@@ -162,9 +175,9 @@ export default {
         this.msg = res.data[0].writtenNote;
       });
     },
-    getWrittenInfo() {
-      api.getWrittenInfo().then((res) => {
-        console.log(11, res);
+    getWrittenInfo(id) {
+      this.isShow = false;
+      api.getWrittenInfo(id).then((res) => {
         if (res == undefined) {
           this.isShow = true; //未到打印准考证时间
         } else {

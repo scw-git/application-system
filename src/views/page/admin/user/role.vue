@@ -1,11 +1,13 @@
 <template>
   <div class="role p15">
     <div class="operation mb10">
-      <el-select v-model="value" placeholder="选择岗位">
-        <el-option label="岗位一" value="1"> </el-option>
-        <el-option label="岗位二" value="2"> </el-option>
-      </el-select>
-      <el-button style="margin-left: 10px" type="primary"> 新建角色</el-button>
+      <el-button
+        style="margin-left: 10px"
+        type="primary"
+        @click="openDialog(1)"
+      >
+        添加角色</el-button
+      >
     </div>
     <div class="table">
       <el-table :data="dataList" border>
@@ -17,58 +19,75 @@
         ></el-table-column>
         <el-table-column
           align="center"
-          prop="role"
+          prop="roleName"
           label="角色名称"
         ></el-table-column>
 
         <el-table-column
           align="center"
-          prop="createBy"
-          label="创建人"
+          prop="roleKey"
+          label="角色标识"
         ></el-table-column>
         <el-table-column align="center" prop="status" label="角色状态">
-          <template
+          <template v-if="scope.row.roleKey != 'admin'" slot-scope="scope"
             ><el-switch
-              v-model="value"
+              v-model="scope.row.status"
               active-color="#13ce66"
               inactive-color="#ff4949"
+              active-value="0"
+              inactive-value="1"
+              @change="changeStatus(scope.row)"
             >
             </el-switch
           ></template>
         </el-table-column>
 
         <el-table-column width="300px" align="center" label="操作">
-          <template slot-scope="scope">
-            <el-button size="small" type="warning"> 编辑</el-button>
+          <template v-if="scope.row.roleKey != 'admin'" slot-scope="scope">
+            <el-button
+              @click="openDialog(2, scope.row)"
+              size="small"
+              type="warning"
+            >
+              编辑</el-button
+            >
 
-            <el-button size="small" type="danger">删除</el-button>
+            <el-button
+              size="small"
+              @click="delRole(scope.row.roleId)"
+              type="danger"
+              >删除</el-button
+            >
           </template>
         </el-table-column>
       </el-table>
     </div>
     <el-dialog :title="title" :visible.sync="dialogVisible" width="40%">
-      <el-form label-width="100px" :model="form" :rules="rules">
-        <el-form-item label="角色名称">
-          <el-input placeholder="请输入"></el-input>
+      <el-form ref="ruleForm" label-width="100px" :model="form" :rules="rules">
+        <el-form-item label="角色名称" prop="roleName">
+          <el-input v-model="form.roleName" placeholder="请输入"></el-input>
+        </el-form-item>
+        <el-form-item label="权限标识" prop="roleKey">
+          <el-input v-model="form.roleKey" placeholder="请输入"></el-input>
         </el-form-item>
         <el-form-item label="报考岗位">
           <el-radio-group v-model="form.status">
-            <el-radio :label="1">正常</el-radio>
-            <el-radio :label="0">停用</el-radio>
+            <el-radio label="0">正常</el-radio>
+            <el-radio label="1">停用</el-radio>
           </el-radio-group>
         </el-form-item>
 
         <el-form-item label="菜单权限">
-          <!-- <el-tree
+          <el-tree
             class="tree-border"
-            :data="menuOptions"
+            :data="menuList"
             show-checkbox
             ref="menu"
+            node-key="roleId"
             :default-checked-keys="defKeys"
-            node-key="id"
             empty-text="加载中，请稍后"
             :props="defaultProps"
-          ></el-tree> -->
+          ></el-tree>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -79,19 +98,145 @@
   </div>
 </template>
 <script>
+import * as api from "@/api/user";
+
 export default {
   data() {
     return {
-      dialogVisible: true,
-      rules: {},
+      dialogVisible: false,
+      rules: {
+        roleName: [{ required: true, message: "请输入", trigger: "change" }],
+        roleKey: [{ required: true, message: "请输入", trigger: "change" }],
+      },
       form: {
-        status: 1,
+        roleName: "",
+        status: "0",
+        roleSort: 1,
+        roleKey: "",
       },
       title: "添加角色",
       dataList: [],
+      menuList: [],
+      defaultProps: {
+        children: "children",
+        label: "menuName",
+      },
+      defKeys: [2000],
     };
   },
-  methods: {},
+  created() {
+    this.getRoleList();
+    this.getMenuList();
+  },
+  methods: {
+    delRole(id) {
+      this.$confirm("确认要删除该角色吗?", "警告", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      }).then(() => {
+        api.delRole(id).then((res) => {
+          this.$message.success("删除成功！");
+          this.getRoleList();
+        });
+      });
+    },
+    // editRole(row) {
+    //   this.form.roleName = row.roleName;
+    //   this.form.roleKey = row.roleKey;
+    //   this.form.status = row.status;
+    //   // api.getSelected(row.roleId).then((res) => {
+    //   //   this.defKeys = res.checkedKeys;
+    //   // });
+    //   // if (this.$refs.menu != undefined) {
+    //   //   console.log(8888);
+    //   //   this.$refs.menu.setCheckedNodes(this.defKeys);
+    //   // }
+    // },
+    changeStatus(row) {
+      let text = row.status === "0" ? "启用" : "停用";
+      this.$confirm(
+        '确认要"' + text + '""' + row.roleName + '"角色吗?',
+        "警告",
+        {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning",
+        }
+      )
+        .then(() => {
+          api
+            .updateRoleStatus({ roleId: row.roleId, status: row.status })
+            .then(() => {
+              this.$message({
+                type: "success",
+                message: text + "成功!",
+              });
+            });
+        })
+        .catch(() => {
+          row.status = row.status === "0" ? "1" : "0";
+        });
+    },
+
+    submitData() {
+      this.$refs.ruleForm.validate((valide) => {
+        if (valide) {
+          let node = this.$refs.menu.getCheckedNodes();
+
+          this.form.menuIds = node.map((item) => {
+            return item.menuId;
+          });
+          if (node.length > 0) {
+            if (this.title == "添加角色") {
+              api.addRole(this.form).then((res) => {
+                this.$message.success("添加成功！");
+                this.dialogVisible = false;
+                this.getRoleList();
+              });
+            } else {
+              api.editRole(this.form).then((res) => {
+                this.$message.success("修改成功！");
+                this.dialogVisible = false;
+                this.getRoleList();
+              });
+            }
+          } else {
+            this.$message.warning("请选择权限");
+          }
+        }
+      });
+    },
+    handleCheckNodes(val) {},
+    // 获取菜单权限
+    getMenuList() {
+      api.getMenuList().then((res) => {
+        this.menuList = res.data.slice(0, 5);
+      });
+    },
+    openDialog(n, row) {
+      if (n == 1) {
+        this.title = "添加角色";
+      } else {
+        this.title = "修改角色";
+        this.form.roleName = row.roleName;
+        this.form.roleKey = row.roleKey;
+        this.form.status = row.status;
+        this.form.roleId = row.roleId;
+      }
+      this.dialogVisible = true;
+    },
+    // 获取角色列表
+    getRoleList() {
+      let params = {
+        pageNum: 1,
+        pageSize: 100,
+      };
+      api.getRoleList(params).then((res) => {
+        this.dataList = res.rows;
+      });
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>

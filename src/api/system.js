@@ -16,9 +16,17 @@ export function getOther() {
     })
 }
 // 获取笔试准考证信息
-export function getWrittenInfo() {
+export function getWrittenInfo(id) {
     return request({
-        url: '/examinee/get-amission-ticket',
+        url: '/examinee/get-amission-ticket/' + id,
+        method: 'get',
+
+    })
+}
+// 获取列表
+export function getList() {
+    return request({
+        url: '/examinee/get-ticket-list',
         method: 'get',
 
     })

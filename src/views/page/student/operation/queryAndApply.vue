@@ -63,6 +63,7 @@
         style="margin-left: 45px; margin-top: 10px"
         class="upload-demo"
         action="/api/examinee/upload-annex"
+        :data="{ id: this.id }"
         :headers="headers"
         :on-preview="handlePreview"
         :on-remove="handleRemove"
@@ -105,7 +106,6 @@ export default {
   },
   created() {
     this.getExamList();
-    this.getFj();
   },
   methods: {
     // 删除附件
@@ -115,8 +115,8 @@ export default {
       });
     },
     // 获取附件
-    getFj() {
-      api.getFj().then((res) => {
+    getFj(id) {
+      api.getFj(id).then((res) => {
         res.data.forEach((item, i) => {
           res.data[i].name = item.fileName;
         });
@@ -149,11 +149,11 @@ export default {
     },
     toApplicationForm(id) {
       this.id = id;
-
       api.getConfirmForm(id).then((res) => {
         if (res.code != 500) {
           this.progressTag = 2;
           this.dataList = res.data;
+          this.getFj(id);
         }
       });
     },

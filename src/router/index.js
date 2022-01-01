@@ -143,6 +143,11 @@ const routes = [
         name: 'admin_user_user',
         component: () => import('../views/page/admin/user/user.vue')
       },
+      {
+        path: '/admin_user_group',
+        name: 'admin_user_group',
+        component: () => import('../views/page/admin/user/group.vue')
+      },
       // 系统及配置
       {
         path: '/admin_system_notice',

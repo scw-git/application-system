@@ -16,7 +16,7 @@
         prop="exam_name"
         label="考试名称"
       ></el-table-column>
-      <el-table-column align="center" prop="status" label="状态">
+      <el-table-column align="center" prop="status" label="审核状态">
         <template slot-scope="scope"
           ><el-tag
             :type="

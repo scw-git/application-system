@@ -16,10 +16,10 @@ service.interceptors.response.use(
     response => {
 
         const res = response.data
-        if (res.code === 200) {
+        if (res.code === 200 || res.code === undefined) {
             return res
         } else {
-            console.log(22, response.data);
+            console.log('错误拦截信息', response.data);
             Message({
                 message: response.data.msg,
                 type: 'error',

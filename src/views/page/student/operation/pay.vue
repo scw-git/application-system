@@ -43,12 +43,18 @@
       </el-table-column>
       <el-table-column label="操作" align="center">
         <template slot-scope="scope">
-          <el-button size="small" type="primary"> 查看</el-button>
+          <el-button
+            size="small"
+            type="primary"
+            v-if="scope.row.payStatus == '0'"
+            >缴费
+          </el-button>
+          <span v-else>暂无操作</span>
         </template>
       </el-table-column>
     </el-table>
-    <el-empty v-if="isShow" description="暂无需要缴费的项目"></el-empty>
-    <div v-else>
+
+    <!-- <div>
       <div class="frame_title">报考费用</div>
       <div class="list">
         <div class="content">
@@ -77,7 +83,7 @@
           <el-button type="primary" @click="payment">点击缴费</el-button>
         </div>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 

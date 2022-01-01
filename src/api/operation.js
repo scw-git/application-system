@@ -16,9 +16,9 @@ export function getConfirmForm(id) {
     })
 }
 // 获取附件文件
-export function getFj() {
+export function getFj(id) {
     return request({
-        url: '/examinee/get-annex',
+        url: '/examinee/get-annex/' + id,
         method: 'get',
 
     })

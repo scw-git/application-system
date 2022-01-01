@@ -94,6 +94,7 @@
         </template>
         <el-menu-item-group>
           <el-menu-item index="admin_user_role">角色管理</el-menu-item>
+          <el-menu-item index="admin_user_group">组别管理</el-menu-item>
           <el-menu-item index="admin_user_user">用户管理</el-menu-item>
         </el-menu-item-group>
       </el-submenu>

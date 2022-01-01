@@ -299,6 +299,8 @@ export default {
           if (this.judgeTimeStatus) {
             api.confirArrangeSite(this.arrangeForm).then((res) => {
               this.$message.success("安排成功！");
+              this.arrangePlaceDialog = false;
+              this.getWritten();
             });
           } else {
             this.$message.error("请选择开考时间相同的考试！");

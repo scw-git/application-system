@@ -17,6 +17,7 @@ module.exports = {
         proxy: {
             '/api': {
                 target: 'http://10.9.2.15:8080',
+                // target: 'http://4h09199k66.zicp.vip/',
                 changeOrigin: true,
                 pathRewrite: {
                     '^/api': ''
