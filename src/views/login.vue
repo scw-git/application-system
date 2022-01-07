@@ -7,11 +7,12 @@
           <div class="notice">
             <span>通知：</span>
             <br />
-            <a href="#"
-              >[8月1日起广西再次提高部分优抚对象等人员抚恤和生活补助标准]</a
-            >
-            <a href="#"
-              >广西考生请注意：2021年度全国会计专业技术中级资格考试打印准考证时间sedrhrh</a
+            <a
+              @click="showDetail(item.noticeContent)"
+              v-for="item in dataList"
+              :key="item.noticeId"
+              href="#"
+              >{{ item.noticeTitle }}</a
             >
           </div>
           <el-form-item prop="username">
@@ -23,6 +24,7 @@
           </el-form-item>
           <el-form-item prop="password">
             <el-input
+              type="password"
               @keydown.enter.native="login('student')"
               v-model="form.password"
               prefix-icon="el-icon-lock"
@@ -57,7 +59,7 @@
               <router-link to="register" class="noCount"
                 >没有账号？去注册</router-link
               >
-              <a class="noCount">忘记密码</a>
+              <a class="noCount" @click="openDialog">忘记密码</a>
             </div>
           </el-form-item>
         </el-tab-pane>
@@ -71,6 +73,7 @@
           </el-form-item>
           <el-form-item>
             <el-input
+              type="password"
               @keydown.enter.native="login('admin')"
               v-model="form.password"
               prefix-icon="el-icon-lock"
@@ -92,19 +95,82 @@
         </el-tab-pane>
       </el-tabs>
     </el-form>
+
+    <el-dialog
+      :close-on-click-modal="false"
+      title="重置密码"
+      :visible.sync="dialogVisible"
+      width="30%"
+    >
+      <el-form :model="forgetPassword" :rules="rules" ref="forgetPassword">
+        <el-form-item v-if="!showLastStep" prop="phone">
+          <el-input
+            v-model="forgetPassword.phone"
+            placeholder="请输入手机号"
+          ></el-input>
+        </el-form-item>
+        <el-form-item v-if="!showLastStep" prop="code">
+          <el-input
+            v-model="forgetPassword.code"
+            @keydown.enter.native="nextStep"
+            placeholder="请输入验证码"
+          >
+            <el-button v-if="show" @click="getCode" slot="append"
+              >获取手机验证码</el-button
+            >
+            <el-button disabled v-else slot="append"
+              >重发验证码 ({{ time }} s)</el-button
+            >
+          </el-input>
+        </el-form-item>
+        <el-form-item v-if="showLastStep" prop="phone">
+          <el-input
+            v-model="forgetPassword.password"
+            placeholder="请输入密码"
+          ></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" v-if="!showLastStep" @click="nextStep()"
+          >下一步</el-button
+        >
+        <el-button v-else @click="resetPassword">重 置</el-button>
+        <el-button @click="dialogVisible = false">取 消</el-button>
+      </span>
+    </el-dialog>
+    <el-dialog title="公告" :visible.sync="noticeDialog" width="800px">
+      <p v-html="noticeContent"></p>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="noticeDialog = false">取 消</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
-import { login, loginAdmin } from "@/api/login";
+import { getNoticeList } from "@/api/system";
+import { login, loginAdmin, getInfo, getRouters } from "@/api/login";
 import { encrypt, decrypt } from "@/utils/encrypt";
 import { validatePhone } from "@/utils/validator";
+import { register, getCode, verifyCode, resetPassword } from "@/api/register";
+
 export default {
   data() {
     return {
+      noticeDialog: false,
+      dialogVisible: false,
       activeName: "student",
+      dataList: [],
+      noticeContent: "",
+      showLastStep: false, //显示重置密码的最后一步
+      forgetPassword: {
+        phone: "",
+        code: "",
+      },
       loading: false,
+      show: true, //用于显示忘记密码中的验证码
+      time: 5,
       form: {
-        username: "17677400644",
+        username: "15607814305",
         password: "123456",
 
         code: "11",
@@ -121,11 +187,80 @@ export default {
         code: [
           { required: true, trigger: "change", message: "验证码不能为空" },
         ],
+
+        phone: [
+          { required: true, trigger: "change", message: "手机号不能为空" },
+        ],
       },
     };
   },
-  cremoated() {},
+  created() {
+    this.getNoticeList();
+  },
   methods: {
+    getCode() {
+      if (this.forgetPassword.phone) {
+        this.show = false;
+        let timer = setInterval(() => {
+          if (this.time == 0) {
+            clearInterval(timer);
+            this.show = true;
+            this.time = 60;
+          } else {
+            this.time--;
+          }
+        }, 1000);
+        getCode({ mobile: this.forgetPassword.phone }).then((res) => {
+          if (res.code == 200) {
+            this.$message.success("发送成功！");
+          } else {
+            this.show = false;
+          }
+        });
+      } else {
+        this.$message.warning("请输入手机号！");
+      }
+    },
+    showDetail(data) {
+      this.noticeDialog = true;
+      this.noticeContent = data;
+    },
+    getNoticeList() {
+      this.dataList = [];
+      getNoticeList().then((res) => {
+        res.rows.map((item) => {
+          if (item.noticeType == "0") {
+            this.dataList.push(item);
+          }
+        });
+      });
+    },
+    // 重置密码第二步
+    resetPassword() {
+      resetPassword(this.forgetPassword).then((res) => {
+        if (res.code == 200) {
+          this.$message.success("密码重置成功！");
+          this.dialogVisible = false;
+        }
+      });
+    },
+    // 重置密码第一步
+    nextStep() {
+      this.$refs.forgetPassword.validate((valid) => {
+        if (valid) {
+          // 验证验证码是否正确
+          verifyCode(this.forgetPassword).then((res) => {
+            if (res.code == 200) {
+              this.showLastStep = true;
+            }
+          });
+        }
+      });
+    },
+    openDialog() {
+      this.showLastStep = false;
+      this.dialogVisible = true;
+    },
     handleClick() {
       //this.form 必须要这么写，否则管理员登录不提示
       this.form = {
@@ -146,6 +281,18 @@ export default {
         })
       );
     },
+    //获取用户信息
+    getInfo() {
+      getInfo().then((res) => {
+        sessionStorage.setItem("info", JSON.stringify(res));
+      });
+    },
+    // 获取路由有权限标识
+    getRouters() {
+      getRouters().then((res) => {
+        sessionStorage.setItem("router", JSON.stringify(res.data));
+      });
+    },
     login(type) {
       if (type == "student") {
         this.$refs.login.validate((valid) => {
@@ -155,16 +302,16 @@ export default {
               password: this.form.password,
             };
             this.loading = true;
-            // this.setStorage(type); //存储登录信息
-            // this.$router.push({
-            //   path: "/student_notice",
-            // });
             login(params).then((res) => {
-              this.loading = false;
               this.setStorage(type, res.token); //存储登录信息
-              this.$router.push({
-                path: "/student_notice",
-              });
+              this.getInfo();
+              // 防止跳转太快没有渲染
+              setTimeout(() => {
+                this.loading = false;
+                this.$router.push({
+                  path: "/student_notice",
+                });
+              }, 200);
             });
           }
         });
@@ -178,11 +325,16 @@ export default {
         } else {
           this.loading = true;
           loginAdmin(params).then((res) => {
-            this.loading = false;
             this.setStorage(type, res.token); //存储登录信息
-            this.$router.push({
-              path: "/admin_examinee_check",
-            });
+            this.getRouters();
+            this.getInfo();
+            // 防止跳转太快没有渲染
+            setTimeout(() => {
+              this.loading = false;
+              this.$router.push({
+                path: "/admin_examinee_check",
+              });
+            }, 600);
           });
         }
       }
@@ -203,7 +355,8 @@ export default {
     min-height: 400px;
     border-radius: 6px;
     background: #ffffff;
-    min-width: 350px;
+    min-width: 400px;
+    max-width: 500px;
     width: 33%;
     padding: 25px 25px 5px 25px;
     .title {

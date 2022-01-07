@@ -62,6 +62,7 @@
 import * as api from "@/api/system";
 import { getPdf } from "@/utils/htmlToPdf";
 export default {
+  props: ["id"],
   data() {
     return {
       msg: "",
@@ -71,10 +72,10 @@ export default {
     this.getOther();
   },
   methods: {
-    getOther() {
-      api.getOther().then((res) => {
-        this.msg = res.data[0].faceNote;
-      });
+    getOther(id) {
+      // api.getOther(id).then((res) => {
+      //   this.msg = res.data[0].faceNote;
+      // });
     },
     downLoad() {
       getPdf("#getPdf");

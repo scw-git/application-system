@@ -1,7 +1,7 @@
 <template>
   <div class="image frame">
     <div class="frame_title">个人照片：</div>
-    <div class="content">
+    <div class="content" v-loading="loading">
       <el-upload
         style="margin: 10px 0 0 10px"
         accept=".jpg, .png"
@@ -48,6 +48,7 @@ import { getImage } from "@/api/info";
 export default {
   data() {
     return {
+      loading: false,
       imageUrl: "",
       headers: {
         Authorization: JSON.parse(sessionStorage.getItem("loginInfo")).token,
@@ -62,8 +63,10 @@ export default {
       this.imageUrl = res.url;
     },
     getImage() {
+      this.loading = true;
       getImage().then((res) => {
         this.imageUrl = res.msg;
+        this.loading = false;
       });
     },
     beforeAvatarUpload(res) {},

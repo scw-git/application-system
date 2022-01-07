@@ -9,7 +9,7 @@
         添加角色</el-button
       >
     </div>
-    <div class="table">
+    <div class="table" v-loading="loading">
       <el-table :data="dataList" border>
         <el-table-column
           label="序号"
@@ -95,6 +95,15 @@
         <el-button @click="dialogVisible = false">取消</el-button>
       </span>
     </el-dialog>
+    <el-pagination
+      v-if="total > 0"
+      style="margin-top: 20px"
+      layout="total,prev, pager, next"
+      :total="total"
+      :current-page="pagination.pageNum"
+      @current-change="handleChangePageNum"
+    >
+    </el-pagination>
   </div>
 </template>
 <script>
@@ -103,6 +112,12 @@ import * as api from "@/api/user";
 export default {
   data() {
     return {
+      total: 0,
+      pagination: {
+        pageNum: 1,
+        pageSize: 10,
+      },
+      loading: false,
       dialogVisible: false,
       rules: {
         roleName: [{ required: true, message: "请输入", trigger: "change" }],
@@ -129,6 +144,10 @@ export default {
     this.getMenuList();
   },
   methods: {
+    handleChangePageNum(val) {
+      this.pagination.pageNum = val;
+      this.getRoleList();
+    },
     delRole(id) {
       this.$confirm("确认要删除该角色吗?", "警告", {
         confirmButtonText: "确定",
@@ -228,12 +247,15 @@ export default {
     },
     // 获取角色列表
     getRoleList() {
+      this.loading = true;
       let params = {
         pageNum: 1,
         pageSize: 100,
       };
       api.getRoleList(params).then((res) => {
         this.dataList = res.rows;
+        this.total = res.total;
+        this.loading = false;
       });
     },
   },

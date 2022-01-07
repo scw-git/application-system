@@ -6,7 +6,7 @@
       @click="openDialog('add')"
       >新建</el-button
     >
-    <el-table :data="dataList" border>
+    <el-table v-loading="loading" :data="dataList" border>
       <el-table-column
         label="序号"
         width="100"
@@ -75,6 +75,7 @@ import * as api from "@/api/exam";
 export default {
   data() {
     return {
+      loading: false,
       title: "新建考卷",
       dialogVisible: false,
       form: {},
@@ -138,6 +139,7 @@ export default {
       });
     },
     getTest() {
+      this.loading = true;
       api.getTest().then((res) => {
         res.rows.forEach((item, i) => {
           let arr = [];
@@ -147,8 +149,8 @@ export default {
 
           res.rows[i].time = arr;
         });
-        console.log(res.rows);
         this.dataList = res.rows;
+        this.loading = false;
       });
     },
   },

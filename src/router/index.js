@@ -10,11 +10,6 @@ const routes = [
     redirect: '/login',
   },
   {
-    path: '/list',
-    name: 'list',
-    component: () => import('../views/list/index.vue')
-  },
-  {
     path: '/index',
     name: 'index',
     redirect: '/student_notice',
@@ -84,11 +79,7 @@ const routes = [
         name: 'student_operation_interview',
         component: () => import('../views/page/student/operation/interview.vue')
       },
-      {
-        path: '/student_testRegistration',
-        name: 'student_testRegistration',
-        component: () => import('../views/page/student/testRegistration.vue')
-      },
+
 
       // 管理员路由 
       {

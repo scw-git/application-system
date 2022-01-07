@@ -1,11 +1,6 @@
 <template>
-  <div class="scoreQuery p15">
-    <!-- <el-empty>
-      <div slot="description">
-        <span style="font-size:20px;color:#02a7f0">成绩查询时间未开放，请于2021-5-12至2021-7-12</span>
-      </div>
-    </el-empty>-->
-    <el-table :data="dataList">
+  <div class="scoreQuery p15" v-loading="loading">
+    <el-table v-if="!isShow" :data="dataList">
       <el-table-column
         label="序号"
         align="center"
@@ -14,68 +9,88 @@
       <el-table-column
         label="考试名称"
         align="center"
-        prop=""
+        prop="examName"
       ></el-table-column>
       <el-table-column
         label="报考岗位"
         align="center"
-        prop=""
+        prop="recruitmentJob"
       ></el-table-column>
       <el-table-column
         label="准考证号"
         align="center"
-        prop=""
+        prop="admissionTicketNumber"
+      ></el-table-column>
+
+      <el-table-column
+        label="姓名"
+        align="center"
+        prop="name"
       ></el-table-column>
       <el-table-column
-        label="身份证号"
+        label="成绩"
         align="center"
-        prop=""
+        prop="writtenScore"
       ></el-table-column>
-      <el-table-column label="姓名" align="center" prop=""></el-table-column>
-      <el-table-column label="成绩" align="center" prop=""></el-table-column>
-      <el-table-column
-        label="是否进入面试"
-        align="center"
-        prop=""
-      ></el-table-column>
-    </el-table>
-    <div class="result">
-      <h1 style="font-weight: 700; text-align: center">
-        2021年下半年全国事业单位考试
-      </h1>
-      <div class="content">
-        <span>任务名称：2021年下半年全国事业单位考试</span>
-        <span>报考岗位：xxxx</span>
-        <span>准考证号：34626423</span>
-        <span>身份证号：20215463463</span>
-        <span>姓 名：scw</span>
-        <span
-          >成 绩：<span style="display: inline-block; color: red"
-            >88</span
-          ></span
-        >
-        <span
-          >是否进入面试：是
+      <el-table-column label="是否进入面试" align="center" prop="">
+        <template slot-scope="scope">
+          {{ scope.row.ifInterview == "1" ? "是" : "否" }}
+        </template>
+      </el-table-column>
+      <el-table-column label="操作" align="center">
+        <template slot-scope="scope">
           <el-button
-            @click="toInterview"
-            style="margin-left: 30px"
-            size="mini"
+            size="small"
             type="primary"
+            v-if="scope.row.ifInterview == '1'"
+            @click="showInterview(scope.row.id)"
             >打印面试准考证</el-button
-          ></span
-        >
-      </div>
-    </div>
+          >
+          <span v-else>暂无操作</span>
+        </template>
+      </el-table-column>
+    </el-table>
+    <el-button
+      v-if="isShow"
+      @click="isShow = false"
+      type="primary"
+      size="small"
+    >
+      返回</el-button
+    >
+    <interview :id="id" v-if="isShow"></interview>
   </div>
 </template>
 <script>
+import { getScoreList } from "@/api/operation";
+import interview from "./interview.vue";
 export default {
+  components: {
+    interview,
+  },
   data() {
     return {
+      loading: false,
+      isShow: false,
       dataList: [],
+      id: "",
     };
   },
+  created() {
+    this.getScoreList();
+  },
   methods: {
+    showInterview(id) {
+      this.id = id;
+      this.isShow = true;
+    },
+    getScoreList() {
+      this.loading = true;
+      getScoreList().then((res) => {
+        this.dataList = res.rows;
+        this.loading = false;
+      });
+    },
     toInterview() {
       this.$router.push("student_operation_interview");
     },

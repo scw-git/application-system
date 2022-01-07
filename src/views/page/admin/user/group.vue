@@ -3,7 +3,7 @@
     <el-button style="margin-bottom: 10px" @click="openDialog(1)" type="primary"
       >新增
     </el-button>
-    <el-table :data="dataList">
+    <el-table v-loading="loading" :data="dataList">
       <el-table-column
         align="center"
         prop="deptName"
@@ -51,6 +51,7 @@ import * as api from "@/api/user";
 export default {
   data() {
     return {
+      loading: false,
       dialogVisible: false,
       title: "新增组名",
       dataList: [],
@@ -85,8 +86,10 @@ export default {
       });
     },
     getGroup() {
+      this.loading = true;
       api.getGroup().then((res) => {
         this.dataList = res.data.slice(1);
+        this.loading = false;
       });
     },
     delGroup(id) {

@@ -1,5 +1,5 @@
 <template>
-  <div class="hone frame">
+  <div class="hone frame" v-loading="loading">
     <div
       class="frame_title"
       style="display: flex; justify-content: space-between"
@@ -87,6 +87,7 @@ import * as api from "@/api/info";
 export default {
   data() {
     return {
+      loading: false,
       title: "添加家庭成员",
       dialogFormVisible: false,
       dataList: [],
@@ -150,8 +151,10 @@ export default {
       });
     },
     getHome() {
+      this.loading = true;
       api.getHome().then((res) => {
         this.dataList = res.data;
+        this.loading = false;
       });
     },
     next() {

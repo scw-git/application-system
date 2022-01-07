@@ -1,6 +1,12 @@
 <template>
-  <div class="queryStatus p15">
+  <div class="queryStatus p15" v-loading="loading">
     <el-table :data="dataList" border>
+      <el-table-column
+        width="60px"
+        align="center"
+        type="index"
+        label="序号"
+      ></el-table-column>
       <el-table-column
         align="center"
         prop="exam_unit"
@@ -11,6 +17,12 @@
         prop="recruitment_job"
         label="招聘岗位"
       ></el-table-column>
+      <el-table-column align="center" prop=" check_result" label="未通过原因"
+        ><template slot-scope="scope">
+          {{ scope.row.check_result ? scope.row.check_result : "暂无原因" }}
+        </template></el-table-column
+      >
+
       <el-table-column
         align="center"
         prop="exam_name"
@@ -44,6 +56,7 @@ import { queryStatus } from "@/api/operation";
 export default {
   data() {
     return {
+      loading: false,
       dataList: [],
     };
   },
@@ -52,8 +65,10 @@ export default {
   },
   methods: {
     queryStatus() {
+      this.loading = true;
       queryStatus().then((res) => {
         this.dataList = res.data;
+        this.loading = false;
       });
     },
   },

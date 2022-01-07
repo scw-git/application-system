@@ -1,5 +1,5 @@
 <template>
-  <div class="other p15 frame">
+  <div class="other p15 frame" v-loading="loading">
     <div class="frame_title">其他情况：</div>
     <el-form :model="form">
       <el-form-item label="奖惩情况:">
@@ -42,6 +42,7 @@ import * as api from "@/api/info";
 export default {
   data() {
     return {
+      loading: false,
       form: {},
     };
   },
@@ -50,9 +51,10 @@ export default {
   },
   methods: {
     getOther() {
+      this.loading = true;
       api.getOther().then((res) => {
         this.form = res.data;
-        console.log(res);
+        this.loading = false;
       });
     },
     next(n) {

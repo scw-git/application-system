@@ -43,9 +43,9 @@
             >打印笔试准考证</el-menu-item
           >
           <el-menu-item index="student_operation_score">成绩查询</el-menu-item>
-          <el-menu-item index="student_operation_interview"
+          <!-- <el-menu-item index="student_operation_interview"
             >打印面试准考证</el-menu-item
-          >
+          > -->
         </el-menu-item-group>
       </el-submenu>
     </el-menu>
@@ -55,7 +55,10 @@
       style="height: calc(100vh - 80px)"
       :default-active="adminActiveIndex"
     >
-      <el-submenu index="admin_examinee_check">
+      <el-submenu
+        v-show="router.includes('考生管理')"
+        index="admin_examinee_check"
+      >
         <template slot="title">
           <i class="el-icon-coordinate"></i>
           <span>考生管理</span>
@@ -66,7 +69,10 @@
           <el-menu-item index="admin_examinee_interview">面试统计</el-menu-item>
         </el-menu-item-group>
       </el-submenu>
-      <el-submenu index="admin_exam_testPaper">
+      <el-submenu
+        v-if="router.includes('考试管理')"
+        index="admin_exam_testPaper"
+      >
         <template slot="title">
           <i class="el-icon-edit-outline"></i>
           <span>考试管理</span>
@@ -77,17 +83,17 @@
           <el-menu-item index="admin_exam_time">时间设置</el-menu-item>
         </el-menu-item-group>
       </el-submenu>
-      <el-submenu index="admin_site_written">
+      <el-submenu v-if="router.includes('考场管理')" index="admin_site_written">
         <template slot="title">
           <i class="el-icon-office-building"></i>
           <span>考场管理</span>
         </template>
         <el-menu-item-group>
           <el-menu-item index="admin_site_written">笔试考场设置</el-menu-item>
-          <el-menu-item index="admin_site_interview">面试考场设置</el-menu-item>
+          <el-menu-item index="admin_site_interview">面试地点设置</el-menu-item>
         </el-menu-item-group>
       </el-submenu>
-      <el-submenu index="admin_user_role">
+      <el-submenu v-if="router.includes('用户管理')" index="admin_user_role">
         <template slot="title">
           <i class="el-icon-user"></i>
           <span>用户管理</span>
@@ -98,7 +104,10 @@
           <el-menu-item index="admin_user_user">用户管理</el-menu-item>
         </el-menu-item-group>
       </el-submenu>
-      <el-submenu index="admin_system_notice">
+      <el-submenu
+        v-if="router.includes('系统配置')"
+        index="admin_system_notice"
+      >
         <template slot="title">
           <i class="el-icon-setting"></i>
           <span>系统配置</span>
@@ -120,6 +129,7 @@ export default {
       list: [],
       activeIndex: "student-notice",
       adminActiveIndex: "admin_examinee_check",
+      router: [],
     };
   },
   watch: {
@@ -131,6 +141,14 @@ export default {
 
   created() {
     let loginInfo = JSON.parse(sessionStorage.getItem("loginInfo"));
+    //只有管理员才有这个
+    if (sessionStorage.getItem("router")) {
+      let arr = JSON.parse(sessionStorage.getItem("router"));
+      this.router = arr.map((item) => {
+        return item.name;
+      });
+    }
+
     if (loginInfo.type === "student") {
       this.type = "student";
     } else if (loginInfo.type === "admin") {

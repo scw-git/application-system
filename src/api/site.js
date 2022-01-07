@@ -48,5 +48,45 @@ export function confirArrangeSite(data) {
         data
     })
 }
+// 编辑笔试考场
+export function updateWrittenSite(data) {
+    return request({
+        url: '/place-info/upd-written-place',
+        method: 'post',
+        data
+    })
+}
 
 
+// 新建面试地点
+export function addInterviewSite(data) {
+    return request({
+        url: '/place-info/add-face-place',
+        method: 'post',
+        data
+    })
+}
+// 获取面试地点列表
+export function getInterviewSiteList(data) {
+    return request({
+        url: '/place-info/getFaceList',
+        method: 'post',
+        data
+    })
+}
+// 编辑面试地点
+export function editSite(data) {
+    return request({
+        url: '/place-info/edit-face-place',
+        method: 'post',
+        data
+    })
+}
+// 删除面试地点
+export function delSite(id) {
+    return request({
+        url: '/place-info/del-face-place/' + id,
+        method: 'get',
+
+    })
+}

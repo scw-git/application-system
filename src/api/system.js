@@ -31,3 +31,49 @@ export function getList() {
 
     })
 }
+// 添加公告
+export function addNotice(data) {
+    return request({
+        url: '/system/notice',
+        method: 'post',
+        data
+    })
+}
+
+export function updateNotice(data) {
+    return request({
+        url: '/system/notice',
+        method: 'put',
+        data
+    })
+}
+export function delNotice(id) {
+    return request({
+        url: '/system/notice/' + id,
+        method: 'delete',
+
+    })
+}
+// 获取公告列表
+export function getNoticeList(params) {
+    return request({
+        url: '/system/notice/list',
+        method: 'get',
+        params
+    })
+}
+
+
+
+// 获取操作日志列表
+export function getLoglist(query) {
+    return request({
+        url: '/monitor/operlog/list',
+        method: 'get',
+        params: query
+    })
+}
+
+
+
+

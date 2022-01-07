@@ -13,22 +13,25 @@
         <table border="1">
           <tr>
             <td class="tac">报考单位</td>
-            <td colspan="5">{{ data.examInfo.examUnit }}</td>
+            <td v-if="data.examInfo" colspan="5">
+              {{ data.examInfo.examUnit }}
+            </td>
             <td rowspan="5" style="height: 156px; width: 169px">
               <img
+                v-if="data.examineVo"
                 style="width: 100%"
                 :src="`http://10.9.2.15:8080${data.examineVo.personalPicture}`"
                 alt
               />
             </td>
           </tr>
-          <tr>
+          <tr v-if="data.examInfo">
             <td class="tac">报考岗位</td>
             <td colspan="3">{{ data.examInfo.recruitmentJob }}</td>
             <td class="tac">岗位代码</td>
             <td>{{ data.examInfo.recruitmentNumber }}</td>
           </tr>
-          <tr>
+          <tr v-if="data.examineVo">
             <td class="tac">姓名</td>
             <td>{{ data.examineVo.name }}</td>
             <td class="tac">性别</td>
@@ -36,7 +39,7 @@
             <td class="tac">出生年月</td>
             <td>{{ data.examineVo.birthday }}</td>
           </tr>
-          <tr>
+          <tr v-if="data.examineVo">
             <td class="tac">籍贯</td>
             <td>{{ data.examineVo.nativePlace }}</td>
             <td class="tac">民族</td>
@@ -44,7 +47,7 @@
             <td class="tac">政治面貌</td>
             <td>{{ data.examineVo.politics }}</td>
           </tr>
-          <tr>
+          <tr v-if="data.learningBase">
             <!-- <td class="tac">个人特长</td>
             <td>玩游戏</td> -->
             <td>语言等级</td>
@@ -56,7 +59,7 @@
               {{ data.learningBase.professionalTechnicalTitle }}
             </td>
           </tr>
-          <tr>
+          <tr v-if="data.examineVo">
             <td class="tac" rowspan="2">身份证号码</td>
             <td rowspan="2" colspan="3">
               {{ data.examineVo.certificateNumber }}
@@ -68,11 +71,15 @@
           </tr>
           <tr>
             <td class="tac" style="height: 25px">电子邮箱</td>
-            <td style="height: 17px" colspan="2">{{ data.examineVo.email }}</td>
+            <td v-if="data.examineVo" style="height: 17px" colspan="2">
+              {{ data.examineVo.email }}
+            </td>
           </tr>
-          <tr>
+          <tr v-if="data.learningBase">
             <td class="tac">教育程度</td>
-            <td colspan="2">{{ data.learningBase.degree }}</td>
+            <td v-if="data.learningBase" colspan="2">
+              {{ data.learningBase.degree }}
+            </td>
             <!-- <td>本科、学士</td> -->
             <td>毕业院校及专业</td>
             <td colspan="3">
@@ -89,11 +96,13 @@
               <br />(在职人员填写)
             </td>
             <td colspan="5">
-              {{
-                data.workExperience[0].currentUnit +
-                " " +
-                data.workExperience[0].jobTitle
-              }}
+              <span v-if="data.workExperience.length > 0">
+                {{
+                  data.workExperience[0].currentUnit +
+                  " " +
+                  data.workExperience[0].jobTitle
+                }}</span
+              >
             </td>
           </tr>
           <tr>
@@ -123,15 +132,17 @@
                 <br />
               </span>
               <br />
-              <span v-for="item in data.workExperience" :key="item.id">{{
-                item.entryDate +
-                " 至 " +
-                item.resignationDate +
-                " " +
-                item.currentUnit +
-                " " +
-                item.jobTitle
-              }}</span>
+              <div v-if="data.workExperience">
+                <span v-for="item in data.workExperience" :key="item.id">{{
+                  item.entryDate +
+                  " 至 " +
+                  item.resignationDate +
+                  " " +
+                  item.currentUnit +
+                  " " +
+                  item.jobTitle
+                }}</span>
+              </div>
             </td>
           </tr>
           <tr>

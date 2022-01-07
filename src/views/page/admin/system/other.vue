@@ -1,5 +1,5 @@
 <template>
-  <div class="other p15">
+  <div class="other p15" v-loading="loading">
     <div class="frame_title">笔试准考证考试须知：</div>
     <vue-ueditor-wrap :config="myConfig" v-model="msg1"></vue-ueditor-wrap>
     <div class="frame_title">面试准考证须知：</div>
@@ -18,6 +18,7 @@ export default {
   },
   data() {
     return {
+      loading: false,
       msg1: "",
       msg2: "",
       myConfig: {
@@ -38,9 +39,11 @@ export default {
   },
   methods: {
     getOther() {
+      this.loading = true;
       api.getOther().then((res) => {
         this.msg1 = res.data[0].writtenNote;
         this.msg2 = res.data[0].faceNote;
+        this.loading = false;
       });
     },
     save() {

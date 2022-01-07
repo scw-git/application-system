@@ -1,5 +1,5 @@
 <template>
-  <div class="pay frame">
+  <div class="pay frame" v-loading="loading">
     <el-table :data="dataList">
       <el-table-column
         label="序号"
@@ -92,6 +92,7 @@ import * as api from "@/api/operation";
 export default {
   data() {
     return {
+      loading: false,
       isShow: true,
       payType: 1,
       dataList: [],
@@ -102,13 +103,10 @@ export default {
   },
   methods: {
     payment() {
+      this.loading = true;
       api.payment().then((res) => {
         this.dataList = res.data;
-        // if (res.code == 200) {
-
-        // } else {
-        //   this.isShow = false;
-        // }
+        this.loading = false;
       });
     },
   },

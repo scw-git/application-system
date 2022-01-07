@@ -14,3 +14,17 @@ export function loginAdmin(data) {
         data
     })
 }
+// 获取用户详细信息报考权限
+export function getInfo() {
+    return request({
+        url: '/getInfo',
+        method: 'get'
+    })
+}
+// 获取路由
+export function getRouters() {
+    return request({
+        url: '/getRouters',
+        method: 'get'
+    })
+}

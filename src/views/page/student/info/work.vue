@@ -1,5 +1,5 @@
 <template>
-  <div class="work">
+  <div class="work" v-loading="loading">
     <div class="workAndStudy frame">
       <div class="frame_title">学习/工作情况：</div>
       <el-form
@@ -346,16 +346,15 @@ import * as api from "@/api/info";
 export default {
   data() {
     return {
+      loading: false,
       textarea: "",
       workDialog: false,
       studyDialog: false,
       rules: {
         admissionDate: [
-          { required: true, message: "请选择日期", trigger: "change" },
+          { required: true, message: "请选择日期", trigger: "blur" },
         ],
-        entryDate: [
-          { required: true, message: "请选择日期", trigger: "change" },
-        ],
+        entryDate: [{ required: true, message: "请选择日期", trigger: "blur" }],
         graduationDate: [
           { required: true, message: "请选择日期", trigger: "blur" },
         ],
@@ -370,16 +369,14 @@ export default {
           { required: true, message: "请填写专业", trigger: "blur" },
         ],
         major: [{ required: true, message: "请填写专业", trigger: "blur" }],
-        education: [
-          { required: true, message: "请选择学历", trigger: "change" },
-        ],
-        degree: [{ required: true, message: "请选择学位", trigger: "change" }],
+        education: [{ required: true, message: "请选择学历", trigger: "blur" }],
+        degree: [{ required: true, message: "请选择学位", trigger: "blur" }],
         currentUnit: [
           { required: true, message: "请输入单位", trigger: "blur" },
         ],
         jobTitle: [{ required: true, message: "请输入职位", trigger: "blur" }],
         educationType: [
-          { required: true, message: "请选择教育类别", trigger: "change" },
+          { required: true, message: "请选择教育类别", trigger: "blur" },
         ],
       },
       allStatus: {
@@ -516,8 +513,12 @@ export default {
     },
     // 获取学习/工作情况
     getStudyWork() {
+      this.loading = true;
       api.getStudyWork().then((res) => {
-        this.studyAndWork = res.data;
+        if (res.data) {
+          this.studyAndWork = res.data;
+          this.loading = false;
+        }
       });
     },
     next(n) {
@@ -539,8 +540,10 @@ export default {
     },
     // 获取学习经历
     getStudyData() {
+      this.loading = true;
       api.getStudy().then((res) => {
         this.studyData = res.data;
+        this.loading = false;
       });
     },
     // 获取工作经历

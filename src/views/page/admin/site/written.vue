@@ -14,7 +14,7 @@
         新建</el-button
       >
     </div>
-    <div class="table">
+    <div class="table" v-loading="loading">
       <el-table :data="dataList" border>
         <el-table-column
           label="序号"
@@ -46,11 +46,11 @@
           prop="startExamDate"
           label="考试时间"
         ></el-table-column>
-        <el-table-column
+        <!-- <el-table-column
           align="center"
           prop="status"
           label="考试状态"
-        ></el-table-column>
+        ></el-table-column> -->
         <el-table-column
           align="center"
           prop="scheduledNumber"
@@ -79,7 +79,7 @@
             >
               安排考场</el-button
             >
-            <el-button size="small" type="warning" @click="add(2)">
+            <el-button size="small" type="warning" @click="add(2, scope.row)">
               编辑</el-button
             >
             <el-button size="small" type="danger">删除</el-button>
@@ -203,6 +203,7 @@ import { validateFourNumber } from "@/utils/validator";
 export default {
   data() {
     return {
+      loading: true,
       judgeTimeStatus: true, //用于判断选择的考试开考时间是否相同
       selectArr: [], //选择岗位考试的个数
       placeCount: 0, //考场人数
@@ -215,19 +216,15 @@ export default {
       arrangeForm: { mixtureExam: "是", examIds: [], placeId: "" }, //用于存放“安排考场”的数据
       form: { placeType: "1" },
       rules: {
-        placeName: [{ required: true, message: "请输入", trigger: "change" }],
+        placeName: [{ required: true, message: "请输入", trigger: "blur" }],
         placeNumber: [
           { required: true, validator: validateFourNumber, trigger: "blur" },
         ],
 
         // placeNumber: [{ required: true, message: "请输入", trigger: "change" }],
-        startExamDate: [
-          { required: true, message: "请选择", trigger: "change" },
-        ],
-        placeCount: [{ required: true, message: "请输入", trigger: "change" }],
-        placeAddress: [
-          { required: true, message: "请输入", trigger: "change" },
-        ],
+        startExamDate: [{ required: true, message: "请选择", trigger: "blur" }],
+        placeCount: [{ required: true, message: "请输入", trigger: "blur" }],
+        placeAddress: [{ required: true, message: "请输入", trigger: "blur" }],
       },
     };
   },
@@ -298,9 +295,11 @@ export default {
           this.judgeTime();
           if (this.judgeTimeStatus) {
             api.confirArrangeSite(this.arrangeForm).then((res) => {
-              this.$message.success("安排成功！");
-              this.arrangePlaceDialog = false;
-              this.getWritten();
+              if (res.code == 200) {
+                this.$message.success("安排成功！");
+                this.arrangePlaceDialog = false;
+                this.getWritten();
+              }
             });
           } else {
             this.$message.error("请选择开考时间相同的考试！");
@@ -312,17 +311,22 @@ export default {
         this.$message.error("请选择正确的匹配方式！");
       }
     },
-    add(n) {
+    add(n, data) {
+      this.form = {};
       this.dialogVisible = true;
       if (n == 1) {
         this.title = "新建考场";
       } else if (n == 2) {
         this.title = "编辑考场";
+
+        this.form = { ...data };
       }
     },
     getWritten() {
+      this.loading = true;
       api.getWritten().then((res) => {
         this.dataList = res.rows;
+        this.loading = false;
       });
     },
     submitData() {
@@ -337,6 +341,13 @@ export default {
               }
             });
           } else {
+            api.updateWrittenSite({ ...this.form }).then((res) => {
+              if (res.code == 200) {
+                this.$message.success("修改成功");
+                this.dialogVisible = false;
+                this.getWritten();
+              }
+            });
           }
         }
       });

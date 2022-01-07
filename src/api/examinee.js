@@ -48,21 +48,72 @@ export function writtenScore(data) {
         data
     })
 }
-// 批量导出获得文件名称
+// 批量导出
 export function exportTemplate(data) {
     return request({
         url: '/apply-info/written-score-template',
         method: 'post',
+        responseType: 'blob',
         data
     })
 }
-// 通过文件名称下载文件
-export function downloadFile(params) {
+// 批量导入
+export function importData(data) {
     return request({
-        url: '/common/download',
-        method: 'get',
+        url: '/apply-info/written-batch-import',
+        method: 'post',
         responseType: 'blob',
-        params
+        data
     })
 }
+// 通知单人面试
+export function confirmSendIntervie(data) {
+    return request({
+        url: '/place-info/interview',
+        method: 'post',
+        data
+    })
+}
+// 批量通知面试
+export function allSendIntervie(data) {
+    return request({
+        url: '/place-info/interview-batch',
+        method: 'post',
+        data
+    })
+}
+// 获取面试统计列表
+export function getInterviewList() {
+    return request({
+        url: '/place-info/arrange-face-list',
+        method: 'get',
+
+    })
+}
+// 填写面试成绩
+export function interviewScore(data) {
+    return request({
+        url: '/place-info/update-interview-score',
+        method: 'post',
+        data
+    })
+}
+
+// 导出面试模板
+export function exportInterviewTemplate(data) {
+    return request({
+        url: '/place-info/interview-score-template',
+        method: 'post',
+        responseType: 'blob',
+        data
+    })
+}
+
+
+
+
+
+
+
+
 

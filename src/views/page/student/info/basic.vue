@@ -1,5 +1,5 @@
 <template>
-  <div class="basic">
+  <div class="basic" v-loading="loading">
     <div class="jbqk frame">
       <div class="frame_title">基本情况：</div>
       <el-form
@@ -124,6 +124,7 @@ import { basic, getBasic } from "@/api/info";
 export default {
   data() {
     return {
+      loading: false,
       nation: [
         {
           id: "01",
@@ -444,11 +445,17 @@ export default {
     };
   },
   created() {
-    getBasic().then((res) => {
-      this.form = res.data;
-    });
+    this.getBasic();
   },
   methods: {
+    getBasic() {
+      this.loading = true;
+      getBasic().then((res) => {
+        this.form = res.data;
+        this.loading = false;
+      });
+    },
+
     next(n) {
       this.$refs.ruleForm.validate((valid) => {
         if (valid) {

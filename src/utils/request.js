@@ -1,20 +1,25 @@
 import axios from 'axios'
 import { Message } from 'element-ui'
 
+
+
 const service = axios.create({
     baseURL: 'api',
-    timeout: 5000
+    timeout: 15000
 })
 service.interceptors.request.use(config => {
     if (sessionStorage.getItem('loginInfo')) {
         config.headers.Authorization = JSON.parse(sessionStorage.getItem('loginInfo')).token
     }
-    console.log(config);
     return config
 })
 service.interceptors.response.use(
     response => {
-
+        // console.log(1212, response);
+        // 二进制数据则直接返回
+        if (response.request.responseType === 'blob' || response.request.responseType === 'arraybuffer') {
+            return response.data
+        }
         const res = response.data
         if (res.code === 200 || res.code === undefined) {
             return res
@@ -36,4 +41,6 @@ service.interceptors.response.use(
         })
     }
 )
+
+
 export default service

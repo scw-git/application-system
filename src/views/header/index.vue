@@ -27,13 +27,16 @@
       <div class="user">
         <el-dropdown @command="handleChange">
           <el-button>
-            <i style="font-size:16px;margin-right:3px;" class="el-icon-user"></i>
-            首成文，您好
+            <i
+              style="font-size: 16px; margin-right: 3px"
+              class="el-icon-user"
+            ></i>
+            {{ userName }} 您好
             <i class="el-icon-arrow-down el-icon--right"></i>
           </el-button>
-          <el-dropdown-menu style="width:100px" slot="dropdown">
-            <el-dropdown-item command="info">基本信息</el-dropdown-item>
-            <el-dropdown-item command="password">修改密码</el-dropdown-item>
+          <el-dropdown-menu style="width: 100px" slot="dropdown">
+            <!-- <el-dropdown-item command="info">基本信息</el-dropdown-item>
+            <el-dropdown-item command="password">修改密码</el-dropdown-item> -->
             <el-dropdown-item command="logout">退出</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
@@ -44,8 +47,14 @@
 <script>
 export default {
   data() {
-    return {};
+    return {
+      userName: "",
+    };
   },
+  created() {
+    this.userName = JSON.parse(sessionStorage.getItem("info")).user.nickName;
+  },
+
   methods: {
     handleChange(command) {
       switch (command) {
@@ -60,9 +69,12 @@ export default {
     },
     logout() {
       sessionStorage.removeItem("loginInfo");
+      sessionStorage.removeItem("router");
+      sessionStorage.removeItem("info");
+
       this.$router.push("login");
-    }
-  }
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>

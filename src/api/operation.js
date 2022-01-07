@@ -54,4 +54,13 @@ export function queryStatus() {
 
     })
 }
+// 获取成绩列表
+export function getScoreList() {
+    return request({
+        url: '/examinee/get-score-list',
+        method: 'get',
+
+    })
+}
+
 

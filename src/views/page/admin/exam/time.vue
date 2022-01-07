@@ -1,6 +1,6 @@
 <template>
   <div class="time p15">
-    <div class="table">
+    <div class="table" v-loading="loading">
       <el-table :data="dataList" border>
         <el-table-column
           label="序号"
@@ -79,6 +79,7 @@ import * as api from "@/api/exam";
 export default {
   data() {
     return {
+      loading: true,
       dataList: [],
       dialogVisible: false,
       examList: [],
@@ -111,8 +112,10 @@ export default {
     },
     // 获取列表
     getList() {
+      this.loading = true;
       api.getExamTimeList().then((res) => {
         this.dataList = res.data;
+        this.loading = false;
       });
     },
     // 设置成绩查询、打印准考证时间

@@ -13,7 +13,7 @@
         新建</el-button
       >
     </div>
-    <div class="table" style="margin-top: 10px">
+    <div class="table" v-loading="loading" style="margin-top: 10px">
       <el-table :data="dataList" border>
         <el-table-column
           label="序号"
@@ -42,23 +42,32 @@
           label="考卷类型"
         ></el-table-column>
         <el-table-column
-          width="60"
+          align="center"
+          prop="numberOfApplicants"
+          label="已报名人数"
+        ></el-table-column>
+        <el-table-column
           align="center"
           prop="recruitmentNumber"
-          label="报考人数"
+          label="招考人数"
+        ></el-table-column>
+        <el-table-column
+          align="center"
+          prop="examNumber"
+          label="开考人数"
         ></el-table-column>
         <el-table-column
           align="center"
           prop="unscheduledNumber"
           label="未安排考场人数"
         ></el-table-column>
+        <el-table-column width="80" align="center" prop="free" label="费用(元)">
+          <template slot-scope="scope">
+            {{ scope.row.free ? scope.row.free : "免费" }}
+          </template>
+        </el-table-column>
         <el-table-column
-          width="80"
-          align="center"
-          prop="free"
-          label="是否免费"
-        ></el-table-column>
-        <el-table-column
+          width="165"
           align="center"
           prop="publishDate"
           label="发布时间"
@@ -178,6 +187,7 @@ import * as api from "@/api/exam";
 export default {
   data() {
     return {
+      loading: false,
       value: "",
       title: "新建",
       dialogVisible: false,
@@ -246,8 +256,10 @@ export default {
       });
     },
     getExam() {
+      this.loading = true;
       api.getExam().then((res) => {
         this.dataList = res.rows;
+        this.loading = false;
       });
     },
     submitData() {

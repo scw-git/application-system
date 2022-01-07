@@ -18,7 +18,7 @@
         新建用户</el-button
       >
     </div>
-    <div class="table">
+    <div class="table" v-loading="loading">
       <el-table :data="userList" border>
         <el-table-column
           label="序号"
@@ -57,7 +57,11 @@
 
         <el-table-column width="200px" align="center" label="操作">
           <template slot-scope="scope">
-            <el-button size="small" @click="openDialog(2)" type="warning">
+            <el-button
+              size="small"
+              @click="openDialog(2, scope.row)"
+              type="warning"
+            >
               编辑</el-button
             >
 
@@ -96,7 +100,7 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item v-if="title == '新增用户'" label="密码" prop="password">
+        <el-form-item v-if="title == '新建用户'" label="密码" prop="password">
           <el-input v-model="form.password" placeholder="请输入"></el-input>
         </el-form-item>
 
@@ -127,6 +131,15 @@
         <el-button @click="dialogVisible = false">取消</el-button>
       </span>
     </el-dialog>
+    <el-pagination
+      v-if="total > 0"
+      style="margin-top: 20px"
+      layout="total,prev, pager, next"
+      :total="total"
+      :current-page="pagination.pageNum"
+      @current-change="handleChangePageNum"
+    >
+    </el-pagination>
   </div>
 </template>
 <script>
@@ -135,12 +148,18 @@ import * as api from "@/api/user";
 export default {
   data() {
     return {
+      total: 0,
+      pagination: {
+        pageNum: 1,
+        pageSize: 10,
+      },
+      loading: false,
       isDisabled: false,
       dialogVisible: false,
       rules: {
-        userName: [{ required: true, message: "请输入", trigger: "change" }],
-        nickName: [{ required: true, message: "请输入", trigger: "change" }],
-        password: [{ required: true, message: "请输入", trigger: "change" }],
+        userName: [{ required: true, message: "请输入", trigger: "blur" }],
+        nickName: [{ required: true, message: "请输入", trigger: "blur" }],
+        password: [{ required: true, message: "请输入", trigger: "blur" }],
         deptId: [{ required: true, message: "请选择", trigger: "blur" }],
         roleIds: [{ required: true, message: "请选择", trigger: "blur" }],
       },
@@ -164,6 +183,10 @@ export default {
     this.getUserList();
   },
   methods: {
+    handleChangePageNum(val) {
+      this.pagination.pageNum = val;
+      this.getUserList();
+    },
     changeStatus(row) {
       let text = row.status === "0" ? "启用" : "停用";
       this.$confirm(
@@ -194,17 +217,21 @@ export default {
         this.$refs.ruleForm.validate((valide) => {
           if (valide) {
             api.addUser(this.form).then((res) => {
-              this.$message.success("添加成功！");
-              this.getUserList();
-              this.dialogVisible = false;
+              if (res.code == 200) {
+                this.$message.success("添加成功！");
+                this.getUserList();
+                this.dialogVisible = false;
+              }
             });
           }
         });
       } else if (this.title == "编辑用户") {
         api.updateUser(this.form).then((res) => {
-          this.$message.success("更新成功！");
-          this.getUserList();
-          this.dialogVisible = false;
+          if (res.code == 200) {
+            this.$message.success("更新成功！");
+            this.getUserList();
+            this.dialogVisible = false;
+          }
         });
       }
     },
@@ -223,12 +250,11 @@ export default {
     },
     // 获取用户列表
     getUserList() {
-      let params = {
-        pageNum: 1,
-        pageSize: 10,
-      };
-      api.getUserList(params).then((res) => {
+      this.loading = true;
+      api.getUserList(this.pagination).then((res) => {
         this.userList = res.rows;
+        this.total = res.total;
+        this.loading = false;
       });
     },
     // 获取组名
@@ -258,8 +284,14 @@ export default {
         this.form.userId = res.data.userId;
       });
     },
-    openDialog(n) {
+    openDialog(n, data) {
       this.isDisabled = false;
+      this.form = {
+        status: "0",
+        nickName: "",
+        roleIds: [],
+        userName: "",
+      };
       if (n == 1) {
         this.title = "新建用户";
       } else if (n == 2) {

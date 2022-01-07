@@ -1,5 +1,5 @@
 <template>
-  <div class="queryAndApply">
+  <div class="queryAndApply" v-loading="loading">
     <div class="timeline">
       <span>报考进度：</span>
       <span :class="{ black: progressTag == 1 }">开始</span>
@@ -65,12 +65,9 @@
         action="/api/examinee/upload-annex"
         :data="{ id: this.id }"
         :headers="headers"
-        :on-preview="handlePreview"
         :on-remove="handleRemove"
-        :before-remove="beforeRemove"
         multiple
         :limit="3"
-        :on-exceed="handleExceed"
         :file-list="fileList"
       >
         <el-button size="small" type="primary">附件上传</el-button>
@@ -95,6 +92,7 @@ export default {
   },
   data() {
     return {
+      loading: false,
       progressTag: 1,
       dataList: [],
       fileList: [],
@@ -117,16 +115,20 @@ export default {
     // 获取附件
     getFj(id) {
       api.getFj(id).then((res) => {
-        res.data.forEach((item, i) => {
-          res.data[i].name = item.fileName;
-        });
-        this.fileList = res.data;
+        if (res.data) {
+          res.data.forEach((item, i) => {
+            res.data[i].name = item.fileName;
+          });
+          this.fileList = res.data;
+        }
       });
     },
     //获取考试列表
     getExamList() {
+      this.loading = true;
       api.getExamList().then((res) => {
         this.dataList = res.rows;
+        this.loading = false;
       });
     },
     signUp() {
