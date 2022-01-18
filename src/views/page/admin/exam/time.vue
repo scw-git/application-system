@@ -13,7 +13,11 @@
           prop="examName"
           label="考试名称"
         ></el-table-column>
-
+        <el-table-column
+          align="center"
+          prop="recruitmentJob"
+          label="报考岗位"
+        ></el-table-column>
         <el-table-column align="center" prop="resultsTime" label="成绩查询时间">
           <template slot-scope="scope">
             {{
@@ -27,6 +31,19 @@
           <template slot-scope="scope">
             {{
               scope.row.printTime == null ? "暂未安排时间" : scope.row.printTime
+            }}
+          </template></el-table-column
+        >
+        <el-table-column
+          align="center"
+          prop="reviewTime"
+          label="管理员审核开放时间"
+        >
+          <template slot-scope="scope">
+            {{
+              scope.row.reviewTime == null
+                ? "暂未安排时间"
+                : scope.row.reviewTime
             }}
           </template></el-table-column
         >
@@ -65,12 +82,32 @@
           >
           </el-date-picker>
         </el-form-item>
+        <el-form-item label="管理员审核开放时间" prop="reviewTime">
+          <el-date-picker
+            value-format="yyyy-MM-dd HH:mm:ss"
+            v-model="form.reviewTime"
+            type="datetime"
+            placeholder="选择日期时间"
+          >
+          </el-date-picker>
+        </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="submitData" type="primary">提交</el-button>
         <el-button @click="dialogVisible = false">取消</el-button>
       </span>
     </el-dialog>
+    <el-pagination
+      v-if="total > 0"
+      style="margin-top: 20px"
+      :page-sizes="[10, 20, 30, 40]"
+      layout="total,sizes,prev, pager, next"
+      :total="total"
+      @size-change="handleSizeChange"
+      :current-page="pagination.pageNum"
+      @current-change="handleChangePageNum"
+    >
+    </el-pagination>
   </div>
 </template>
 <script>
@@ -79,11 +116,16 @@ import * as api from "@/api/exam";
 export default {
   data() {
     return {
+      total: 0,
+      pagination: {
+        pageNum: 1,
+        pageSize: 10,
+      },
       loading: true,
       dataList: [],
       dialogVisible: false,
-      examList: [],
-      form: { printTime: "", resultsTime: "", id: null },
+
+      form: { printTime: "", resultsTime: "", reviewTime: "", id: null },
       rules: {
         examName: [{ required: true, message: "请选择", trigger: "blur" }],
         resultsTime: [{ required: true, message: "请选择", trigger: "blur" }],
@@ -92,29 +134,33 @@ export default {
     };
   },
   created() {
-    this.getExam();
     this.getList();
   },
   methods: {
+    handleSizeChange(val) {
+      this.pagination.pageSize = val;
+      this.getList();
+    },
+    handleChangePageNum(val) {
+      this.pagination.pageNum = val;
+      this.getList();
+    },
     // 设置时间
     setTime(data) {
       this.form.examName = data.examName;
       this.form.printTime = data.printTime;
       this.form.resultsTime = data.resultsTime;
+      this.form.reviewTime = data.reviewTime;
       this.form.id = data.id;
       this.dialogVisible = true;
     },
-    // 获取考试名称列表
-    getExam() {
-      api.getExam().then((res) => {
-        this.examList = res.rows;
-      });
-    },
+
     // 获取列表
     getList() {
       this.loading = true;
-      api.getExamTimeList().then((res) => {
-        this.dataList = res.data;
+      api.getExamTimeList(this.pagination).then((res) => {
+        this.dataList = res.rows;
+        this.total = res.total;
         this.loading = false;
       });
     },

@@ -17,39 +17,39 @@
           <table border="1">
             <tr>
               <td>面试单位</td>
-              <td class="w150">广西财政厅</td>
+              <td class="w150">{{ dataList.examUnit }}</td>
               <td style="width: 150px; padding: 5px" rowspan="5">
-                <img src="@/assets/img/aa.jpg" alt="" />
+                <img :src="`http://10.9.2.15:8080${dataList.picture}`" alt="" />
               </td>
             </tr>
             <tr>
               <td>面试岗位</td>
-              <td>技术开发</td>
+              <td>{{ dataList.recruitmentJob }}</td>
             </tr>
             <tr>
-              <td>面试岗位</td>
-              <td>技术开发</td>
+              <td>姓 名</td>
+              <td>{{ dataList.name }}</td>
             </tr>
             <tr>
               <td>身份证号</td>
-              <td>437348573573563</td>
+              <td>{{ dataList.certificateNumber }}</td>
             </tr>
             <tr>
               <td>准考证号</td>
-              <td>346427347</td>
+              <td>{{ dataList.admissionTicketNumber }}</td>
             </tr>
             <tr>
               <td>面试时间</td>
-              <td colspan="2">2021-12-02 14：30</td>
+              <td colspan="2">{{ dataList.startTime }}</td>
             </tr>
             <tr>
               <td>面试地点</td>
-              <td colspan="2">广西民族大学</td>
+              <td colspan="2">{{ dataList.placeAddress }}</td>
             </tr>
           </table>
         </div>
         <div class="tip">
-          <p v-html="msg"></p>
+          <p v-html="dataList.note"></p>
         </div>
       </div>
       <el-button class="btn" type="primary" @click="downLoad"
@@ -66,16 +66,17 @@ export default {
   data() {
     return {
       msg: "",
+      dataList: [],
     };
   },
   created() {
-    this.getOther();
+    this.getFaceInfo();
   },
   methods: {
-    getOther(id) {
-      // api.getOther(id).then((res) => {
-      //   this.msg = res.data[0].faceNote;
-      // });
+    getFaceInfo() {
+      api.getFaceInfo(this.id).then((res) => {
+        this.dataList = res.data;
+      });
     },
     downLoad() {
       getPdf("#getPdf");
@@ -91,7 +92,7 @@ export default {
   .interview {
     .interview_form {
       color: black;
-      border: 1px solid #808080;
+      // border: 1px solid #808080;
       padding: 10px 7px;
       img {
         width: 150px;

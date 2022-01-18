@@ -18,18 +18,16 @@
           :src="imageUrl"
           class="avatar"
         />
-        <div v-else>
-          <i class="el-icon-plus avatar-uploader-icon"></i>
-          <div style="padding-bottom: 15px" class="el-upload__text">
-            上传头像
-          </div>
+        <div v-else class="img">
+          <i class="el-icon-plus"></i>
+          <div class="el-upload__text">上传头像</div>
         </div>
       </el-upload>
       <p>
         <b> 注意事项：</b> <br />
         1、上传的照片必须为
         <font style="color: red"
-          >近期正面免冠电子证件照片，规格为：jpg/jpeg格式，100KB以下（建议用Photoshop“存储为Web所用格式”指令保存）。</font
+          >近期正面免冠电子证件照片，规格为：jpg/jpeg格式，2MB以下（建议用Photoshop“存储为Web所用格式”指令保存）。</font
         >
         <br />
         2、上传的照片必须清晰，不变形，背景为纯色，请勿上传照片截图。可参照左侧示例照片。
@@ -65,11 +63,24 @@ export default {
     getImage() {
       this.loading = true;
       getImage().then((res) => {
-        this.imageUrl = res.msg;
+        if (res.msg != "暂未上传!") {
+          this.imageUrl = res.msg;
+        }
         this.loading = false;
       });
     },
-    beforeAvatarUpload(res) {},
+    beforeAvatarUpload(file) {
+      const isJPG = file.type === "image/jpeg";
+      const isLt2M = file.size / 1024 / 1024 < 2;
+
+      if (!isJPG) {
+        this.$message.error("上传头像图片只能是 JPG 格式!");
+      }
+      if (!isLt2M) {
+        this.$message.error("上传头像图片大小不能超过 2MB!");
+      }
+      return isJPG && isLt2M;
+    },
     next() {
       this.$router.push("student_info_basic");
     },
@@ -88,10 +99,22 @@ export default {
   }
   .btn {
     text-align: center;
+    margin-bottom: 10px;
   }
 }
 </style>
 <style lang="scss" >
+.img {
+  width: 153px;
+  height: 230px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  i {
+    font-size: 25px;
+    margin-bottom: 20px;
+  }
+}
 .avatar-uploader .el-upload {
   border: 1px dashed #d9d9d9;
   border-radius: 6px;

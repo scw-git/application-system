@@ -1,6 +1,9 @@
 <template>
   <div class="queryStatus p15" v-loading="loading">
-    <el-table :data="dataList" border>
+    <p style="color: red; font-size: 20px; padding: 5px 0">
+      提示：如审核未通过，可在报名时间节点内按审核要求补齐资料后，重新报名！
+    </p>
+    <el-table v-if="isShow" :data="dataList" border>
       <el-table-column
         width="60px"
         align="center"
@@ -48,22 +51,46 @@
           >
         </template>
       </el-table-column>
+      <el-table-column align="center" label="操作">
+        <template slot-scope="scope">
+          <el-button type="primary" @click="showDetail(scope.row.id)"
+            >查看报名表</el-button
+          >
+        </template>
+      </el-table-column>
     </el-table>
+    <el-button v-if="!isShow" type="primary" @click="isShow = true"
+      >返回</el-button
+    >
+    <application-form v-if="!isShow" :data="bmbData"></application-form>
   </div>
 </template>
 <script>
-import { queryStatus } from "@/api/operation";
+import { queryStatus, getDshDetail } from "@/api/operation";
+import applicationForm from "@/views/page/components/applicationForm";
+
 export default {
+  components: {
+    applicationForm,
+  },
   data() {
     return {
+      isShow: true,
       loading: false,
       dataList: [],
+      bmbData: [], //报名表信息
     };
   },
   created() {
     this.queryStatus();
   },
   methods: {
+    showDetail(id) {
+      this.isShow = false;
+      getDshDetail(id).then((res) => {
+        this.bmbData = res.data;
+      });
+    },
     queryStatus() {
       this.loading = true;
       queryStatus().then((res) => {

@@ -1,7 +1,12 @@
 <template>
   <div class="user p15">
     <div class="operation mb10">
-      <!-- <el-select v-model="value" placeholder="选择岗位">
+      <el-select
+        clearable
+        @change="() => getUserList()"
+        v-model="pagination.deptId"
+        placeholder="选择分组"
+      >
         <el-option
           v-for="item in groupList"
           :key="item.deptId"
@@ -9,7 +14,14 @@
           :value="item.deptId"
         >
         </el-option>
-      </el-select> -->
+      </el-select>
+      <el-input
+        clearable
+        v-model="pagination.userName"
+        @keydown.enter.native="() => getUserList()"
+        style="width: 180px; margin-left: 10px"
+        placeholder="用户名称"
+      ></el-input>
       <el-button
         style="margin-left: 10px"
         type="primary"
@@ -55,12 +67,12 @@
           ></template>
         </el-table-column>
 
-        <el-table-column width="200px" align="center" label="操作">
+        <el-table-column width="250px" align="center" label="操作">
           <template slot-scope="scope">
             <el-button
               size="small"
               @click="openDialog(2, scope.row)"
-              type="warning"
+              type="primary"
             >
               编辑</el-button
             >
@@ -71,10 +83,24 @@
               type="danger"
               >删除</el-button
             >
+            <el-button
+              size="small"
+              @click="openPassword(scope.row)"
+              type="warning"
+              >修改密码</el-button
+            >
           </template>
         </el-table-column>
       </el-table>
     </div>
+    <el-dialog title="重置密码" :visible.sync="passwordDialog" width="30%">
+      <span>请输入“{{ resetPassword.nickName }}”的新密码</span>
+      <el-input v-model="resetPassword.password"></el-input>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="updatePassword" type="primary">确认</el-button>
+        <el-button @click="passwordDialog = false">取消</el-button>
+      </span>
+    </el-dialog>
     <el-dialog :title="title" :visible.sync="dialogVisible" width="40%">
       <el-form
         :disabled="isDisabled"
@@ -148,10 +174,18 @@ import * as api from "@/api/user";
 export default {
   data() {
     return {
+      //重置密码
+      resetPassword: {
+        password: "",
+        userId: "",
+        nickName: "",
+      },
+      passwordDialog: false,
       total: 0,
       pagination: {
         pageNum: 1,
         pageSize: 10,
+        userName: "", //搜索的值
       },
       loading: false,
       isDisabled: false,
@@ -183,6 +217,19 @@ export default {
     this.getUserList();
   },
   methods: {
+    openPassword(data) {
+      this.passwordDialog = true;
+      this.resetPassword.userId = data.userId;
+      this.resetPassword.nickName = data.nickName;
+    },
+    updatePassword() {
+      api.updatePassword(this.resetPassword).then((res) => {
+        if (res.code == 200) {
+          this.$message.success("重置成功！");
+          this.passwordDialog = false;
+        }
+      });
+    },
     handleChangePageNum(val) {
       this.pagination.pageNum = val;
       this.getUserList();

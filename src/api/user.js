@@ -57,6 +57,14 @@ export function getSelected(id) {
 
     })
 }
+// 获取新增的菜单权限
+export function getUnSelected() {
+    return request({
+        url: '/system/menu/treeselect',
+        method: 'get',
+
+    })
+}
 
 // 新增组名
 export function saveGroup(data) {
@@ -139,6 +147,18 @@ export function changeUserStatus(data) {
         data
     })
 }
+//修改用户密码
+export function updatePassword(data) {
+    return request({
+        url: '/system/user/resetPwd',
+        method: 'put',
+        data
+    })
+}
+
+
+
+
 
 
 

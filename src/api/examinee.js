@@ -24,6 +24,14 @@ export function checkPass(id) {
 
     })
 }
+// 批量审核
+export function checkAllPass(data) {
+    return request({
+        url: '/apply-info/approved-batch',
+        method: 'post',
+        data
+    })
+}
 // 审核不通过
 export function checkNoPass(data) {
     return request({
@@ -83,11 +91,11 @@ export function allSendIntervie(data) {
     })
 }
 // 获取面试统计列表
-export function getInterviewList() {
+export function getInterviewList(data) {
     return request({
         url: '/place-info/arrange-face-list',
-        method: 'get',
-
+        method: 'post',
+        data
     })
 }
 // 填写面试成绩
@@ -108,6 +116,15 @@ export function exportInterviewTemplate(data) {
         data
     })
 }
+// 获取岗位列表
+export function getJobList() {
+    return request({
+        url: '/exam-info/get-job-unit',
+        method: 'get',
+
+    })
+}
+
 
 
 

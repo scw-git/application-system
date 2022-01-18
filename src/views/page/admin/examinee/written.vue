@@ -1,16 +1,58 @@
 <template>
   <div class="written p15">
     <div class="search">
-      <el-input
-        style="width: 220px"
-        v-model="searchValue"
-        placeholder="请输入搜索内容"
+      <el-select
+        clearable
+        v-model="queryData.recruitmentJob"
+        placeholder="请选择岗位"
       >
-      </el-input>
-      <!-- <el-select v-model="value" placeholder="选择岗位">
-        <el-option label="岗位一" value="1"> </el-option>
-        <el-option label="岗位二" value="2"> </el-option>
-      </el-select> -->
+        <el-option
+          v-for="item in jobList"
+          :key="item.id"
+          :label="item.recruitmentJob"
+          :value="item.recruitmentJob"
+        >
+        </el-option>
+      </el-select>
+      <el-select
+        style="margin-left: 10px"
+        clearable
+        v-model="queryData.examName"
+        placeholder="请选择考试名称"
+      >
+        <el-option
+          v-for="item in jobList"
+          :key="item.id"
+          :label="item.examName"
+          :value="item.examName"
+        >
+        </el-option>
+      </el-select>
+
+      <el-date-picker
+        style="width: 140px; margin: 0 10px"
+        value-format="yyyy-MM-dd"
+        v-model="queryData.createTime"
+        type="date"
+        placeholder="选择日期"
+      >
+      </el-date-picker>
+      <el-select
+        clearable
+        style="width: 120px"
+        v-model="queryData.sex"
+        placeholder="选择性别"
+      >
+        <el-option label="男" value="1"> </el-option>
+        <el-option label="女" value="0"> </el-option>
+      </el-select>
+      <el-input
+        clearable
+        @keydown.enter.native="() => getWrittenList()"
+        v-model="idOrName"
+        style="width: 200px; margin: 0 10px"
+        placeholder="请输入身份证或者名字"
+      ></el-input>
       <el-button
         @click="exportTemplate"
         style="margin-left: 20px"
@@ -28,9 +70,13 @@
         :headers="headers"
         accept=".xlsx, .xls"
         :on-success="handleFileSuccess"
+        :on-error="() => (isLoading = false)"
+        :before-upload="() => (isLoading = true)"
         :show-file-list="false"
       >
-        <el-button size="medium" type="primary"> 批量导入成绩</el-button>
+        <el-button size="medium" :loading="isLoading" type="primary">
+          批量导入成绩</el-button
+        >
       </el-upload>
 
       <el-button size="medium" type="primary" @click="allSendIntervie">
@@ -39,6 +85,7 @@
     </div>
     <div class="table" v-loading="loading">
       <el-table
+        @filter-change="filterChange"
         @selection-change="handleSelectionChange"
         border
         :data="dataList"
@@ -83,28 +130,47 @@
           align="center"
           label="考场号"
           prop="examination"
-        ></el-table-column>
+        >
+          <template slot-scope="scope">
+            {{ scope.row.examination ? scope.row.examination : "暂无数据" }}
+          </template>
+        </el-table-column>
         <el-table-column
           width="80"
           align="center"
           label="座位号"
           prop="seatNumber"
-        ></el-table-column>
+        >
+          <template slot-scope="scope">
+            {{ scope.row.seatNumber ? scope.row.seatNumber : "暂无数据" }}
+          </template></el-table-column
+        >
         <el-table-column
           width="110"
           align="center"
           label="笔试成绩"
           prop="writtenScore"
+          column-key="writtenScore"
+          :filter-multiple="false"
+          :filters="scoreFilters"
         >
         </el-table-column>
-        <el-table-column align="center" label="已发面试" prop="ifInterview">
+        <el-table-column
+          width="100"
+          column-key="isInterview"
+          :filter-multiple="false"
+          :filters="isInterviewFilters"
+          align="center"
+          label="已发面试"
+          prop="ifInterview"
+        >
           <template slot-scope="scope">
             {{
               scope.row.ifInterview == "0"
                 ? "否"
                 : scope.row.ifInterview == "1"
                 ? "是"
-                : "未确定"
+                : "待定中"
             }}
           </template></el-table-column
         >
@@ -168,6 +234,15 @@
         <el-button @click="dialogVisible = false">取 消</el-button>
       </span>
     </el-dialog>
+    <el-pagination
+      v-if="total > 0"
+      style="margin-top: 20px"
+      layout="total,sizes,prev, pager, next"
+      :total="total"
+      :current-page="pagination.pageNum"
+      @current-change="handleChangePageNum"
+    >
+    </el-pagination>
   </div>
 </template>
 <script>
@@ -178,6 +253,29 @@ import { saveAs } from "file-saver";
 export default {
   data() {
     return {
+      jobList: [],
+      //搜索参数
+      idOrName: "",
+      queryData: {
+        recruitmentJob: "",
+        createTime: "",
+        sex: "",
+        examName: "",
+      },
+      isInterviewFilters: [
+        { text: "否", value: "0" },
+        { text: "是", value: "1" },
+      ],
+      scoreFilters: [
+        { text: "升序", value: "asc" },
+        { text: "降序", value: "desc" },
+      ],
+      isLoading: false,
+      total: 0,
+      pagination: {
+        pageNum: 1,
+        pageSize: 10,
+      },
       laoding: false,
       dialogVisible: false,
       searchValue: "",
@@ -199,10 +297,39 @@ export default {
     };
   },
   created() {
+    this.getJobList();
     this.getWrittenList();
     this.getInterviewSiteList(); //获取面试地点列表
   },
+  watch: {
+    queryData: {
+      handler: function () {
+        this.getWrittenList();
+      },
+      deep: true,
+    },
+  },
   methods: {
+    // 获取岗位列表
+    getJobList() {
+      api.getJobList().then((res) => {
+        this.jobList = res.data;
+      });
+    },
+
+    filterChange(filters) {
+      if (filters.isInterview) {
+        this.pagination.ifInterview = filters.isInterview[0];
+      } else if (filters.writtenScore) {
+        this.pagination.isAsc = filters.writtenScore[0];
+        this.pagination.orderByColumn = "writtenScore";
+      }
+      this.getWrittenList();
+    },
+    handleChangePageNum(val) {
+      this.pagination.pageNum = val;
+      this.getWrittenList();
+    },
     // 批量发送面试通知
     allSendIntervie() {
       if (this.selectedIds.length > 0) {
@@ -260,6 +387,7 @@ export default {
     handleFileSuccess(res, file, fileList) {
       if (res.code == 200) {
         this.$message.success("导入成功！");
+        this.isLoading = false;
         this.getWrittenList();
       }
     },
@@ -275,10 +403,18 @@ export default {
     },
     getWrittenList() {
       this.loading = true;
-      api.getWrittenList({ recruitmentJob: "" }).then((res) => {
-        this.dataList = res.data;
-        this.loading = false;
-      });
+      api
+        .getWrittenList({
+          recruitmentJob: "",
+          ...this.pagination,
+          ...this.queryData,
+          idOrName: this.idOrName,
+        })
+        .then((res) => {
+          this.dataList = res.rows;
+          this.total = res.total;
+          this.loading = false;
+        });
     },
     // 填写笔试成绩
     writtenScore() {
@@ -290,20 +426,21 @@ export default {
     },
 
     exportTemplate() {
-      if (this.selectedIds.length > 0) {
-        let name = new Date().getFullYear() + "年笔试统计.xlsx";
-        api
-          .exportTemplate({
-            ids: this.selectedIds,
-            recruitmentJob: this.searchValue,
-          })
-          .then((res) => {
-            downloadFile(res, name);
-            this.$refs.table.clearSelection();
-          });
-      } else {
-        this.$message.warning("请选择要导出的内容！");
-      }
+      let name = new Date().getFullYear() + "年笔试统计.xlsx";
+      api
+        .exportTemplate({
+          ids: this.selectedIds,
+          recruitmentJob: this.searchValue,
+        })
+        .then((res) => {
+          downloadFile(res, name);
+          this.$refs.table.clearSelection();
+        });
+      // if (this.selectedIds.length > 0) {
+
+      // } else {
+      //   this.$message.warning("请选择要导出的内容！");
+      // }
     },
   },
 };

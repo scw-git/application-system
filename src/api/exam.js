@@ -1,10 +1,11 @@
 import request from '@/utils/request'
 
 // 考卷设置
-export function getTest() {
+export function getTest(params) {
     return request({
         url: '/paper-info/list',
         method: 'get',
+        params
     })
 }
 export function saveTest(data) {
@@ -43,11 +44,11 @@ export function updateExam(data) {
         data
     })
 }
-export function getExam() {
+export function getExam(params) {
     return request({
         url: '/exam-info/list',
         method: 'get',
-
+        params
     })
 }
 export function delExam(id) {
@@ -71,10 +72,10 @@ export function saveExamTime(data) {
         data
     })
 }
-export function getExamTimeList() {
+export function getExamTimeList(data) {
     return request({
         url: '/exam-info/get-time',
-        method: 'get',
-
+        method: 'post',
+        data
     })
 }

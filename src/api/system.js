@@ -73,6 +73,16 @@ export function getLoglist(query) {
         params: query
     })
 }
+// 面试准考证信息
+export function getFaceInfo(id) {
+    return request({
+        url: '/examinee/get-interview-ticket/' + id,
+        method: 'get',
+
+    })
+}
+
+
 
 
 

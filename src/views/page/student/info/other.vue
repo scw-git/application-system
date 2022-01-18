@@ -4,6 +4,8 @@
     <el-form :model="form">
       <el-form-item label="奖惩情况:">
         <el-input
+          maxlength="200"
+          show-word-limit
           type="textarea"
           :rows="5"
           placeholder="请输入内容"
@@ -13,6 +15,8 @@
       </el-form-item>
       <el-form-item label="特长:">
         <el-input
+          maxlength="200"
+          show-word-limit
           type="textarea"
           :rows="5"
           placeholder="请输入内容"
@@ -22,6 +26,8 @@
       </el-form-item>
       <el-form-item label="备注:">
         <el-input
+          maxlength="200"
+          show-word-limit
           type="textarea"
           :rows="5"
           placeholder="请输入内容"
@@ -53,7 +59,9 @@ export default {
     getOther() {
       this.loading = true;
       api.getOther().then((res) => {
-        this.form = res.data;
+        if (res.data) {
+          this.form = res.data;
+        }
         this.loading = false;
       });
     },

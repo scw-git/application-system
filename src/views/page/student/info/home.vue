@@ -4,7 +4,7 @@
       class="frame_title"
       style="display: flex; justify-content: space-between"
     >
-      家庭情况：
+      <span> <span style="color: red">*</span> 家庭情况：</span>
       <el-button size="mini" @click="openDialog" type="warning">添加</el-button>
     </div>
     <el-table border :data="dataList">

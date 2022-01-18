@@ -39,7 +39,23 @@
           prop="createBy"
           label="创建人"
         ></el-table-column>
-
+        <el-table-column
+          width="100px"
+          align="center"
+          prop="status"
+          label="状态"
+        >
+          <template slot-scope="scope"
+            ><el-switch
+              v-model="scope.row.status"
+              active-color="#13ce66"
+              inactive-color="#ff4949"
+              active-value="0"
+              inactive-value="1"
+              @change="changeStatus(scope.row)"
+            >
+            </el-switch></template
+        ></el-table-column>
         <el-table-column width="300px" align="center" label="操作">
           <template slot-scope="scope">
             <el-button size="small" type="primary" @click="add(2, scope.row)">
@@ -67,12 +83,28 @@
             <el-radio label="0">站外</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="通知内容" prop="noticeContent">
+        <el-form-item label="状态" prop="status">
+          <el-radio-group v-model="form.status">
+            <el-radio label="0">正常</el-radio>
+            <el-radio label="1">关闭</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item
+          v-if="form.noticeType == '1'"
+          label="通知内容"
+          prop="noticeContent"
+        >
           <vue-ueditor-wrap
             v-if="dialogVisible"
             :config="myConfig"
             v-model="form.noticeContent"
           ></vue-ueditor-wrap>
+        </el-form-item>
+        <el-form-item required v-else label="链接" prop="noticeContent">
+          <el-input
+            placeholder="请输入链接"
+            v-model="form.noticeContent"
+          ></el-input>
         </el-form-item>
       </el-form>
       <div class="center">
@@ -148,6 +180,21 @@ export default {
     this.getNoticeList();
   },
   methods: {
+    changeStatus(row) {
+      let text = row.status === "0" ? "启用" : "停用";
+      this.$confirm("确认要" + text + "该通知吗？", "警告", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          this.form = { ...row };
+          this.updateNotice();
+        })
+        .catch(() => {
+          row.status = row.status === "0" ? "1" : "0";
+        });
+    },
     delNotice(id) {
       this.$confirm("确认要删除吗?", "警告", {
         confirmButtonText: "确定",
@@ -162,6 +209,17 @@ export default {
         });
       });
     },
+    // 更新通知
+    updateNotice() {
+      api.updateNotice(this.form).then((res) => {
+        if (res.code == 200) {
+          this.$message.success("修改成功！");
+          this.getNoticeList();
+
+          this.dialogVisible = false;
+        }
+      });
+    },
     submitData() {
       this.$refs.ruleForm.validate((valid) => {
         if (valid) {
@@ -174,14 +232,7 @@ export default {
               }
             });
           } else {
-            api.updateNotice(this.form).then((res) => {
-              if (res.code == 200) {
-                this.$message.success("修改成功！");
-                this.getNoticeList();
-
-                this.dialogVisible = false;
-              }
-            });
+            this.updateNotice();
           }
         }
       });
@@ -194,6 +245,10 @@ export default {
       });
     },
     add(n, data) {
+      this.form = {
+        status: "0", //默认正确启用
+        noticeType: "1",
+      };
       if (n == 1) {
         this.title = "发布通知";
       } else {

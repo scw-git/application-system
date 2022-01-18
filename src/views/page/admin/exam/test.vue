@@ -42,16 +42,19 @@
           label="考卷类型"
         ></el-table-column>
         <el-table-column
+          width="100"
           align="center"
           prop="numberOfApplicants"
           label="已报名人数"
         ></el-table-column>
         <el-table-column
+          width="80"
           align="center"
           prop="recruitmentNumber"
           label="招考人数"
         ></el-table-column>
         <el-table-column
+          width="80"
           align="center"
           prop="examNumber"
           label="开考人数"
@@ -72,16 +75,18 @@
           prop="publishDate"
           label="发布时间"
         ></el-table-column>
-        <el-table-column align="center" prop="status" label="发布状态">
+        <el-table-column
+          width="90"
+          align="center"
+          prop="status"
+          label="发布状态"
+        >
           <template slot-scope="scope">
             {{ scope.row.state == "0" ? "未发布" : "已发布" }}
           </template></el-table-column
         >
         <el-table-column width="240px" align="center" label="操作">
           <template slot-scope="scope">
-            <!-- <el-button size="small" type="primary" @click="openDialog(2)">
-              查看</el-button
-            > -->
             <el-button
               size="small"
               type="primary"
@@ -133,10 +138,10 @@
           <el-input v-model="form.recruitmentJob"></el-input>
         </el-form-item>
         <el-form-item label="招考人数" prop="recruitmentNumber">
-          <el-input v-model="form.recruitmentNumber"></el-input>
+          <el-input type="number" v-model="form.recruitmentNumber"></el-input>
         </el-form-item>
         <el-form-item label="开考人数" prop="examNumber">
-          <el-input v-model="form.examNumber"></el-input>
+          <el-input type="number" v-model="form.examNumber"></el-input>
         </el-form-item>
         <el-form-item label="报名开始时间" prop="applyStartDate">
           <el-date-picker
@@ -163,7 +168,7 @@
           </el-select>
         </el-form-item>
         <el-form-item v-if="form.ifPay == '1'" label="考试费用">
-          <el-input v-model="form.free"></el-input>
+          <el-input placeholder="单位元" v-model="form.free"></el-input>
         </el-form-item>
         <el-form-item label="发布时间">
           <el-date-picker
@@ -180,6 +185,17 @@
         <el-button @click="dialogVisible = false">取消</el-button>
       </span>
     </el-dialog>
+    <el-pagination
+      v-if="total > 0"
+      style="margin-top: 20px"
+      :page-sizes="[10, 20, 30, 40]"
+      layout="total,sizes,prev, pager, next"
+      :total="total"
+      @size-change="handleSizeChange"
+      :current-page="pagination.pageNum"
+      @current-change="handleChangePageNum"
+    >
+    </el-pagination>
   </div>
 </template>
 <script>
@@ -187,6 +203,11 @@ import * as api from "@/api/exam";
 export default {
   data() {
     return {
+      total: 0,
+      pagination: {
+        pageNum: 1,
+        pageSize: 10,
+      },
       loading: false,
       value: "",
       title: "新建",
@@ -220,6 +241,14 @@ export default {
     this.getExam();
   },
   methods: {
+    handleSizeChange(val) {
+      this.pagination.pageSize = val;
+      this.getExam();
+    },
+    handleChangePageNum(val) {
+      this.pagination.pageNum = val;
+      this.getExam();
+    },
     release(id) {
       this.$confirm("是否修改该条考试状态?", "提示", {
         confirmButtonText: "确定",
@@ -257,8 +286,9 @@ export default {
     },
     getExam() {
       this.loading = true;
-      api.getExam().then((res) => {
+      api.getExam(this.pagination).then((res) => {
         this.dataList = res.rows;
+        this.total = res.total;
         this.loading = false;
       });
     },

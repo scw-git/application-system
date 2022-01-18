@@ -27,6 +27,11 @@
           <el-table-column
             align="center"
             prop="examName"
+            label="考试名称"
+          ></el-table-column>
+          <el-table-column
+            align="center"
+            prop="recruitmentJob"
             label="考试岗位"
           ></el-table-column>
           <el-table-column align="center" prop="time" label="报名时间">
@@ -38,11 +43,12 @@
 
           <el-table-column align="center" width="200" label="操作">
             <template slot-scope="scope">
+              <!-- :disabled="scope.row.ifPost == '1' ? true : false" -->
               <el-button
                 size="mini"
-                type="danger"
+                :type="scope.row.ifPost == '1' ? 'danger' : 'primary'"
                 @click="toApplicationForm(scope.row.id)"
-                >报名</el-button
+                >{{ scope.row.ifPost == "1" ? "已报名" : "报名" }}</el-button
               >
             </template>
           </el-table-column>
@@ -50,15 +56,16 @@
       </div>
     </div>
     <div class="personData" v-show="progressTag == 2">
-      <el-button
-        style="margin-left: 45px"
-        size="small"
-        type="primary"
-        @click="progressTag = 1"
-        >返回</el-button
-      >
-      <el-button size="small" type="danger" @click="signUp">报名</el-button>
-
+      <div style="display: flex; justify-content: flex-end; margin-right: 10%">
+        <el-button
+          style="margin-left: 45px"
+          size="small"
+          type="primary"
+          @click="progressTag = 1"
+          >返回</el-button
+        >
+        <el-button size="small" type="danger" @click="signUp">报名</el-button>
+      </div>
       <el-upload
         style="margin-left: 45px; margin-top: 10px"
         class="upload-demo"
@@ -79,6 +86,11 @@
     <div class="finish" v-show="progressTag == 3">
       <p style="text-align: center; font-size: 22px; color: red">
         您已经完成报考，请耐心等待审核
+        <el-button
+          type="primary"
+          @click="() => this.$router.push('student_operation_queryStatus')"
+          >点击查看报名状态</el-button
+        >
       </p>
     </div>
   </div>

@@ -82,7 +82,8 @@
         style="display: flex; justify-content: space-between"
       >
         <span
-          >学习经历 (<span style="color: red">按时间顺序，从高中开始填起</span
+          ><span style="color: red">*</span> 学习经历 (<span style="color: red"
+            >按时间顺序，从高中开始填起</span
           >)：</span
         >
         <el-button size="mini" @click="openAddDialog('study')" type="warning"

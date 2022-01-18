@@ -20,33 +20,48 @@
         label="准考证号"
         align="center"
         prop="admissionTicketNumber"
-      ></el-table-column>
+      >
+        <template slot-scope="scope">
+          {{
+            scope.row.admissionTicketNumber
+              ? scope.row.admissionTicketNumber
+              : "暂无准考证号"
+          }}
+        </template>
+      </el-table-column>
 
       <el-table-column
         label="姓名"
         align="center"
         prop="name"
       ></el-table-column>
-      <el-table-column
-        label="成绩"
-        align="center"
-        prop="writtenScore"
-      ></el-table-column>
+      <el-table-column label="笔试成绩" align="center" prop="writtenScore">
+        <template slot-scope="scope">
+          {{
+            scope.row.writtenScore ? scope.row.writtenScore : "暂无成绩"
+          }}</template
+        ></el-table-column
+      >
       <el-table-column label="是否进入面试" align="center" prop="">
         <template slot-scope="scope">
-          {{ scope.row.ifInterview == "1" ? "是" : "否" }}
+          {{
+            scope.row.ifInterview == "1"
+              ? "是"
+              : scope.row.ifInterview == "0"
+              ? "否"
+              : "待定中"
+          }}
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center">
         <template slot-scope="scope">
           <el-button
+            :disabled="scope.row.ifInterview == '1' ? false : true"
             size="small"
             type="primary"
-            v-if="scope.row.ifInterview == '1'"
             @click="showInterview(scope.row.id)"
             >打印面试准考证</el-button
           >
-          <span v-else>暂无操作</span>
         </template>
       </el-table-column>
     </el-table>
@@ -81,6 +96,7 @@ export default {
   },
   methods: {
     showInterview(id) {
+      console.log(id);
       this.id = id;
       this.isShow = true;
     },
@@ -91,9 +107,9 @@ export default {
         this.loading = false;
       });
     },
-    toInterview() {
-      this.$router.push("student_operation_interview");
-    },
+    // toInterview() {
+    //   this.$router.push("student_operation_interview");
+    // },
   },
 };
 </script>

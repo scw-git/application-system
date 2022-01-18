@@ -64,3 +64,11 @@ export function getScoreList() {
 }
 
 
+// 查看报名表信息
+export function getDshDetail(id) {
+    return request({
+        url: '/apply-info/detail/' + id,
+        method: 'get',
+
+    })
+}

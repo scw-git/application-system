@@ -83,7 +83,7 @@
             :data="menuList"
             show-checkbox
             ref="menu"
-            node-key="roleId"
+            node-key="id"
             :default-checked-keys="defKeys"
             empty-text="加载中，请稍后"
             :props="defaultProps"
@@ -120,8 +120,8 @@ export default {
       loading: false,
       dialogVisible: false,
       rules: {
-        roleName: [{ required: true, message: "请输入", trigger: "change" }],
-        roleKey: [{ required: true, message: "请输入", trigger: "change" }],
+        roleName: [{ required: true, message: "请输入", trigger: "blur" }],
+        roleKey: [{ required: true, message: "请输入", trigger: "blur" }],
       },
       form: {
         roleName: "",
@@ -134,14 +134,14 @@ export default {
       menuList: [],
       defaultProps: {
         children: "children",
-        label: "menuName",
+        label: "label",
       },
-      defKeys: [2000],
+      defKeys: [],
     };
   },
   created() {
     this.getRoleList();
-    this.getMenuList();
+    this.getUnSelected();
   },
   methods: {
     handleChangePageNum(val) {
@@ -160,18 +160,7 @@ export default {
         });
       });
     },
-    // editRole(row) {
-    //   this.form.roleName = row.roleName;
-    //   this.form.roleKey = row.roleKey;
-    //   this.form.status = row.status;
-    //   // api.getSelected(row.roleId).then((res) => {
-    //   //   this.defKeys = res.checkedKeys;
-    //   // });
-    //   // if (this.$refs.menu != undefined) {
-    //   //   console.log(8888);
-    //   //   this.$refs.menu.setCheckedNodes(this.defKeys);
-    //   // }
-    // },
+
     changeStatus(row) {
       let text = row.status === "0" ? "启用" : "停用";
       this.$confirm(
@@ -202,9 +191,8 @@ export default {
       this.$refs.ruleForm.validate((valide) => {
         if (valide) {
           let node = this.$refs.menu.getCheckedNodes();
-
           this.form.menuIds = node.map((item) => {
-            return item.menuId;
+            return item.id;
           });
           if (node.length > 0) {
             if (this.title == "添加角色") {
@@ -228,20 +216,32 @@ export default {
     },
     handleCheckNodes(val) {},
     // 获取菜单权限
-    getMenuList() {
-      api.getMenuList().then((res) => {
+    getUnSelected() {
+      api.getUnSelected().then((res) => {
         this.menuList = res.data.slice(0, 5);
+      });
+    },
+    editRole(row) {
+      this.title = "修改角色";
+      this.form.roleName = row.roleName;
+      this.form.roleKey = row.roleKey;
+      this.form.status = row.status;
+      this.form.roleId = row.roleId;
+      api.getSelected(row.roleId).then((res) => {
+        this.defKeys = res.checkedKeys;
+        this.menuList = res.menus.slice(0, 5);
       });
     },
     openDialog(n, row) {
       if (n == 1) {
         this.title = "添加角色";
+        this.form = { status: "0", roleSort: 1 };
+        this.defKeys = [];
+        if (this.$refs.menu) {
+          this.$refs.menu.setCheckedNodes(this.defKeys);
+        }
       } else {
-        this.title = "修改角色";
-        this.form.roleName = row.roleName;
-        this.form.roleKey = row.roleKey;
-        this.form.status = row.status;
-        this.form.roleId = row.roleId;
+        this.editRole(row);
       }
       this.dialogVisible = true;
     },

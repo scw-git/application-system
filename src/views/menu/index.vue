@@ -7,7 +7,6 @@
       @open="handleOpen"
       @close="handleClose"
       router
-      :default-openeds="['student_operation', 'student_info']"
     >
       <el-menu-item style="padding-left: 23px" index="student_notice">
         <i class="el-icon-message-solid iconfont"></i>

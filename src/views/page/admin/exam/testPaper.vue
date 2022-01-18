@@ -68,6 +68,17 @@
         <el-button @click="dialogVisible = false">取 消</el-button>
       </span>
     </el-dialog>
+    <el-pagination
+      v-if="total > 0"
+      style="margin-top: 20px"
+      :page-sizes="[10, 20, 30, 40]"
+      layout="total,sizes,prev, pager, next"
+      :total="total"
+      @size-change="handleSizeChange"
+      :current-page="pagination.pageNum"
+      @current-change="handleChangePageNum"
+    >
+    </el-pagination>
   </div>
 </template>
 <script>
@@ -75,6 +86,11 @@ import * as api from "@/api/exam";
 export default {
   data() {
     return {
+      total: 0,
+      pagination: {
+        pageNum: 1,
+        pageSize: 10,
+      },
       loading: false,
       title: "新建考卷",
       dialogVisible: false,
@@ -91,6 +107,14 @@ export default {
     this.getTest();
   },
   methods: {
+    handleSizeChange(val) {
+      this.pagination.pageSize = val;
+      this.getTest();
+    },
+    handleChangePageNum(val) {
+      this.pagination.pageNum = val;
+      this.getTest();
+    },
     openDialog(type, data) {
       this.dialogVisible = true;
       if (type == "edit") {
@@ -140,7 +164,7 @@ export default {
     },
     getTest() {
       this.loading = true;
-      api.getTest().then((res) => {
+      api.getTest(this.pagination).then((res) => {
         res.rows.forEach((item, i) => {
           let arr = [];
           res.rows[i].date = item.startTime.split(" ")[0];
@@ -150,6 +174,7 @@ export default {
           res.rows[i].time = arr;
         });
         this.dataList = res.rows;
+        this.total = res.total;
         this.loading = false;
       });
     },

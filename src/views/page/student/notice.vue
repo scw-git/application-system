@@ -43,15 +43,22 @@ export default {
   },
   methods: {
     toDetail(data) {
-      this.tag = false;
-      this.content = data;
+      if (data.noticeType == "0") {
+        let a = document.createElement("a");
+        a.href = data.noticeContent;
+        a.target = "_blank";
+        a.click();
+      } else {
+        this.tag = false;
+        this.content = data;
+      }
     },
     getNoticeList() {
       this.dataList = [];
-      getNoticeList().then((res) => {
+      getNoticeList({ status: "0" }).then((res) => {
         this.dataList = res.rows;
         // res.rows.map((item) => {
-        //   if (item.noticeType == "1") {
+        //   if (item.status == "0") {
         //     this.dataList.push(item);
         //   }
         // });

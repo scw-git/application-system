@@ -1,10 +1,44 @@
 <template>
   <div class="interview p15">
     <div class="search">
-      <el-select v-model="value" placeholder="选择岗位">
-        <el-option label="岗位一" value="1"> </el-option>
-        <el-option label="岗位二" value="2"> </el-option>
+      <el-select
+        clearable
+        v-model="queryData.recruitmentJob"
+        placeholder="请选择岗位"
+      >
+        <el-option
+          v-for="item in jobList"
+          :key="item.id"
+          :label="item.recruitmentJob"
+          :value="item.recruitmentJob"
+        >
+        </el-option>
       </el-select>
+
+      <el-date-picker
+        style="width: 140px; margin: 0 10px"
+        value-format="yyyy-MM-dd"
+        v-model="queryData.createTime"
+        type="date"
+        placeholder="选择日期"
+      >
+      </el-date-picker>
+      <el-select
+        clearable
+        style="width: 120px"
+        v-model="queryData.sex"
+        placeholder="选择性别"
+      >
+        <el-option label="男" value="1"> </el-option>
+        <el-option label="女" value="0"> </el-option>
+      </el-select>
+      <el-input
+        clearable
+        @keydown.enter.native="() => getInterviewList()"
+        v-model="idOrName"
+        style="width: 200px; margin: 0 10px"
+        placeholder="请输入身份证或者名字"
+      ></el-input>
       <el-button
         style="margin-left: 10px"
         @click="exportData"
@@ -22,13 +56,17 @@
         :headers="headers"
         accept=".xlsx, .xls"
         :on-success="handleFileSuccess"
+        :on-error="() => (isLoading = false)"
+        :before-upload="() => (isLoading = true)"
         :show-file-list="false"
       >
-        <el-button size="medium" type="primary"> 批量导入成绩</el-button>
+        <el-button :loading="isLoading" size="medium" type="primary">
+          批量导入成绩</el-button
+        >
       </el-upload>
     </div>
     <div class="table" v-loading="loading">
-      <el-table border :data="dataList">
+      <el-table @filter-change="filterChange" border :data="dataList">
         <el-table-column align="center" label="序号" type="index" width="50">
         </el-table-column>
         <el-table-column width="80px" align="center" prop="name" label="姓名">
@@ -59,14 +97,20 @@
           </template>
         </el-table-column>
         <el-table-column
+          column-key="writtenScore"
+          :filter-multiple="false"
+          :filters="scoreFilters"
+          width="100"
           align="center"
-          width="80px"
           prop="writtenScore"
           label="笔试成绩"
         >
         </el-table-column>
         <el-table-column
-          width="80"
+          column-key="interview"
+          :filter-multiple="false"
+          :filters="scoreFilters"
+          width="100"
           align="center"
           label="面试成绩"
           prop="score"
@@ -102,6 +146,15 @@
         </span>
       </el-dialog>
     </div>
+    <el-pagination
+      v-if="total > 0"
+      style="margin-top: 20px"
+      layout="total,prev, pager, next"
+      :total="total"
+      :current-page="pagination.pageNum"
+      @current-change="handleChangePageNum"
+    >
+    </el-pagination>
   </div>
 </template>
 <script>
@@ -111,6 +164,20 @@ import { downloadFile } from "@/utils/downloadFile";
 export default {
   data() {
     return {
+      jobList: [],
+      //搜索参数
+      idOrName: "",
+      queryData: {
+        recruitmentJob: "",
+        createTime: "",
+        sex: "",
+      },
+      isLoading: false,
+      total: 0,
+      pagination: {
+        pageNum: 1,
+        pageSize: 10,
+      },
       loading: false,
       value: "",
       dialog: false,
@@ -119,15 +186,49 @@ export default {
       headers: {
         Authorization: JSON.parse(sessionStorage.getItem("loginInfo")).token,
       },
+      scoreFilters: [
+        { text: "升序", value: "asc" },
+        { text: "降序", value: "desc" },
+      ],
     };
   },
   created() {
     this.getInterviewList();
+    this.getJobList();
+  },
+  watch: {
+    queryData: {
+      handler: function () {
+        this.getInterviewList();
+      },
+      deep: true,
+    },
   },
   methods: {
+    filterChange(filters) {
+      if (filters.interview) {
+        this.pagination.isAsc = filters.interview[0];
+        this.pagination.orderByColumn = "interview";
+      } else if (filters.writtenScore) {
+        this.pagination.isAsc = filters.writtenScore[0];
+        this.pagination.orderByColumn = "writtenScore";
+      }
+      this.getInterviewList();
+    },
+    // 获取岗位列表
+    getJobList() {
+      api.getJobList().then((res) => {
+        this.jobList = res.data;
+      });
+    },
+    handleChangePageNum(val) {
+      this.pagination.pageNum = val;
+      this.getInterviewList();
+    },
     // 文件上传成功处理
     handleFileSuccess(res, file, fileList) {
       if (res.code == 200) {
+        this.isLoading = false;
         this.$message.success("导入成功！");
         this.getInterviewList();
       }
@@ -159,10 +260,17 @@ export default {
     toDetail() {},
     getInterviewList() {
       this.loading = true;
-      api.getInterviewList().then((res) => {
-        this.dataList = res.rows;
-        this.loading = false;
-      });
+      api
+        .getInterviewList({
+          ...this.pagination,
+          ...this.queryData,
+          idOrName: this.idOrName,
+        })
+        .then((res) => {
+          this.dataList = res.rows;
+          this.total = res.total;
+          this.loading = false;
+        });
     },
   },
 };

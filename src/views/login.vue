@@ -1,25 +1,32 @@
 <template>
   <div class="login">
     <el-form class="login-from" ref="login" :model="form" :rules="rules">
-      <h2 class="title">事业单位考试报名系统</h2>
+      <h2 class="title">广西财政厅事业单位公开招聘报名系统</h2>
       <el-tabs v-model="activeName" @tab-click="handleClick">
         <el-tab-pane label="考生登录" name="student">
           <div class="notice">
             <span>通知：</span>
             <br />
             <a
+              v-for="item in dataList"
+              :key="item.noticeId"
+              target="_blank"
+              :href="item.noticeContent"
+              >{{ item.noticeTitle }}</a
+            >
+            <!-- <a
               @click="showDetail(item.noticeContent)"
               v-for="item in dataList"
               :key="item.noticeId"
               href="#"
               >{{ item.noticeTitle }}</a
-            >
+            > -->
           </div>
           <el-form-item prop="username">
             <el-input
               v-model="form.username"
               prefix-icon="el-icon-user-solid"
-              placeholder="请输入手机号/邮箱"
+              placeholder="请输入手机号/身份证号"
             ></el-input>
           </el-form-item>
           <el-form-item prop="password">
@@ -31,17 +38,18 @@
               placeholder="请输入密码"
             ></el-input>
           </el-form-item>
-          <!-- <el-form-item prop="code">
+          <el-form-item prop="code">
             <el-input
+              @keydown.enter.native="login('student')"
               style="width: 63%"
               prefix-icon="el-icon-circle-check"
               v-model="form.code"
               placeholder="验证码"
             ></el-input>
             <div class="login-code">
-              <img src="@/assets/img/code.gif" alt />
+              <img @click="getCodeImg" :src="codeUrl" alt />
             </div>
-          </el-form-item> -->
+          </el-form-item>
           <el-form-item style="width: 100%">
             <el-button
               :loading="loading"
@@ -68,7 +76,7 @@
             <el-input
               v-model="form.username"
               prefix-icon="el-icon-user-solid"
-              placeholder="请输入手机号/邮箱"
+              placeholder="请输入手机号/用户名"
             ></el-input>
           </el-form-item>
           <el-form-item>
@@ -79,6 +87,18 @@
               prefix-icon="el-icon-lock"
               placeholder="请输入密码"
             ></el-input>
+          </el-form-item>
+          <el-form-item prop="code">
+            <el-input
+              @keydown.enter.native="login('admin')"
+              style="width: 63%"
+              prefix-icon="el-icon-circle-check"
+              v-model="form.code"
+              placeholder="验证码"
+            ></el-input>
+            <div class="login-code">
+              <img @click="getCodeImg" :src="codeUrl" alt />
+            </div>
           </el-form-item>
           <el-form-item style="width: 100%; margin-top: 30px">
             <el-button
@@ -148,7 +168,13 @@
 </template>
 <script>
 import { getNoticeList } from "@/api/system";
-import { login, loginAdmin, getInfo, getRouters } from "@/api/login";
+import {
+  login,
+  loginAdmin,
+  getInfo,
+  getRouters,
+  getCodeImg,
+} from "@/api/login";
 import { encrypt, decrypt } from "@/utils/encrypt";
 import { validatePhone } from "@/utils/validator";
 import { register, getCode, verifyCode, resetPassword } from "@/api/register";
@@ -156,6 +182,7 @@ import { register, getCode, verifyCode, resetPassword } from "@/api/register";
 export default {
   data() {
     return {
+      codeUrl: "",
       noticeDialog: false,
       dialogVisible: false,
       activeName: "student",
@@ -172,9 +199,7 @@ export default {
       form: {
         username: "15607814305",
         password: "123456",
-
-        code: "11",
-        codeUrl: "",
+        code: "",
       },
       rules: {
         username: [
@@ -184,9 +209,7 @@ export default {
           { required: true, message: "密码不能为空！", trigger: "blur" },
         ],
 
-        code: [
-          { required: true, trigger: "change", message: "验证码不能为空" },
-        ],
+        code: [{ required: true, trigger: "blur", message: "验证码不能为空" }],
 
         phone: [
           { required: true, trigger: "change", message: "手机号不能为空" },
@@ -196,8 +219,16 @@ export default {
   },
   created() {
     this.getNoticeList();
+    this.getCodeImg();
   },
   methods: {
+    // 获取图片的验证码
+    getCodeImg() {
+      getCodeImg().then((res) => {
+        this.codeUrl = "data:image/gif;base64," + res.img;
+        this.form.uuid = res.uuid;
+      });
+    },
     getCode() {
       if (this.forgetPassword.phone) {
         this.show = false;
@@ -262,12 +293,12 @@ export default {
       this.dialogVisible = true;
     },
     handleClick() {
+      this.getCodeImg();
       //this.form 必须要这么写，否则管理员登录不提示
       this.form = {
         username: "",
         password: "",
         code: "",
-        codeUrl: "",
       };
       this.$refs.login.resetFields();
     },
@@ -297,45 +328,55 @@ export default {
       if (type == "student") {
         this.$refs.login.validate((valid) => {
           if (valid) {
-            let params = {
-              username: this.form.username,
-              password: this.form.password,
-            };
             this.loading = true;
-            login(params).then((res) => {
-              this.setStorage(type, res.token); //存储登录信息
-              this.getInfo();
-              // 防止跳转太快没有渲染
-              setTimeout(() => {
+            login(this.form)
+              .then((res) => {
+                this.setStorage(type, res.token); //存储登录信息
+                this.getInfo();
+                // 防止跳转太快没有渲染
+                setTimeout(() => {
+                  this.loading = false;
+                  this.$router.push({
+                    path: "/student_notice",
+                  });
+                }, 200);
+              })
+              .catch(() => {
                 this.loading = false;
-                this.$router.push({
-                  path: "/student_notice",
-                });
-              }, 200);
-            });
+                this.getCodeImg();
+                this.form.code = "";
+              });
           }
         });
       } else if (type == "admin") {
-        let params = {
-          username: this.form.username,
-          password: this.form.password,
-        };
+        // let params = {
+        //   username: this.form.username,
+        //   password: this.form.password,
+        // };
         if (this.form.username == "" || this.form.password == "") {
           this.$message.warning("账号或密码不能为空！");
         } else {
           this.loading = true;
-          loginAdmin(params).then((res) => {
-            this.setStorage(type, res.token); //存储登录信息
-            this.getRouters();
-            this.getInfo();
-            // 防止跳转太快没有渲染
-            setTimeout(() => {
+          loginAdmin(this.form)
+            .then((res) => {
+              if (res.code == 200) {
+                this.setStorage(type, res.token); //存储登录信息
+                this.getRouters();
+                this.getInfo();
+                // 防止跳转太快没有渲染
+                setTimeout(() => {
+                  this.loading = false;
+                  this.$router.push({
+                    path: "/admin_examinee_check",
+                  });
+                }, 600);
+              }
+            })
+            .catch(() => {
               this.loading = false;
-              this.$router.push({
-                path: "/admin_examinee_check",
-              });
-            }, 600);
-          });
+              this.getCodeImg();
+              this.form.code = "";
+            });
         }
       }
     },
@@ -355,7 +396,7 @@ export default {
     min-height: 400px;
     border-radius: 6px;
     background: #ffffff;
-    min-width: 400px;
+    min-width: 430px;
     max-width: 500px;
     width: 33%;
     padding: 25px 25px 5px 25px;

@@ -93,6 +93,11 @@
                   <td>考点地址：</td>
                   <td class="tl" colspan="3">
                     {{ personalData.placeAddress }}
+                    {{
+                      personalData.placeLocation
+                        ? personalData.placeLocation
+                        : ""
+                    }}
                   </td>
                 </tr>
                 <tr>
@@ -176,7 +181,6 @@ export default {
       });
     },
     getWrittenInfo(id) {
-      this.isShow = false;
       api.getWrittenInfo(id).then((res) => {
         if (res == undefined) {
           this.isShow = true; //未到打印准考证时间

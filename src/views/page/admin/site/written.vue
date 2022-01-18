@@ -1,10 +1,13 @@
 <template>
   <div class="written p15">
     <div class="operation mb10">
-      <el-select v-model="value" placeholder="选择岗位">
-        <el-option label="岗位一" value="1"> </el-option>
-        <el-option label="岗位二" value="2"> </el-option>
-      </el-select>
+      <el-input
+        clearable
+        @keydown.enter.native="() => getWritten()"
+        v-model="pagination.placeName"
+        style="width: 200px; margin: 0 10px"
+        placeholder="请输入考场名称"
+      ></el-input>
       <el-button
         style="margin-left: 10px"
         class="ml10"
@@ -12,6 +15,22 @@
         @click="add(1)"
       >
         新建</el-button
+      >
+      <el-button
+        style="margin-left: 10px"
+        class="ml10"
+        type="primary"
+        @click="add(3)"
+      >
+        批量新建</el-button
+      >
+      <el-button
+        style="margin-left: 10px"
+        class="ml10"
+        type="primary"
+        @click="openArrangeTest(2)"
+      >
+        批量安排考场</el-button
       >
     </div>
     <div class="table" v-loading="loading">
@@ -42,26 +61,33 @@
           </template></el-table-column
         >
         <el-table-column
+          width="160"
           align="center"
           prop="startExamDate"
           label="考试时间"
-        ></el-table-column>
-        <!-- <el-table-column
-          align="center"
-          prop="status"
-          label="考试状态"
-        ></el-table-column> -->
+        >
+          <template slot-scope="scope">
+            {{
+              scope.row.startExamDate == null
+                ? "暂无时间"
+                : scope.row.startExamDate
+            }}
+          </template>
+        </el-table-column>
+
         <el-table-column
           align="center"
           prop="scheduledNumber"
           label="考试安排状态"
         ></el-table-column>
         <el-table-column
+          width="80"
           align="center"
           prop="placeNumber"
           label="考场编号"
         ></el-table-column>
         <el-table-column
+          width="80"
           align="center"
           prop="placeCount"
           label="考场人数"
@@ -69,12 +95,16 @@
 
         <el-table-column width="300px" align="center" label="操作">
           <template slot-scope="scope">
-            <!-- <el-button size="small" type="primary" @click="add(2)">
-              查看</el-button
-            > -->
             <el-button
               size="small"
-              @click="openArrangeTest(scope.row.placeCount, scope.row.id)"
+              @click="
+                openArrangeTest(
+                  1,
+                  scope.row.placeCount,
+                  scope.row.id,
+                  scope.row.mixtureExam
+                )
+              "
               type="primary"
             >
               安排考场</el-button
@@ -82,7 +112,9 @@
             <el-button size="small" type="warning" @click="add(2, scope.row)">
               编辑</el-button
             >
-            <el-button size="small" type="danger">删除</el-button>
+            <el-button size="small" @click="del(scope.row.id)" type="danger"
+              >删除</el-button
+            >
           </template>
         </el-table-column>
       </el-table>
@@ -109,6 +141,12 @@
           >
           </el-date-picker>
         </el-form-item> -->
+        <el-form-item required label="混合考试">
+          <el-select v-model="form.mixtureExam">
+            <el-option label="是" value="1"> </el-option>
+            <el-option label="否" value="0"> </el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item label="考点地址" prop="placeAddress">
           <el-input placeholder="请输入" v-model="form.placeAddress"></el-input>
         </el-form-item>
@@ -118,12 +156,35 @@
             v-model="form.placeLocation"
           ></el-input>
         </el-form-item>
-        <el-form-item label="考点编号" prop="placeNumber">
+        <el-form-item
+          v-if="title == '新建考场'"
+          label="考点编号"
+          prop="placeNumber"
+        >
           <el-input
             placeholder="只能输入4位数字"
             v-model="form.placeNumber"
           ></el-input>
         </el-form-item>
+
+        <el-form-item v-if="title == '批量新建'" label="考点编号" required>
+          <el-input
+            type="number"
+            style="width: 100px"
+            placeholder="请输入"
+            v-model="form.placeStartNumber"
+          ></el-input
+          >~
+          <el-input
+            type="number"
+            style="width: 100px"
+            placeholder="请输入"
+            v-model="form.placeEndNumber"
+          ></el-input>
+        </el-form-item>
+        <!-- <el-form-item label="考场数量">
+          <el-input placeholder="请输入" v-model="form.placeNumber"></el-input>
+        </el-form-item> -->
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="submitData" type="primary">提交</el-button>
@@ -131,7 +192,7 @@
       </span>
     </el-dialog>
     <!-- 考场安排弹框 -->
-    <el-dialog title="安排考场" :visible.sync="arrangePlaceDialog" width="50%">
+    <el-dialog :title="title1" :visible.sync="arrangePlaceDialog" width="50%">
       <el-form
         ref="arrangePlace"
         label-width="100px"
@@ -139,16 +200,16 @@
         :rules="rules"
       >
         <el-form-item label="混合考试">
-          <el-select v-model="arrangeForm.mixtureExam">
-            <el-option label="是" value="是"> </el-option>
-            <el-option label="否" value="否"> </el-option>
+          <el-select disabled v-model="arrangeForm.mixtureExam">
+            <el-option label="是" value="1"> </el-option>
+            <el-option label="否" value="0"> </el-option>
           </el-select>
         </el-form-item>
+
         <p>
-          选择岗位考试(<span style="color: red"
-            >非混合考试只能选择一场考试</span
+          选择岗位考试<span v-if="title1 == '安排考场'" style="color: red"
+            >(非混合考试只能选择一场考试)</span
           >
-          )
         </p>
         <el-table
           @selection-change="handleSelectionChange"
@@ -165,6 +226,11 @@
             label="考试名称"
             align="center"
             prop="examName"
+          ></el-table-column>
+          <el-table-column
+            label="试卷类别"
+            align="center"
+            prop="type"
           ></el-table-column>
           <el-table-column
             label="岗位"
@@ -193,16 +259,35 @@
         <el-button @click="arrangePlaceDialog = false">取消</el-button>
       </span>
     </el-dialog>
+    <el-pagination
+      v-if="total > 0"
+      style="margin-top: 20px"
+      :page-sizes="[10, 20, 30, 40]"
+      layout="total,sizes,prev, pager, next"
+      :total="total"
+      @size-change="handleSizeChange"
+      :current-page="pagination.pageNum"
+      @current-change="handleChangePageNum"
+    >
+    </el-pagination>
   </div>
 </template>
 
 <script>
 import * as api from "@/api/site";
+import { getJobList } from "@/api/examinee";
+
 import { validateFourNumber } from "@/utils/validator";
 
 export default {
   data() {
     return {
+      total: 0,
+      pagination: {
+        pageNum: 1,
+        pageSize: 10,
+      },
+      title1: "安排考场",
       loading: true,
       judgeTimeStatus: true, //用于判断选择的考试开考时间是否相同
       selectArr: [], //选择岗位考试的个数
@@ -213,8 +298,8 @@ export default {
       value: "",
       dialogVisible: false,
       dataList: [],
-      arrangeForm: { mixtureExam: "是", examIds: [], placeId: "" }, //用于存放“安排考场”的数据
-      form: { placeType: "1" },
+      arrangeForm: { mixtureExam: "1", examIds: [], placeId: "" }, //用于存放“安排考场”的数据
+      form: { mixtureExam: "0" },
       rules: {
         placeName: [{ required: true, message: "请输入", trigger: "blur" }],
         placeNumber: [
@@ -246,14 +331,50 @@ export default {
     },
   },
   methods: {
+    // 获取岗位列表
+    getJobList() {
+      getJobList().then((res) => {
+        this.jobList = res.data;
+      });
+    },
+    handleSizeChange(val) {
+      this.pagination.pageSize = val;
+      this.getWritten();
+    },
+    handleChangePageNum(val) {
+      this.pagination.pageNum = val;
+      this.getWritten();
+    },
+    del(id) {
+      this.$confirm("是否修改该条考试状态?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      }).then(() => {
+        let ids = [];
+        ids.push(id);
+        api.delWrittenSite(ids).then((res) => {
+          if (res.code == 200) {
+            this.$message.warning("删除成功！");
+            this.getWritten();
+          }
+        });
+      });
+    },
     // 点击“安排考场”打开对话框
-    openArrangeTest(placeCount, id) {
-      this.placeCount = placeCount;
-      this.arrangeForm.placeId = id;
+    openArrangeTest(n, placeCount, id, mixtureExam) {
       this.arrangePlaceDialog = true;
       api.getArrangeSite().then((res) => {
         this.arrangePlaceData = res.data;
       });
+      if (n == 1) {
+        this.title1 = "安排考场";
+        this.arrangeForm.mixtureExam = mixtureExam;
+        this.placeCount = placeCount;
+        this.arrangeForm.placeId = id;
+      } else if (n == 2) {
+        this.title1 = "批量安排考场";
+      }
     },
     handleSelectionChange(val) {
       this.selectArr = val;
@@ -286,12 +407,8 @@ export default {
     // 添加安排考场
     addArrangePlace() {
       this.getExamIds();
-      if (this.selectArr) {
-        if (
-          (this.arrangeForm.mixtureExam == "否" &&
-            this.selectArr.length == 1) ||
-          (this.arrangeForm.mixtureExam == "是" && this.selectArr.length >= 1)
-        ) {
+      if (this.title1 == "安排考场") {
+        if (this.selectArr.length > 0) {
           this.judgeTime();
           if (this.judgeTimeStatus) {
             api.confirArrangeSite(this.arrangeForm).then((res) => {
@@ -305,27 +422,90 @@ export default {
             this.$message.error("请选择开考时间相同的考试！");
           }
         } else {
-          this.$message.error("请选择正确的匹配方式！");
+          this.$message.error("请选择考试！");
         }
-      } else {
-        this.$message.error("请选择正确的匹配方式！");
+      } else if (this.title1 == "批量安排考场") {
+        if (this.arrangeForm.examIds.length > 0) {
+          this.setAllWrittenSite();
+        } else {
+          this.$confirm("将安排所有考试,请慎重选择!", "提示", {
+            confirmButtonText: "确定",
+            cancelButtonText: "取消",
+            type: "warning",
+          }).then(() => {
+            this.setAllWrittenSite();
+          });
+        }
       }
     },
+    //   addArrangePlace() {
+    //   this.getExamIds();
+    //   if (this.title1 == "安排考场") {
+    //     if (this.selectArr) {
+    //       if (
+    //         (this.arrangeForm.mixtureExam == "0" &&
+    //           this.selectArr.length == 1) ||
+    //         (this.arrangeForm.mixtureExam == "1" && this.selectArr.length >= 1)
+    //       ) {
+    //         this.judgeTime();
+    //         if (this.judgeTimeStatus) {
+    //           api.confirArrangeSite(this.arrangeForm).then((res) => {
+    //             if (res.code == 200) {
+    //               this.$message.success("安排成功！");
+    //               this.arrangePlaceDialog = false;
+    //               this.getWritten();
+    //             }
+    //           });
+    //         } else {
+    //           this.$message.error("请选择开考时间相同的考试！");
+    //         }
+    //       } else {
+    //         this.$message.error("请选择正确的匹配方式！");
+    //       }
+    //     } else {
+    //       this.$message.error("请选择正确的匹配方式！");
+    //     }
+    //   } else if (this.title1 == "批量安排考场") {
+    //     if (this.arrangeForm.examIds.length > 0) {
+    //       this.setAllWrittenSite();
+    //     } else {
+    //       this.$confirm("将安排所有考试,请慎重选择!", "提示", {
+    //         confirmButtonText: "确定",
+    //         cancelButtonText: "取消",
+    //         type: "warning",
+    //       }).then(() => {
+    //         this.setAllWrittenSite();
+    //       });
+    //     }
+    //   }
+    // },
+    // 批量安排考场
+    setAllWrittenSite() {
+      api.setAllWrittenSite(this.arrangeForm).then((res) => {
+        if (res.code == 200) {
+          this.$message.success(res.msg);
+          this.arrangePlaceDialog = false;
+          this.getWritten();
+        }
+      });
+    },
     add(n, data) {
-      this.form = {};
+      this.form = { mixtureExam: "0" };
       this.dialogVisible = true;
       if (n == 1) {
         this.title = "新建考场";
       } else if (n == 2) {
         this.title = "编辑考场";
-
         this.form = { ...data };
+      } else if (n == 3) {
+        this.title = "批量新建";
       }
     },
     getWritten() {
       this.loading = true;
-      api.getWritten().then((res) => {
+      api.getWritten(this.pagination).then((res) => {
         this.dataList = res.rows;
+        this.total = res.total;
         this.loading = false;
       });
     },
@@ -340,7 +520,7 @@ export default {
                 this.getWritten();
               }
             });
-          } else {
+          } else if (this.title == "编辑考场") {
             api.updateWrittenSite({ ...this.form }).then((res) => {
               if (res.code == 200) {
                 this.$message.success("修改成功");
@@ -348,6 +528,18 @@ export default {
                 this.getWritten();
               }
             });
+          } else if (this.title == "批量新建") {
+            if (this.form.placeStartNumber && this.form.placeEndNumber) {
+              api.setAllSite(this.form).then((res) => {
+                if (res.code == 200) {
+                  this.$message.success("新增成功");
+                  this.dialogVisible = false;
+                  this.getWritten();
+                }
+              });
+            } else {
+              this.$message.warning("请输入编号！");
+            }
           }
         }
       });

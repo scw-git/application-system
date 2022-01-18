@@ -5,7 +5,11 @@
         <el-option label="岗位一" value="1"> </el-option>
         <el-option label="岗位二" value="2"> </el-option>
       </el-select> -->
-      <el-button style="margin-left: 10px" type="primary" @click="openDialog">
+      <el-button
+        style="margin-left: 10px"
+        type="primary"
+        @click="openDialog(1)"
+      >
         新建</el-button
       >
     </div>
@@ -84,6 +88,15 @@
         <el-button @click="dialogVisible = false">取消</el-button>
       </span>
     </el-dialog>
+    <el-pagination
+      v-if="total > 0"
+      style="margin-top: 20px"
+      layout="total,prev, pager, next"
+      :total="total"
+      :current-page="pagination.pageNum"
+      @current-change="handleChangePageNum"
+    >
+    </el-pagination>
   </div>
 </template>
 <script>
@@ -91,6 +104,11 @@ import * as api from "@/api/site";
 export default {
   data() {
     return {
+      total: 0,
+      pagination: {
+        pageNum: 1,
+        pageSize: 10,
+      },
       loading: false,
       dataList: [],
       dialogVisible: false,
@@ -114,6 +132,10 @@ export default {
     this.getInterviewSiteList();
   },
   methods: {
+    handleChangePageNum(val) {
+      this.pagination.pageNum = val;
+      this.getInterviewSiteList();
+    },
     add() {},
     submitData() {
       if (this.title == "新建地点") {
@@ -160,6 +182,7 @@ export default {
       this.loading = true;
       api.getInterviewSiteList().then((res) => {
         this.dataList = res.rows;
+        this.total = res.total;
         this.loading = false;
       });
     },

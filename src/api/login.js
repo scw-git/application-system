@@ -28,3 +28,10 @@ export function getRouters() {
         method: 'get'
     })
 }
+// 获取验证码图片
+export function getCodeImg() {
+    return request({
+        url: '/captchaImage',
+        method: 'get'
+    })
+}

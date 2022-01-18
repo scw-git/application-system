@@ -16,8 +16,8 @@ module.exports = {
         port: 8099, //自定义前端端口（把8080改成了8099）
         proxy: {
             '/api': {
-                // target: 'http://10.9.2.15:8080',
-                target: 'http://4h09199k66.zicp.vip:58173',
+                target: 'http://10.9.2.15:8080',
+                // target: 'http://4h09199k66.zicp.vip:58173',
                 changeOrigin: true,
                 pathRewrite: {
                     '^/api': ''

@@ -1,10 +1,10 @@
 import request from '@/utils/request'
 
-export function getWritten() {
+export function getWritten(data) {
     return request({
         url: '/place-info/list',
-        method: 'get',
-
+        method: 'post',
+        data
     })
 }
 export function addWritten(data) {
@@ -90,3 +90,36 @@ export function delSite(id) {
 
     })
 }
+
+// 批量设置考场
+export function setAllSite(data) {
+    return request({
+        url: '/place-info/add-written-place-batch',
+        method: 'post',
+        data
+
+    })
+}
+// 删除笔试考场
+export function delWrittenSite(data) {
+    return request({
+        url: '/place-info/del-written-place',
+        method: 'post',
+        data
+
+    })
+}
+// 批量安排笔试考场
+export function setAllWrittenSite(data) {
+    return request({
+        url: '/exam-info/arrange-batch-place',
+        method: 'post',
+        data
+
+    })
+}
+
+
+
+
+
