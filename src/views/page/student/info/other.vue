@@ -42,6 +42,7 @@
     </div>
   </div>
 </template>
+
 <script>
 import * as api from "@/api/info";
 

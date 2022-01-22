@@ -28,14 +28,11 @@ const originalPush = VueRouter.prototype.push
 VueRouter.prototype.push = function push(location) {
   return originalPush.call(this, location).catch(err => err)
 }
-// 百度富文本
-import '../public/UEditor/ueditor.config.js'
-import '../public/UEditor/ueditor.all.min.js'
-import '../public/UEditor/lang/zh-cn/zh-cn.js'
-import '../public/UEditor/ueditor.parse.min.js'
 
-
-
+// quill富文本
+import 'quill/dist/quill.core.css' // import styles
+import 'quill/dist/quill.snow.css' // for snow theme
+import 'quill/dist/quill.bubble.css' // for bubble theme
 
 
 

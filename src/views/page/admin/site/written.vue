@@ -1,11 +1,52 @@
 <template>
   <div class="written p15">
     <div class="operation mb10">
+      <el-select
+        clearable
+        style="width: 180px"
+        v-model="queryData.type"
+        placeholder="考卷类型"
+      >
+        <el-option
+          v-for="(item, i) in examineeTypeList"
+          :key="i"
+          :label="item.type"
+          :value="item.type"
+        >
+        </el-option>
+        <el-option label="女" value="0"> </el-option>
+      </el-select>
+      <el-select
+        clearable
+        style="width: 120px; padding: 0 10px"
+        v-model="queryData.arrangeState"
+        placeholder="安排状态"
+      >
+        <el-option label="已安排" value="1"> </el-option>
+        <el-option label="未安排" value="0"> </el-option>
+      </el-select>
+      <el-select
+        clearable
+        style="width: 120px"
+        v-model="queryData.mixtureExam"
+        placeholder="混合考试"
+      >
+        <el-option label="是" value="1"> </el-option>
+        <el-option label="否" value="0"> </el-option>
+      </el-select>
+      <el-date-picker
+        style="width: 140px; margin: 0 10px"
+        value-format="yyyy"
+        v-model="queryData.startExamDate"
+        type="year"
+        placeholder="选择日期"
+      >
+      </el-date-picker>
       <el-input
         clearable
         @keydown.enter.native="() => getWritten()"
         v-model="pagination.placeName"
-        style="width: 200px; margin: 0 10px"
+        style="width: 200px"
         placeholder="请输入考场名称"
       ></el-input>
       <el-button
@@ -32,9 +73,30 @@
       >
         批量安排考场</el-button
       >
+      <el-button
+        style="margin-left: 10px"
+        class="ml10"
+        type="primary"
+        @click="delAll"
+      >
+        批量删除</el-button
+      >
+      <el-button
+        style="margin-left: 10px"
+        class="ml10"
+        type="primary"
+        @click="clearAllSite"
+      >
+        批量清空考场</el-button
+      >
     </div>
     <div class="table" v-loading="loading">
-      <el-table :data="dataList" border>
+      <el-table @selection-change="getdelIds" :data="dataList" border>
+        <el-table-column
+          width="50"
+          align="center"
+          type="selection"
+        ></el-table-column>
         <el-table-column
           label="序号"
           width="50"
@@ -93,7 +155,7 @@
           label="考场人数"
         ></el-table-column>
 
-        <el-table-column width="300px" align="center" label="操作">
+        <el-table-column width="330px" align="center" label="操作">
           <template slot-scope="scope">
             <el-button
               size="small"
@@ -108,6 +170,13 @@
               type="primary"
             >
               安排考场</el-button
+            >
+            <el-button
+              size="small"
+              type="warning"
+              @click="clearFn(scope.row.id)"
+            >
+              清空考场</el-button
             >
             <el-button size="small" type="warning" @click="add(2, scope.row)">
               编辑</el-button
@@ -282,6 +351,9 @@ import { validateFourNumber } from "@/utils/validator";
 export default {
   data() {
     return {
+      examineeTypeList: [], //考卷类型列表
+      queryData: {},
+      delIds: [], //批量删除或者清空考场的的id
       total: 0,
       pagination: {
         pageNum: 1,
@@ -315,8 +387,15 @@ export default {
   },
   created() {
     this.getWritten();
+    this.getExamineeType();
   },
   watch: {
+    queryData: {
+      handler() {
+        this.getWritten();
+      },
+      deep: true,
+    },
     selectArr() {
       // 如果选择的“剩余未安排人数”大于考场人数时
       if (this.getNoArrangeCount(this.selectArr) > this.placeCount) {
@@ -331,12 +410,61 @@ export default {
     },
   },
   methods: {
-    // 获取岗位列表
-    getJobList() {
-      getJobList().then((res) => {
-        this.jobList = res.data;
+    getExamineeType() {
+      api.getExamineeType().then((res) => {
+        this.examineeTypeList = res.rows;
       });
     },
+    // 清空考场方法
+    clearFn(id) {
+      this.$confirm("是否清除考场?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      }).then(() => {
+        let ids = [];
+        if (id != "") {
+          ids.push(id);
+        } else {
+          ids = this.delIds;
+        }
+        console.log(123, ids);
+        api.clearSite(ids).then((res) => {
+          if (res.code == 200) {
+            this.$message.warning("清空考场成功！");
+            this.getWritten();
+          }
+        });
+      });
+    },
+    // clearSingleSite(){},
+    clearAllSite() {
+      if (this.delIds.length > 0) {
+        this.clearFn("");
+      } else {
+        this.$message.warning("请选择要清空的考场！");
+      }
+    },
+    // 批量删除
+    delAll() {
+      if (this.delIds.length > 0) {
+        this.del("");
+      } else {
+        this.$message.warning("请选择要删除的考场！");
+      }
+    },
+    // 获取批量删除的id
+    getdelIds(data) {
+      this.delIds = data.map((item) => {
+        return Number(item.id);
+      });
+    },
+    // 获取岗位列表
+    // getJobList() {
+    //   getJobList().then((res) => {
+    //     this.jobList = res.data;
+    //   });
+    // },
     handleSizeChange(val) {
       this.pagination.pageSize = val;
       this.getWritten();
@@ -346,13 +474,17 @@ export default {
       this.getWritten();
     },
     del(id) {
-      this.$confirm("是否修改该条考试状态?", "提示", {
+      this.$confirm("是否执行删除操作?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
       }).then(() => {
         let ids = [];
-        ids.push(id);
+        if (id != "") {
+          ids.push(id);
+        } else {
+          ids = this.delIds;
+        }
         api.delWrittenSite(ids).then((res) => {
           if (res.code == 200) {
             this.$message.warning("删除成功！");
@@ -503,7 +635,7 @@ export default {
     },
     getWritten() {
       this.loading = true;
-      api.getWritten(this.pagination).then((res) => {
+      api.getWritten({ ...this.pagination, ...this.queryData }).then((res) => {
         this.dataList = res.rows;
         this.total = res.total;
         this.loading = false;

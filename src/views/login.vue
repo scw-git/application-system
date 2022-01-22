@@ -38,7 +38,7 @@
               placeholder="请输入密码"
             ></el-input>
           </el-form-item>
-          <el-form-item prop="code">
+          <el-form-item>
             <el-input
               @keydown.enter.native="login('student')"
               style="width: 63%"
@@ -88,7 +88,7 @@
               placeholder="请输入密码"
             ></el-input>
           </el-form-item>
-          <el-form-item prop="code">
+          <el-form-item>
             <el-input
               @keydown.enter.native="login('admin')"
               style="width: 63%"
@@ -218,6 +218,10 @@ export default {
     };
   },
   created() {
+    sessionStorage.removeItem("loginInfo");
+    sessionStorage.removeItem("router");
+    sessionStorage.removeItem("info");
+
     this.getNoticeList();
     this.getCodeImg();
   },
@@ -389,13 +393,14 @@ export default {
   justify-content: center;
   align-items: center;
   height: 100%;
-  background-image: url("../assets/img/login_bg.jpg");
+  background-image: url("../assets/img/22.jpg");
   background-size: cover;
 
   .login-from {
     min-height: 400px;
     border-radius: 6px;
-    background: #ffffff;
+    // background: #ffffff;
+    background-color: rgba(255, 255, 255, 0.715);
     min-width: 430px;
     max-width: 500px;
     width: 33%;

@@ -79,6 +79,12 @@
     </div>
     <div class="next">
       <el-button size="small" type="primary" @click="next">上一步</el-button>
+      <el-button
+        size="small"
+        type="primary"
+        @click="() => this.$router.push('student_operation_queryAndApply')"
+        >立即报名</el-button
+      >
     </div>
   </div>
 </template>
@@ -164,4 +170,7 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+.next {
+  margin-top: 10px;
+}
 </style>

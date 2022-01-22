@@ -153,3 +153,10 @@ export function getOther() {
     })
 }
 
+export function aaa() {
+    return request({
+        url: '/api/examinee/personal-picture-upload',
+        method: 'put',
+
+    })
+}

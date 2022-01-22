@@ -19,7 +19,7 @@
               <td>面试单位</td>
               <td class="w150">{{ dataList.examUnit }}</td>
               <td style="width: 150px; padding: 5px" rowspan="5">
-                <img :src="`http://10.9.2.15:8080${dataList.picture}`" alt="" />
+                <img :src="`api${dataList.picture}`" alt="" />
               </td>
             </tr>
             <tr>

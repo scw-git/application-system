@@ -22,7 +22,14 @@ module.exports = {
                 pathRewrite: {
                     '^/api': ''
                 }
-            }
+            },
+            // '/upload': {
+            //     target: 'http://10.9.2.15:8080',
+            //     changeOrigin: true,
+            //     pathRewrite: {
+            //         '^/upload': '/'
+            //     }
+            // },
         },
         // 出现编译器错误或警告时，在浏览器中显示全屏覆盖。 如果只想显示编译器错误：
         overlay: {

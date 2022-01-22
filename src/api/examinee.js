@@ -32,6 +32,15 @@ export function checkAllPass(data) {
         data
     })
 }
+// 批量审核不通过
+export function checkAllNoPass(data) {
+    return request({
+        url: '/apply-info/not-approved-batch',
+        method: 'post',
+        data
+    })
+}
+
 // 审核不通过
 export function checkNoPass(data) {
     return request({
@@ -124,6 +133,9 @@ export function getJobList() {
 
     })
 }
+
+
+
 
 
 

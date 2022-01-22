@@ -48,7 +48,7 @@
             placeholder="请输入密码"
           ></el-input>
           <div class="notice">
-            密码格式为：由大写字母、小写字母、数字中至少2种组成8~20位的字符串
+            密码格式为：由大写字母、小写字母、数字、特殊字符4种组成8~20位的字符串
           </div>
         </el-form-item>
         <el-form-item prop="confirPassword">
@@ -221,8 +221,8 @@ import { register, getCode } from "@/api/register";
 export default {
   data() {
     let validatePw1 = (rule, value, callback) => {
-      const reg =
-        /^(?![0-9]+$)(?![a-z]+$)(?![A-Z]+$)(?!([^(0-9a-zA-Z)])+$).{8,}$/;
+      const reg = /(?=.*\d)(?=.*[a-zA-Z])(?=.*[^a-zA-Z0-9]).{8,12}/;
+      // /^(?![0-9]+$)(?![a-z]+$)(?![A-Z]+$)(?!([^(0-9a-zA-Z)])+$).{8,}$/;
       if (value === "") {
         callback("密码不能为空！");
       } else if (!reg.test(value)) {

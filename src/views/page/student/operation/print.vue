@@ -51,7 +51,7 @@
             </div>
             <img
               crossOrigin="Anonymous"
-              :src="`http://10.9.2.15:8080${personalData.picture}`"
+              :src="`api${personalData.picture}`"
               alt=""
             />
 

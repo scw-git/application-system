@@ -94,11 +94,15 @@
           label="通知内容"
           prop="noticeContent"
         >
-          <vue-ueditor-wrap
+          <quill-editor
             v-if="dialogVisible"
-            :config="myConfig"
+            ref="myQuillEditor"
             v-model="form.noticeContent"
-          ></vue-ueditor-wrap>
+            :options="editorOption"
+            @blur="onEditorBlur($event)"
+            @focus="onEditorFocus($event)"
+            @ready="onEditorReady($event)"
+          />
         </el-form-item>
         <el-form-item required v-else label="链接" prop="noticeContent">
           <el-input
@@ -117,17 +121,29 @@
   </div>
 </template>
 <script>
-import VueUeditorWrap from "vue-ueditor-wrap";
 import * as api from "@/api/system";
+import { quillEditor } from "vue-quill-editor";
+import toolbarOptions from "@/utils/toolbarOptions";
+
 export default {
   components: {
-    VueUeditorWrap,
+    quillEditor,
   },
   data() {
     return {
       loading: false,
       dataList: [],
       dialogVisible: false,
+      editorOption: {
+        //  富文本编辑器配置
+        modules: {
+          //工具栏定义的
+          toolbar: toolbarOptions,
+        },
+        //主题
+        theme: "snow",
+        placeholder: "请输入正文",
+      },
 
       form: {
         status: "0", //默认正确启用
@@ -135,44 +151,9 @@ export default {
       },
       rules: {
         noticeTitle: [{ required: true, message: "请输入", trigger: "blur" }],
-
         noticeContent: [
           { required: true, message: "请输入", trigger: "change" },
         ],
-      },
-      myConfig: {
-        // 编辑器不自动被内容撑高
-        autoHeightEnabled: false,
-        // 初始容器高度
-        initialFrameHeight: 200,
-        // 初始容器宽度
-        initialFrameWidth: "100%",
-        UEDITOR_HOME_URL: "/UEditor/", //UEditor资源文件存放路径
-        toolbars: [
-          [
-            "undo", //撤销
-            "bold", //加粗
-            "indent", //首行缩进
-            "italic", //斜体
-            "underline", //下划线
-            "strikethrough", //删除线
-            "forecolor",
-            "subscript", //下标
-            // "fontborder", //字符边框
-            "superscript", //上标
-            "formatmatch", //格式刷
-            "fontfamily", //字体
-            "fontsize", //字号
-            "justifyleft", //居左对齐
-            "justifycenter", //居中对齐
-            "justifyright", //居右对齐
-            "justifyjustify", //两端对齐
-            "insertorderedlist", //有序列表
-            "insertunorderedlist", //无序列表
-            "lineheight", //行间距
-          ],
-        ],
-        zIndex: 9999999999, //解决在弹框中下拉框不能使用问题
       },
     };
   },
@@ -180,6 +161,9 @@ export default {
     this.getNoticeList();
   },
   methods: {
+    onEditorBlur() {},
+    onEditorFocus() {},
+    onEditorReady() {},
     changeStatus(row) {
       let text = row.status === "0" ? "启用" : "停用";
       this.$confirm("确认要" + text + "该通知吗？", "警告", {

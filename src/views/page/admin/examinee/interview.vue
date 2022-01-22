@@ -7,10 +7,10 @@
         placeholder="请选择岗位"
       >
         <el-option
-          v-for="item in jobList"
-          :key="item.id"
-          :label="item.recruitmentJob"
-          :value="item.recruitmentJob"
+          v-for="(item, i) in jobList"
+          :key="i"
+          :label="item"
+          :value="item"
         >
         </el-option>
       </el-select>
@@ -34,11 +34,14 @@
       </el-select>
       <el-input
         clearable
-        @keydown.enter.native="() => getInterviewList()"
+        @keydown.enter.native="getInterviewList()"
         v-model="idOrName"
         style="width: 200px; margin: 0 10px"
         placeholder="请输入身份证或者名字"
       ></el-input>
+      <el-button size="medium" type="primary" @click="getInterviewList()"
+        >确定</el-button
+      >
       <el-button
         style="margin-left: 10px"
         @click="exportData"
@@ -122,7 +125,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column align="center" width="200px" label="操作">
+        <el-table-column align="center" width="130px" label="操作">
           <template slot-scope="scope">
             <el-button
               size="mini"
@@ -130,7 +133,7 @@
               type="warning"
               >填写成绩</el-button
             >
-            <el-button size="mini" type="danger">删 除</el-button>
+            <!-- <el-button size="mini" type="danger">删 除</el-button> -->
           </template>
         </el-table-column>
       </el-table>
@@ -218,7 +221,7 @@ export default {
     // 获取岗位列表
     getJobList() {
       api.getJobList().then((res) => {
-        this.jobList = res.data;
+        this.jobList = res.data.recruitmentJob;
       });
     },
     handleChangePageNum(val) {
@@ -231,6 +234,9 @@ export default {
         this.isLoading = false;
         this.$message.success("导入成功！");
         this.getInterviewList();
+      } else {
+        this.$message.error("导入失败！");
+        this.isLoading = false;
       }
     },
     exportData() {

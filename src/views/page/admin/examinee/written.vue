@@ -7,10 +7,10 @@
         placeholder="请选择岗位"
       >
         <el-option
-          v-for="item in jobList"
-          :key="item.id"
-          :label="item.recruitmentJob"
-          :value="item.recruitmentJob"
+          v-for="(item, i) in jobList.recruitmentJob"
+          :key="i"
+          :label="item"
+          :value="item"
         >
         </el-option>
       </el-select>
@@ -21,10 +21,10 @@
         placeholder="请选择考试名称"
       >
         <el-option
-          v-for="item in jobList"
-          :key="item.id"
-          :label="item.examName"
-          :value="item.examName"
+          v-for="(item, i) in jobList.examName"
+          :key="i"
+          :label="item"
+          :value="item"
         >
         </el-option>
       </el-select>
@@ -48,11 +48,18 @@
       </el-select>
       <el-input
         clearable
-        @keydown.enter.native="() => getWrittenList()"
+        @keydown.enter.native="getWrittenList()"
         v-model="idOrName"
         style="width: 200px; margin: 0 10px"
         placeholder="请输入身份证或者名字"
       ></el-input>
+      <el-button
+        style="margin-right: 10px"
+        size="medium"
+        type="primary"
+        @click="getWrittenList()"
+        >确定</el-button
+      >
       <el-button
         @click="exportTemplate"
         style="margin-left: 20px"
@@ -174,7 +181,7 @@
             }}
           </template></el-table-column
         >
-        <el-table-column label="操作" align="center" width="260px">
+        <el-table-column label="操作" align="center" width="200px">
           <template slot-scope="scope">
             <el-button
               size="mini"
@@ -189,7 +196,7 @@
               size="mini"
               >填写成绩</el-button
             >
-            <el-button size="mini" type="danger">删除</el-button>
+            <!-- <el-button size="mini" type="danger">删除</el-button> -->
           </template>
         </el-table-column>
       </el-table>
@@ -389,6 +396,9 @@ export default {
         this.$message.success("导入成功！");
         this.isLoading = false;
         this.getWrittenList();
+      } else {
+        this.$message.error("导入失败！");
+        this.isLoading = false;
       }
     },
 

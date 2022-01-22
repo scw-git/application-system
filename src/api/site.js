@@ -119,7 +119,22 @@ export function setAllWrittenSite(data) {
     })
 }
 
+// 清空考场
+export function clearSite(data) {
+    return request({
+        url: '/place-info/clean-written-place',
+        method: 'post',
+        data
+    })
+}
+// 获取考卷类型
+export function getExamineeType() {
+    return request({
+        url: '/paper-info/get-type',
+        method: 'get',
 
+    })
+}
 
 
 

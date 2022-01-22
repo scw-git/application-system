@@ -10,8 +10,8 @@
           <el-option
             v-for="item in jobList"
             :key="item.id"
-            :label="item.recruitmentJob"
-            :value="item.recruitmentJob"
+            :label="item"
+            :value="item"
           >
           </el-option>
         </el-select>
@@ -35,19 +35,29 @@
         </el-select>
         <el-input
           clearable
-          @keydown.enter.native="() => getData()"
+          @keydown.enter.native="getData()"
           v-model="idOrName"
           style="width: 230px; margin: 0 10px"
           placeholder="请输入身份证或者名字"
         ></el-input>
         <el-button
-          @click="checkAllPass"
-          v-if="params.status == '2'"
+          style="margin-right: 10px"
           size="medium"
           type="primary"
+          @click="getData()"
+          >确定</el-button
         >
-          批量审核</el-button
-        >
+        <el-popover placement="bottom-start" width="210" trigger="hover">
+          <el-button @click="checkAllPass(1)" size="mini"> 审核通过</el-button>
+          <el-button @click="checkAllPass(2)" size="mini">审核不通过</el-button>
+          <el-button
+            v-show="params.status == '2'"
+            size="medium"
+            type="primary"
+            slot="reference"
+            >批量审核</el-button
+          >
+        </el-popover>
       </div>
       <el-tabs
         v-loading="loading"
@@ -257,13 +267,14 @@
       <application-form :data="dataList"></application-form>
       <div class="fj">
         <p>附件：</p>
-        <p
-          @click="showFj(item.url)"
+        <a
+          style="display: block"
+          :href="item.url"
           v-for="item in dataList.annexList"
           :key="item.id"
         >
           {{ item.fileName }}
-        </p>
+        </a>
       </div>
       <div class="opinion" style="margin-bottom: 10px">
         <el-input
@@ -287,6 +298,13 @@
         >
       </div>
     </div>
+    <el-dialog title="提示" :visible.sync="reasonDialog" width="30%">
+      <el-input placeholder="请输入不通过的理由" v-model="reason"></el-input>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="reasonDialog = false">取 消</el-button>
+        <el-button type="primary" @click="allNoPass">确 定</el-button>
+      </span>
+    </el-dialog>
     <el-pagination
       v-if="total > 0 && status == true"
       style="margin-top: 20px"
@@ -311,6 +329,8 @@ export default {
   },
   data() {
     return {
+      reason: "", //批量审核不通过的理由
+      reasonDialog: false,
       idOrName: "", //输入框搜索的值
       queryData: {
         recruitmentJob: "",
@@ -376,19 +396,46 @@ export default {
         return item.id;
       });
     },
+    // 批量审核不通过
+    allNoPass() {
+      if (this.reason != "") {
+        api
+          .checkAllNoPass({ ids: this.params.ids, reason: this.reason })
+          .then((res) => {
+            if (res.code == 200) {
+              this.$message.success("批量审核不通过已完成！");
+              this.getData();
+              this.reasonDialog = false;
+            }
+          });
+      } else {
+        this.$message.warning("请输入理由");
+      }
+    },
     // 获取岗位列表
     getJobList() {
       api.getJobList().then((res) => {
-        this.jobList = res.data;
+        this.jobList = res.data.recruitmentJob;
       });
     },
     // 批量审核
-    checkAllPass() {
+    checkAllPass(n) {
       if (this.params.ids.length > 0) {
-        api.checkAllPass({ ids: this.params.ids }).then((res) => {
-          if (res.code == 200) {
-            this.$message.success("审核完成！");
-            this.getData();
+        let tip = n == 1 ? "审核通过" : "审核不通过";
+        this.$confirm(`确定批量${tip}？`, "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning",
+        }).then(() => {
+          if (n == 1) {
+            api.checkAllPass({ ids: this.params.ids }).then((res) => {
+              if (res.code == 200) {
+                this.$message.success("审核完成！");
+                this.getData();
+              }
+            });
+          } else {
+            this.reasonDialog = true;
           }
         });
       } else {
@@ -439,14 +486,13 @@ export default {
       }
     },
     // 显示附件
-    showFj(url) {
-      console.log(url);
-      // window.open(url);
-      window.open(
-        "https://view.officeapps.live.com/op/view.aspx?src=" + url,
-        "_blank"
-      );
-    },
+    // showFj(url) {
+    //   window.open(url);
+    //   // window.open(
+    //   //   "https://view.officeapps.live.com/op/view.aspx?src=" + url,
+    //   //   "_blank"
+    //   // );
+    // },
     handleClick(val) {
       if (val.name == "dsh") {
         this.params.status = "2";
@@ -506,7 +552,7 @@ export default {
       transform: translateX(-50%);
       padding: 5px;
       border: 1px solid #808080;
-      p:nth-of-type(2) {
+      p:nth-child(n + 2) {
         color: #1890ff;
         &:hover {
           cursor: pointer;

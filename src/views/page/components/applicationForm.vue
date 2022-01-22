@@ -20,7 +20,7 @@
               <img
                 v-if="data.examineVo"
                 style="width: 100%"
-                :src="`http://10.9.2.15:8080${data.examineVo.personalPicture}`"
+                :src="`${data.examineVo.personalPicture}`"
                 alt
               />
             </td>

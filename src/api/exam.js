@@ -44,11 +44,11 @@ export function updateExam(data) {
         data
     })
 }
-export function getExam(params) {
+export function getExam(data) {
     return request({
         url: '/exam-info/list',
-        method: 'get',
-        params
+        method: 'post',
+        data
     })
 }
 export function delExam(id) {

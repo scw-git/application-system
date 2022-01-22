@@ -1,10 +1,47 @@
 <template>
   <div class="test p15">
     <div class="operation">
-      <el-select v-model="value" placeholder="选择岗位">
-        <el-option label="岗位一" value="1"> </el-option>
-        <el-option label="岗位二" value="2"> </el-option>
+      <el-select
+        clearable
+        v-model="queryData.recruitmentJob"
+        placeholder="请选择岗位"
+      >
+        <el-option
+          v-for="item in jobList"
+          :key="item.id"
+          :label="item"
+          :value="item"
+        >
+        </el-option>
       </el-select>
+      <el-select
+        style="width: 120px; margin: 0 10px"
+        clearable
+        v-model="queryData.state"
+        placeholder="发布状态"
+      >
+        <el-option label="已发布" value="1"></el-option>
+        <el-option label="未发布" value="0"></el-option>
+      </el-select>
+      <el-date-picker
+        style="width: 140px"
+        value-format="yyyy"
+        v-model="queryData.publishDate"
+        type="year"
+        placeholder="选择日期"
+      >
+      </el-date-picker>
+
+      <el-input
+        clearable
+        @keydown.enter.native="getExam()"
+        v-model="keyWord"
+        style="width: 200px; margin: 0 10px"
+        placeholder="请输入关键字"
+      ></el-input>
+      <el-button size="medium" type="primary" @click="getExam()"
+        >确定</el-button
+      >
       <el-button
         style="margin-left: 10px"
         type="primary"
@@ -109,7 +146,7 @@
         </el-table-column>
       </el-table>
     </div>
-    <el-dialog :title="title" :visible.sync="dialogVisible" width="45%">
+    <el-dialog :title="title" :visible.sync="dialogVisible" width="48%">
       <el-form
         ref="rulesForm"
         inline
@@ -170,7 +207,7 @@
         <el-form-item v-if="form.ifPay == '1'" label="考试费用">
           <el-input placeholder="单位元" v-model="form.free"></el-input>
         </el-form-item>
-        <el-form-item label="发布时间">
+        <el-form-item label="发布时间" required>
           <el-date-picker
             value-format="yyyy-MM-dd HH:mm:ss"
             v-model="form.publishDate"
@@ -200,10 +237,20 @@
 </template>
 <script>
 import * as api from "@/api/exam";
+import { getJobList } from "@/api/examinee";
+
 export default {
   data() {
     return {
+      keyWord: "",
+      jobList: [], //岗位列表
       total: 0,
+      queryData: {
+        recruitmentJob: "",
+        // createTime: "",
+        // sex: "",
+        // examName: "",
+      },
       pagination: {
         pageNum: 1,
         pageSize: 10,
@@ -214,22 +261,20 @@ export default {
       dialogVisible: false,
       testType: [], //考卷类型
       rules: {
-        examUnit: [{ required: true, message: "请输入", trigger: "change" }],
-        examName: [{ required: true, message: "请输入", trigger: "change" }],
+        examUnit: [{ required: true, message: "请输入", trigger: "blur" }],
+        examName: [{ required: true, message: "请输入", trigger: "blur" }],
         recruitmentJob: [
-          { required: true, message: "请输入", trigger: "change" },
+          { required: true, message: "请输入", trigger: "blur" },
         ],
         recruitmentNumber: [
-          { required: true, message: "请输入", trigger: "change" },
+          { required: true, message: "请输入", trigger: "blur" },
         ],
-        examNumber: [{ required: true, message: "请输入", trigger: "change" }],
+        examNumber: [{ required: true, message: "请输入", trigger: "blur" }],
         applyStartDate: [
-          { required: true, message: "请选择", trigger: "change" },
+          { required: true, message: "请选择", trigger: "blur" },
         ],
-        applyEndDate: [
-          { required: true, message: "请选择", trigger: "change" },
-        ],
-        ifPay: [{ required: true, message: "请选择", trigger: "change" }],
+        applyEndDate: [{ required: true, message: "请选择", trigger: "blur" }],
+        ifPay: [{ required: true, message: "请选择", trigger: "blur" }],
       },
       form: {
         ifPay: "1",
@@ -237,10 +282,25 @@ export default {
       dataList: [],
     };
   },
+  watch: {
+    queryData: {
+      handler: function () {
+        this.getExam();
+      },
+      deep: true,
+    },
+  },
   created() {
     this.getExam();
+    this.getJobList();
   },
   methods: {
+    // 获取岗位列表
+    getJobList() {
+      getJobList().then((res) => {
+        this.jobList = res.data.recruitmentJob;
+      });
+    },
     handleSizeChange(val) {
       this.pagination.pageSize = val;
       this.getExam();
@@ -286,11 +346,17 @@ export default {
     },
     getExam() {
       this.loading = true;
-      api.getExam(this.pagination).then((res) => {
-        this.dataList = res.rows;
-        this.total = res.total;
-        this.loading = false;
-      });
+      api
+        .getExam({
+          ...this.pagination,
+          ...this.queryData,
+          keyWord: this.keyWord,
+        })
+        .then((res) => {
+          this.dataList = res.rows;
+          this.total = res.total;
+          this.loading = false;
+        });
     },
     submitData() {
       this.$refs.rulesForm.validate((valide) => {
@@ -321,11 +387,10 @@ export default {
       switch (type) {
         case 1:
           this.title = "新建考试";
-          this;
+          this.form = { ifPay: "1" };
           break;
         case 2:
           this.title = "查看考试";
-
           break;
         case 3:
           this.title = "编辑考试";

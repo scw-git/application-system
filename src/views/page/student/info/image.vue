@@ -18,6 +18,8 @@
           :src="imageUrl"
           class="avatar"
         />
+        <!-- upload/adgag
+        data/trs/share/adgna -->
         <div v-else class="img">
           <i class="el-icon-plus"></i>
           <div class="el-upload__text">上传头像</div>
