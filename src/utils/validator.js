@@ -29,16 +29,16 @@ function validateId(rule, value, callback) {
         callback()
     }
 }
-// function validatePw1(rule, value, callback) {
-//     const reg = /^(?![a-zA-Z]+$)(?![A-Z0-9]+$)(?![A-Z\\W_]+$)(?![a-z0-9]+$)(?![a-z\\W_]+$)(?![0-9\\W_]+$)[a-zA-Z0-9\\W_]{8,20}$/;
-//     // const reg = /^(?![a-zA-Z]+$)(?![A-Z0-9]+$)(?![A-Z\\W_!@#$%^&*`~()-+=]+$)(?![a-z0-9]+$)(?![a-z\\W_!@#$%^&*`~()-+=]+$)(?![0-9\\W_!@#$%^&*`~()-+=]+$)[a-zA-Z0-9\\W_!@#$%^&*`~()-+=]{8,30}$/
-//     if (value === '') {
-//         callback('密码不能为空！')
-//     } else if (!reg.test(value)) {
-//         callback('密码规则不正确！')
-//     } else {
-//         if (this.$refs.phoneRegister.validateField('confirPassword') != '') { }
-//     }
-// }
+function validatePw1(rule, value, callback) {
+    const reg = /(?=.*\d)(?=.*[a-zA-Z])(?=.*[^a-zA-Z0-9]).{8,12}/;
+    if (value === '') {
+        callback('密码不能为空！')
+    } else if (!reg.test(value)) {
+        callback('密码规则不正确！')
+    } else {
+        //成功的情况一定要写，否则校验成功不执行代码
+        callback()
+    }
+}
 
-export { validateFourNumber, validatePhone, validateId }
+export { validateFourNumber, validatePhone, validateId, validatePw1 }

@@ -38,16 +38,18 @@
         </template>
       </el-table-column>
     </el-table>
-    <div class="print">
-      <div v-show="!isShow" id="getPdf" class="printForm">
+    <div v-show="!isShow" class="print">
+      <el-button @click="isShow = true" type="primary">返回</el-button>
+      <written :personalData="personalData" />
+      <!-- <div v-show="!isShow" id="getPdf" class="printForm">
         <div class="applicationForm">
           <div class="left">
             <div class="title">
               <span>广西壮族自治区财政厅事业部</span> <br />
               <span>
-                {{ time.year }}年{{ time.stage }}全国事业单位考试报名表</span
+                {{ time.year }}年{{ time.stage }}全国事业单位笔试准考证</span
               ><br />
-              <span>准 考 证</span>
+            
             </div>
             <img
               crossOrigin="Anonymous"
@@ -81,10 +83,6 @@
                     {{ personalData.recruitmentJob }}
                   </td>
                 </tr>
-                <!-- <tr>
-                  <td>考&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;区：</td>
-                  <td class="tl" colspan="3">南宁市</td>
-                </tr> -->
                 <tr>
                   <td>考点名称：</td>
                   <td class="tl" colspan="3">{{ personalData.placeName }}</td>
@@ -135,29 +133,26 @@
         style="margin-top: 20px; margin-left: 45%"
         type="primary"
         >下载打印</el-button
-      >
-      <el-button v-show="!isShow" @click="isShow = true" type="primary"
-        >返回</el-button
-      >
+      > -->
     </div>
   </div>
 </template>
 <script>
 import * as api from "@/api/system";
-import { getPdf } from "@/utils/htmlToPdf";
+import written from "@/views/page/components/written";
 export default {
+  components: {
+    written,
+  },
   data() {
     return {
       dataList: [],
       isShow: true,
-      msg: "",
       personalData: {},
-      time: {},
     };
   },
+
   created() {
-    this.getOther();
-    this.getTime();
     this.getList();
   },
   methods: {
@@ -166,20 +161,7 @@ export default {
         this.dataList = res.data;
       });
     },
-    getTime() {
-      this.time.year = new Date().getFullYear();
-      let month = new Date().getMonth() + 1;
-      if (month >= 7) {
-        this.time.stage = "下半年";
-      } else {
-        this.time.stage = "下半年";
-      }
-    },
-    getOther() {
-      api.getOther().then((res) => {
-        this.msg = res.data[0].writtenNote;
-      });
-    },
+
     getWrittenInfo(id) {
       api.getWrittenInfo(id).then((res) => {
         if (res == undefined) {
@@ -189,9 +171,6 @@ export default {
           this.personalData = res.data;
         }
       });
-    },
-    downLoad() {
-      getPdf("#getPdf");
     },
   },
 };

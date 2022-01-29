@@ -10,6 +10,11 @@ const routes = [
     redirect: '/login',
   },
   {
+    path: '/ksbm',
+    name: 'ksbm',
+    component: () => import('../views/loginAdmin.vue')
+  },
+  {
     path: '/index',
     name: 'index',
     redirect: '/student_notice',
@@ -47,6 +52,11 @@ const routes = [
         name: 'student_info_home',
         component: () => import('../views/page/student/info/home.vue')
       },
+      {
+        path: '/student_info_fj',
+        name: 'student_info_fj',
+        component: () => import('../views/page/student/info/fj.vue')
+      },
       // 业务办理
       {
         path: '/student_operation_queryAndApply',
@@ -77,7 +87,9 @@ const routes = [
       {
         path: '/student_operation_interview',
         name: 'student_operation_interview',
-        component: () => import('../views/page/student/operation/interview.vue')
+        // @/views/page/components/applicationForm";
+        // component: () => import('../views/page/student/operation/interview.vue')
+        component: () => import('../views/page/components/interview.vue')
       },
 
 
@@ -182,10 +194,12 @@ const routes = [
 ]
 
 const router = new VueRouter({
-  routes
+  routes,
+  base: '/app/',
+  mode: "history",
 })
 
-const whiteList = ['login', 'register']
+const whiteList = ['login', 'register', 'ksbm']
 router.beforeEach(function (to, from, next) {
   // 白名单免登录
   if (whiteList.indexOf(to.name) != -1) {

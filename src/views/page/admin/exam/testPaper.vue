@@ -1,22 +1,57 @@
 <template>
   <div class="testPaper p15">
+    <el-date-picker
+      style="width: 140px"
+      value-format="yyyy-MM-dd"
+      v-model="date"
+      type="date"
+      placeholder="选择日期"
+    >
+    </el-date-picker>
+
+    <el-input
+      clearable
+      @keydown.enter.native="getTest()"
+      v-model="searchType"
+      style="width: 200px; margin: 0 10px"
+      placeholder="请输入试卷名称"
+    ></el-input>
+    <el-button size="medium" type="primary" @click="getTest()">确定</el-button>
     <el-button
       style="margin-bottom: 10px"
       type="primary"
       @click="openDialog('add')"
       >新建</el-button
     >
-    <el-table v-loading="loading" :data="dataList" border>
+    <el-button
+      style="margin-left: 10px"
+      class="ml10"
+      type="primary"
+      @click="delAll"
+    >
+      批量删除</el-button
+    >
+    <el-table
+      v-loading="loading"
+      :data="dataList"
+      @selection-change="getdelIds"
+      border
+    >
+      <el-table-column
+        width="50"
+        align="center"
+        type="selection"
+      ></el-table-column>
       <el-table-column
         label="序号"
-        width="100"
+        width="50"
         align="center"
         type="index"
       ></el-table-column>
       <el-table-column
         align="center"
         prop="type"
-        label="试卷类型"
+        label="试卷名称"
       ></el-table-column>
       <el-table-column align="center" label="开考时间">
         <template slot-scope="scope">{{ scope.row.startTime }}</template>
@@ -86,6 +121,9 @@ import * as api from "@/api/exam";
 export default {
   data() {
     return {
+      delIds: [],
+      searchType: "", //输入框搜索的值
+      date: "", //搜索时间
       total: 0,
       pagination: {
         pageNum: 1,
@@ -106,7 +144,37 @@ export default {
   created() {
     this.getTest();
   },
+  watch: {
+    date() {
+      this.getTest();
+    },
+  },
   methods: {
+    // 批量删除
+    delAll() {
+      if (this.delIds.length > 0) {
+        this.$confirm("是否执行删除操作?", "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning",
+        }).then(() => {
+          api.delAllPaper(this.delIds).then((res) => {
+            if (res.code == 200) {
+              this.$message.success("批量删除成功！");
+              this.getTest();
+            }
+          });
+        });
+      } else {
+        this.$message.warning("请选择要删除的考场！");
+      }
+    },
+    // 获取批量删除的id
+    getdelIds(data) {
+      this.delIds = data.map((item) => {
+        return Number(item.id);
+      });
+    },
     handleSizeChange(val) {
       this.pagination.pageSize = val;
       this.getTest();
@@ -164,19 +232,21 @@ export default {
     },
     getTest() {
       this.loading = true;
-      api.getTest(this.pagination).then((res) => {
-        res.rows.forEach((item, i) => {
-          let arr = [];
-          res.rows[i].date = item.startTime.split(" ")[0];
-          arr.push(item.startTime.split(" ")[1]);
-          arr.push(item.endTime.split(" ")[2]);
+      api
+        .getTest({ ...this.pagination, date: this.date, type: this.searchType })
+        .then((res) => {
+          res.rows.forEach((item, i) => {
+            let arr = [];
+            res.rows[i].date = item.startTime.split(" ")[0];
+            arr.push(item.startTime.split(" ")[1]);
+            arr.push(item.endTime.split(" ")[2]);
 
-          res.rows[i].time = arr;
+            res.rows[i].time = arr;
+          });
+          this.dataList = res.rows;
+          this.total = res.total;
+          this.loading = false;
         });
-        this.dataList = res.rows;
-        this.total = res.total;
-        this.loading = false;
-      });
     },
   },
 };

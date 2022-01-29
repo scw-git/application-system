@@ -5,7 +5,7 @@ function resolve(dir) {
 }
 
 module.exports = {
-    publicPath: '', //空字符串('')，或者相对路径(./)可以部署在任意位置
+    publicPath: '/app/', //空字符串('')，或者相对路径(./)可以部署在任意位置
     outputDir: 'dist',
     assetsDir: 'static',
     lintOnSave: true,
@@ -13,14 +13,22 @@ module.exports = {
 
 
     devServer: {
+        publicPath: '/app/', //必须要加，否则刷新报404。
         port: 8099, //自定义前端端口（把8080改成了8099）
         proxy: {
-            '/api': {
-                target: 'http://10.9.2.15:8080',
-                // target: 'http://4h09199k66.zicp.vip:58173',
+            '/app/api': {
+                // target: 'http://10.9.2.15:8080',
+                target: 'http://40z9199566.goho.co:26224',
                 changeOrigin: true,
                 pathRewrite: {
-                    '^/api': ''
+                    '^/app/api': '/'
+                }
+            },
+            '/profile': {
+                target: 'http://10.9.2.15:8080',
+                changeOrigin: true,
+                pathRewrite: {
+                    '^/profile': '/profile'
                 }
             },
             // '/upload': {

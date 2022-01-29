@@ -54,7 +54,7 @@
         ref="upload"
         style="display: inline-block; padding: 0 10px"
         class="upload-demo"
-        action="/api/place-info/interview-batch-import"
+        action="/app/api/place-info/interview-batch-import"
         :limit="1"
         :headers="headers"
         accept=".xlsx, .xls"

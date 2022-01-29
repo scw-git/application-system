@@ -8,7 +8,12 @@
         >返回</el-button
       >
       <h2 class="title">考生注册</h2>
-      <el-form ref="phoneRegister" :model="phoneRegister" :rules="rules">
+      <el-form
+        v-if="!showOk"
+        ref="phoneRegister"
+        :model="phoneRegister"
+        :rules="rules"
+      >
         <el-form-item prop="phone">
           <el-input
             v-model="phoneRegister.phone"
@@ -86,6 +91,10 @@
           </el-button>
         </el-form-item>
       </el-form>
+      <div v-if="showOk" class="ok">
+        <i class="el-icon-success"></i>
+        <p>注册成功</p>
+      </div>
       <!-- <el-tabs v-model="activeName" @tab-click="changeRegister">
         <el-tab-pane label="手机号注册" name="phoneRegister">
           <el-form ref="phoneRegister" :model="phoneRegister" :rules="rules">
@@ -222,7 +231,6 @@ export default {
   data() {
     let validatePw1 = (rule, value, callback) => {
       const reg = /(?=.*\d)(?=.*[a-zA-Z])(?=.*[^a-zA-Z0-9]).{8,12}/;
-      // /^(?![0-9]+$)(?![a-z]+$)(?![A-Z]+$)(?!([^(0-9a-zA-Z)])+$).{8,}$/;
       if (value === "") {
         callback("密码不能为空！");
       } else if (!reg.test(value)) {
@@ -245,19 +253,20 @@ export default {
     };
 
     return {
+      showOk: false,
       loading: false,
       show: true,
       time: 60,
       activeName: "phoneRegister",
       certificateOptions: [
         { value: 1, name: "居民身份证" },
-        { value: 2, name: "军官证/士兵证" },
-        { value: 3, name: "护照" },
-        { value: 4, name: "外国人永久居留证" },
-        { value: 5, name: "境外永久居留证" },
-        { value: 6, name: "香港居民身份证" },
-        { value: 7, name: "澳门居民身份证" },
-        { value: 8, name: "台湾居民身份证" },
+        // { value: 2, name: "军官证/士兵证" },
+        // { value: 3, name: "护照" },
+        // { value: 4, name: "外国人永久居留证" },
+        // { value: 5, name: "境外永久居留证" },
+        // { value: 6, name: "香港居民身份证" },
+        // { value: 7, name: "澳门居民身份证" },
+        // { value: 8, name: "台湾居民身份证" },
       ],
       phoneRegister: {
         phone: "",
@@ -360,13 +369,18 @@ export default {
       this.$refs.phoneRegister.validate((valid) => {
         if (valid) {
           this.loading = true;
-          register(this.phoneRegister).then((res) => {
-            if (res.code == 200) {
-              this.$message.success("注册成功");
-              this.$router.push("login");
+          register(this.phoneRegister)
+            .then((res) => {
+              if (res.code == 200) {
+                this.$message.success("注册成功");
+                // this.$router.push("login");
+                this.showOk = true;
+                this.loading = false;
+              }
+            })
+            .catch(() => {
               this.loading = false;
-            }
-          });
+            });
         }
       });
     },
@@ -386,6 +400,7 @@ export default {
     border-radius: 6px;
     background: #ffffff;
     width: 470px;
+    min-height: 500px;
     padding: 15px 25px 5px 25px;
     .title {
       margin: 0px auto 10px auto;
@@ -406,6 +421,15 @@ export default {
       //   -webkit-box-orient: vertical;
       //   overflow: hidden;
     }
+  }
+  .ok {
+    display: flex;
+    // justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    color: rgb(1, 170, 1);
+    font-size: 25px;
+    margin-top: 30%;
   }
 }
 </style>

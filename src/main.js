@@ -1,3 +1,4 @@
+
 import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
@@ -28,6 +29,8 @@ const originalPush = VueRouter.prototype.push
 VueRouter.prototype.push = function push(location) {
   return originalPush.call(this, location).catch(err => err)
 }
+
+Vue.prototype.$bus = new Vue()
 
 // quill富文本
 import 'quill/dist/quill.core.css' // import styles

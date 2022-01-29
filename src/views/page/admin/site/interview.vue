@@ -165,11 +165,13 @@ export default {
         api.delSite(id).then((res) => {
           if (res.code == 200) {
             this.$message.success("删除成功！");
+            this.getInterviewSiteList();
           }
         });
       });
     },
     openDialog(n, data) {
+      this.form = {};
       if (n == 1) {
         this.title = "新建地点";
       } else {

@@ -78,7 +78,8 @@
 </template>
 <script>
 import { getScoreList } from "@/api/operation";
-import interview from "./interview.vue";
+import interview from "@/views/page/components/interview.vue";
+
 export default {
   components: {
     interview,

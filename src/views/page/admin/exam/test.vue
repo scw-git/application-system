@@ -49,9 +49,22 @@
       >
         新建</el-button
       >
+      <el-button
+        style="margin-left: 10px"
+        class="ml10"
+        type="primary"
+        @click="delAll"
+      >
+        批量删除</el-button
+      >
     </div>
     <div class="table" v-loading="loading" style="margin-top: 10px">
-      <el-table :data="dataList" border>
+      <el-table @selection-change="getdelIds" :data="dataList" border>
+        <el-table-column
+          width="50"
+          align="center"
+          type="selection"
+        ></el-table-column>
         <el-table-column
           label="序号"
           width="50"
@@ -175,10 +188,18 @@
           <el-input v-model="form.recruitmentJob"></el-input>
         </el-form-item>
         <el-form-item label="招考人数" prop="recruitmentNumber">
-          <el-input type="number" v-model="form.recruitmentNumber"></el-input>
+          <el-input
+            @keyup.native="prevent($event)"
+            type="number"
+            v-model="form.recruitmentNumber"
+          ></el-input>
         </el-form-item>
         <el-form-item label="开考人数" prop="examNumber">
-          <el-input type="number" v-model="form.examNumber"></el-input>
+          <el-input
+            @keyup.native="prevent($event)"
+            type="number"
+            v-model="form.examNumber"
+          ></el-input>
         </el-form-item>
         <el-form-item label="报名开始时间" prop="applyStartDate">
           <el-date-picker
@@ -242,6 +263,7 @@ import { getJobList } from "@/api/examinee";
 export default {
   data() {
     return {
+      delIds: [],
       keyWord: "",
       jobList: [], //岗位列表
       total: 0,
@@ -295,6 +317,38 @@ export default {
     this.getJobList();
   },
   methods: {
+    prevent(e) {
+      var keynum = window.event ? e.keyCode : e.which; //获取键盘码
+      if (keynum == 189 || keynum == 190 || keynum == 109 || keynum == 110) {
+        this.$message.warning("禁止输入小数以及负数");
+        e.target.value = "";
+      }
+    },
+    // 获取批量删除的id
+    getdelIds(data) {
+      this.delIds = data.map((item) => {
+        return Number(item.id);
+      });
+    },
+    // 批量删除
+    delAll() {
+      if (this.delIds.length > 0) {
+        this.$confirm("是否执行删除操作?", "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning",
+        }).then(() => {
+          api.delAllKs(this.delIds).then((res) => {
+            if (res.code == 200) {
+              this.$message.success("批量删除成功！");
+              this.getExam();
+            }
+          });
+        });
+      } else {
+        this.$message.warning("请选择要删除的考场！");
+      }
+    },
     // 获取岗位列表
     getJobList() {
       getJobList().then((res) => {
@@ -340,7 +394,7 @@ export default {
 
     // 获取考卷类型
     getTestType() {
-      api.getTest().then((res) => {
+      api.getTest({ pageNum: 1, pageSize: 100 }).then((res) => {
         this.testType = res.rows;
       });
     },
@@ -362,6 +416,9 @@ export default {
       this.$refs.rulesForm.validate((valide) => {
         if (valide) {
           if (this.title == "新建考试") {
+            if (this.form.ifPay != "1") {
+              this.form.free = "";
+            }
             api.addExam({ ...this.form }).then((res) => {
               if (res.code == 200) {
                 this.$message.success("新增成功");
@@ -402,5 +459,5 @@ export default {
   },
 };
 </script>
-<style lang="scss" scoped>
+<style lang="scss" >
 </style>

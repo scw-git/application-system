@@ -3,28 +3,17 @@
     <el-form class="login-from" ref="login" :model="form" :rules="rules">
       <h2 class="title">广西壮族自治区财政厅公开招聘考试报名系统</h2>
 
-      <div class="notice">
-        <span>通知：</span>
-        <br />
-        <a
-          v-for="item in dataList"
-          :key="item.noticeId"
-          target="_blank"
-          :href="item.noticeContent"
-          >{{ item.noticeTitle }}</a
-        >
-      </div>
-      <el-form-item prop="username">
+      <el-form-item style="margin: 20px 0">
         <el-input
           v-model="form.username"
           prefix-icon="el-icon-user-solid"
-          placeholder="请输入手机号/身份证号"
+          placeholder="请输入手机号/用户名"
         ></el-input>
       </el-form-item>
-      <el-form-item prop="password">
+      <el-form-item>
         <el-input
           type="password"
-          @keydown.enter.native="login('student')"
+          @keydown.enter.native="login('admin')"
           v-model="form.password"
           prefix-icon="el-icon-lock"
           placeholder="请输入密码"
@@ -32,7 +21,7 @@
       </el-form-item>
       <el-form-item prop="code">
         <el-input
-          @keydown.enter.native="login('student')"
+          @keydown.enter.native="login('admin')"
           style="width: 63%"
           prefix-icon="el-icon-circle-check"
           v-model="form.code"
@@ -42,25 +31,17 @@
           <img @click="getCodeImg" :src="codeUrl" alt />
         </div>
       </el-form-item>
-      <el-form-item style="width: 100%">
+      <el-form-item style="width: 100%; margin-top: 30px">
         <el-button
           :loading="loading"
           size="medium"
           type="primary"
           style="width: 100%"
-          @click.native.prevent="login('student')"
+          @click.native.prevent="login('admin')"
         >
           <span v-if="!loading">登 录</span>
           <span v-else>登 录 中...</span>
         </el-button>
-      </el-form-item>
-      <el-form-item>
-        <div class="other">
-          <router-link to="register" class="noCount"
-            >没有账号？去注册</router-link
-          >
-          <a class="noCount" @click="openDialog">忘记密码</a>
-        </div>
       </el-form-item>
     </el-form>
 

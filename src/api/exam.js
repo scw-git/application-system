@@ -1,11 +1,11 @@
 import request from '@/utils/request'
 
 // 考卷设置
-export function getTest(params) {
+export function getTest(data) {
     return request({
         url: '/paper-info/list',
-        method: 'get',
-        params
+        method: 'post',
+        data
     })
 }
 export function saveTest(data) {
@@ -79,3 +79,23 @@ export function getExamTimeList(data) {
         data
     })
 }
+
+// 批量删除考卷
+export function delAllPaper(data) {
+    return request({
+        url: '/paper-info/del-batch',
+        method: 'post',
+        data
+    })
+}
+// 批量删除考试
+export function delAllKs(data) {
+    return request({
+        url: '/exam-info/del-batch',
+        method: 'post',
+        data
+    })
+}
+
+
+

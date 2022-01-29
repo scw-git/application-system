@@ -249,3 +249,8 @@ export default {
   text-align: center;
 }
 </style>
+<style >
+.ql-editor {
+  height: 150px;
+}
+</style>

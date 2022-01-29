@@ -1,334 +1,402 @@
 <template>
-  <div class="check p15">
-    <div v-show="status" class="content">
-      <div class="search">
-        <el-select
-          clearable
-          v-model="queryData.recruitmentJob"
-          placeholder="请选择岗位"
-        >
-          <el-option
-            v-for="item in jobList"
-            :key="item.id"
-            :label="item"
-            :value="item"
+  <div>
+    <div
+      v-show="showWrittenPrint == false && showInterviewPrint == false"
+      class="check p15"
+    >
+      <div v-show="status" class="content">
+        <div class="search">
+          <el-select
+            clearable
+            v-model="queryData.recruitmentJob"
+            placeholder="请选择岗位"
           >
-          </el-option>
-        </el-select>
+            <el-option
+              v-for="item in jobList"
+              :key="item.id"
+              :label="item"
+              :value="item"
+            >
+            </el-option>
+          </el-select>
 
-        <el-date-picker
-          style="width: 140px; margin: 0 10px"
-          value-format="yyyy-MM-dd"
-          v-model="queryData.createTime"
-          type="date"
-          placeholder="选择日期"
-        >
-        </el-date-picker>
-        <el-select
-          clearable
-          style="width: 120px"
-          v-model="queryData.sex"
-          placeholder="选择性别"
-        >
-          <el-option label="男" value="1"> </el-option>
-          <el-option label="女" value="0"> </el-option>
-        </el-select>
-        <el-input
-          clearable
-          @keydown.enter.native="getData()"
-          v-model="idOrName"
-          style="width: 230px; margin: 0 10px"
-          placeholder="请输入身份证或者名字"
-        ></el-input>
-        <el-button
-          style="margin-right: 10px"
-          size="medium"
-          type="primary"
-          @click="getData()"
-          >确定</el-button
-        >
-        <el-popover placement="bottom-start" width="210" trigger="hover">
-          <el-button @click="checkAllPass(1)" size="mini"> 审核通过</el-button>
-          <el-button @click="checkAllPass(2)" size="mini">审核不通过</el-button>
+          <el-date-picker
+            style="width: 140px; margin: 0 10px"
+            value-format="yyyy-MM-dd"
+            v-model="queryData.createTime"
+            type="date"
+            placeholder="选择日期"
+          >
+          </el-date-picker>
+          <el-select
+            clearable
+            style="width: 120px"
+            v-model="queryData.sex"
+            placeholder="选择性别"
+          >
+            <el-option label="男" value="1"> </el-option>
+            <el-option label="女" value="0"> </el-option>
+          </el-select>
+          <el-input
+            clearable
+            @keydown.enter.native="getData()"
+            v-model="idOrName"
+            style="width: 230px; margin: 0 10px"
+            placeholder="请输入身份证或者名字"
+          ></el-input>
           <el-button
-            v-show="params.status == '2'"
+            style="margin-right: 10px"
             size="medium"
             type="primary"
-            slot="reference"
-            >批量审核</el-button
+            @click="getData()"
+            >确定</el-button
           >
-        </el-popover>
+          <el-popover placement="bottom-start" width="210" trigger="hover">
+            <el-button @click="checkAllPass(1)" size="mini">
+              审核通过</el-button
+            >
+            <el-button @click="checkAllPass(2)" size="mini"
+              >审核不通过</el-button
+            >
+            <el-button
+              v-show="params.status == '2'"
+              size="medium"
+              type="primary"
+              slot="reference"
+              >批量审核</el-button
+            >
+          </el-popover>
+        </div>
+        <el-tabs
+          v-loading="loading"
+          v-model="activeName"
+          @tab-click="handleClick"
+        >
+          <el-tab-pane label="待审核" name="dsh">
+            <el-table
+              @selection-change="handleSelectionChange"
+              border
+              :data="allData"
+            >
+              <el-table-column type="selection" width="45"> </el-table-column>
+              <el-table-column
+                align="center"
+                width="60"
+                label="序号"
+                type="index"
+              ></el-table-column>
+              <el-table-column
+                align="center"
+                label="姓名"
+                prop="userName"
+              ></el-table-column>
+              <el-table-column
+                align="center"
+                width="50"
+                label="性别"
+                prop="sex"
+              >
+                <template slot-scope="scope">
+                  {{ scope.row.sex == "0" ? "女" : "男" }}
+                </template>
+              </el-table-column>
+              <el-table-column
+                align="center"
+                label="政治面貌"
+                prop="politics"
+              ></el-table-column>
+              <el-table-column
+                label="毕业院校"
+                prop="graduatedSchool"
+              ></el-table-column>
+              <el-table-column
+                width="155"
+                align="center"
+                label="报名时间"
+                prop="createTime"
+              ></el-table-column>
+              <el-table-column
+                align="center"
+                label="报考单位"
+                prop="examUnit"
+              ></el-table-column>
+              <el-table-column
+                align="center"
+                label="报考岗位"
+                prop="recruitmentJob"
+              ></el-table-column>
+              <el-table-column align="center" label="操作">
+                <template slot-scope="scope">
+                  <el-button
+                    @click="check(scope.row)"
+                    type="primary"
+                    size="small"
+                    >审核</el-button
+                  >
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-tab-pane>
+          <el-tab-pane label="已通过" name="ytg">
+            <el-table border :data="allData">
+              <el-table-column type="selection" width="45"> </el-table-column>
+              <el-table-column
+                align="center"
+                width="60"
+                label="序号"
+                type="index"
+              ></el-table-column>
+              <el-table-column
+                align="center"
+                label="姓名"
+                prop="userName"
+              ></el-table-column>
+              <el-table-column
+                width="50"
+                align="center"
+                label="性别"
+                prop="sex"
+              >
+                <template slot-scope="scope">
+                  {{ scope.row.sex == "0" ? "女" : "男" }}
+                </template>
+              </el-table-column>
+              <el-table-column
+                align="center"
+                label="政治面貌"
+                prop="politics"
+              ></el-table-column>
+              <el-table-column
+                label="毕业院校"
+                prop="graduatedSchool"
+              ></el-table-column>
+              <el-table-column
+                width="155"
+                align="center"
+                label="报名时间"
+                prop="createTime"
+              ></el-table-column>
+              <el-table-column
+                align="center"
+                label="报考单位"
+                prop="examUnit"
+              ></el-table-column>
+              <el-table-column
+                align="center"
+                label="报考岗位"
+                prop="recruitmentJob"
+              ></el-table-column>
+              <el-table-column align="center" label="缴费状态" prop="payStatus">
+                <template slot-scope="scope">
+                  <el-tag
+                    :type="
+                      scope.row.payStatus == '0'
+                        ? 'warning'
+                        : scope.row.payStatus == '1'
+                        ? 'success'
+                        : 'primary'
+                    "
+                  >
+                    {{
+                      scope.row.payStatus == "0"
+                        ? "待缴费"
+                        : scope.row.payStatus == "1"
+                        ? "已缴费"
+                        : "免费"
+                    }}
+                  </el-tag>
+                </template></el-table-column
+              >
+              <el-table-column align="center" width="330" label="操作">
+                <template slot-scope="scope">
+                  <el-button
+                    type="primary"
+                    @click="check(scope.row)"
+                    size="small"
+                    >查看</el-button
+                  >
+                  <el-button
+                    type="primary"
+                    @click="printWritten(scope.row.id)"
+                    size="small"
+                    >打印笔试准考证</el-button
+                  >
+                  <el-button
+                    type="primary"
+                    @click="printInterview(scope.row.id)"
+                    size="small"
+                    >打印面试准考证</el-button
+                  >
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-tab-pane>
+
+          <el-tab-pane label="未通过" name="wtg">
+            <el-table border :data="allData">
+              <el-table-column type="selection" width="45"> </el-table-column>
+              <el-table-column
+                align="center"
+                width="60"
+                label="序号"
+                type="index"
+              ></el-table-column>
+              <el-table-column
+                align="center"
+                label="姓名"
+                prop="userName"
+              ></el-table-column>
+              <el-table-column
+                align="center"
+                width="50"
+                label="性别"
+                prop="sex"
+              >
+                <template slot-scope="scope">
+                  {{ scope.row.sex == "0" ? "女" : "男" }}
+                </template>
+              </el-table-column>
+              <el-table-column
+                align="center"
+                label="政治面貌"
+                prop="politics"
+              ></el-table-column>
+              <el-table-column
+                label="毕业院校"
+                prop="graduatedSchool"
+              ></el-table-column>
+              <el-table-column
+                width="155"
+                align="center"
+                label="报名时间"
+                prop="createTime"
+              ></el-table-column>
+              <el-table-column
+                align="center"
+                label="报考单位"
+                prop="examUnit"
+              ></el-table-column>
+              <el-table-column
+                align="center"
+                label="报考岗位"
+                prop="recruitmentJob"
+              ></el-table-column>
+              <el-table-column
+                align="center"
+                label="未通过原因"
+                prop="checkResult"
+              >
+                <template slot-scope="scope">
+                  <el-tag type="warning">{{ scope.row.checkResult }}</el-tag>
+                </template>
+              </el-table-column>
+
+              <el-table-column align="center" label="操作">
+                <template slot-scope="scope">
+                  <el-button @click="check(scope.row)" type="text" size="small"
+                    >查看</el-button
+                  >
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-tab-pane>
+        </el-tabs>
       </div>
-      <el-tabs
-        v-loading="loading"
-        v-model="activeName"
-        @tab-click="handleClick"
+      <div v-show="!status" class="applicationForm">
+        <el-button type="primary" @click="status = true">返回</el-button>
+
+        <application-form :data="dataList"></application-form>
+        <div class="fj">
+          <p>附件：</p>
+          <a
+            style="display: block"
+            :href="item.url"
+            v-for="item in dataList.annexList"
+            :key="item.id"
+          >
+            {{ item.fileName }}
+          </a>
+        </div>
+        <div class="opinion" style="margin-bottom: 10px">
+          <el-input
+            v-if="params.status == '2'"
+            v-model="opinion"
+            placeholder="审核单位意见"
+          ></el-input>
+        </div>
+        <div class="operation">
+          <el-button
+            type="primary"
+            v-if="params.status == '2'"
+            @click="checkAndPass(1)"
+            >审核通过</el-button
+          >
+          <el-button
+            type="warning"
+            v-if="params.status == '2'"
+            @click="checkAndPass(2)"
+            >审核不通过</el-button
+          >
+        </div>
+      </div>
+      <el-dialog title="提示" :visible.sync="reasonDialog" width="30%">
+        <el-input placeholder="请输入不通过的理由" v-model="reason"></el-input>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="reasonDialog = false">取 消</el-button>
+          <el-button type="primary" @click="allNoPass">确 定</el-button>
+        </span>
+      </el-dialog>
+
+      <el-pagination
+        v-if="total > 0 && status == true"
+        style="margin-top: 20px"
+        layout="total,sizes,prev, pager, next"
+        :page-sizes="[10, 20, 30, 40]"
+        :total="total"
+        @size-change="handleSizeChange"
+        :current-page="params.pageNum"
+        @current-change="handleChangePageNum"
       >
-        <el-tab-pane label="待审核" name="dsh">
-          <el-table
-            @selection-change="handleSelectionChange"
-            border
-            :data="allData"
-          >
-            <el-table-column type="selection" width="45"> </el-table-column>
-            <el-table-column
-              align="center"
-              width="60"
-              label="序号"
-              type="index"
-            ></el-table-column>
-            <el-table-column
-              align="center"
-              label="姓名"
-              prop="userName"
-            ></el-table-column>
-            <el-table-column align="center" width="50" label="性别" prop="sex">
-              <template slot-scope="scope">
-                {{ scope.row.sex == "0" ? "女" : "男" }}
-              </template>
-            </el-table-column>
-            <el-table-column
-              align="center"
-              label="政治面貌"
-              prop="politics"
-            ></el-table-column>
-            <el-table-column
-              label="毕业院校"
-              prop="graduatedSchool"
-            ></el-table-column>
-            <el-table-column
-              width="155"
-              align="center"
-              label="报名时间"
-              prop="createTime"
-            ></el-table-column>
-            <el-table-column
-              align="center"
-              label="报考单位"
-              prop="examUnit"
-            ></el-table-column>
-            <el-table-column
-              align="center"
-              label="报考岗位"
-              prop="recruitmentJob"
-            ></el-table-column>
-            <el-table-column align="center" label="操作">
-              <template slot-scope="scope">
-                <el-button @click="check(scope.row)" type="text" size="small"
-                  >审核查看</el-button
-                >
-              </template>
-            </el-table-column>
-          </el-table>
-        </el-tab-pane>
-        <el-tab-pane label="已通过" name="ytg">
-          <el-table border :data="allData">
-            <el-table-column type="selection" width="45"> </el-table-column>
-            <el-table-column
-              align="center"
-              width="60"
-              label="序号"
-              type="index"
-            ></el-table-column>
-            <el-table-column
-              align="center"
-              label="姓名"
-              prop="userName"
-            ></el-table-column>
-            <el-table-column width="50" align="center" label="性别" prop="sex">
-              <template slot-scope="scope">
-                {{ scope.row.sex == "0" ? "女" : "男" }}
-              </template>
-            </el-table-column>
-            <el-table-column
-              align="center"
-              label="政治面貌"
-              prop="politics"
-            ></el-table-column>
-            <el-table-column
-              label="毕业院校"
-              prop="graduatedSchool"
-            ></el-table-column>
-            <el-table-column
-              width="155"
-              align="center"
-              label="报名时间"
-              prop="createTime"
-            ></el-table-column>
-            <el-table-column
-              align="center"
-              label="报考单位"
-              prop="examUnit"
-            ></el-table-column>
-            <el-table-column
-              align="center"
-              label="报考岗位"
-              prop="recruitmentJob"
-            ></el-table-column>
-            <el-table-column align="center" label="缴费状态" prop="payStatus">
-              <template slot-scope="scope">
-                <el-tag
-                  :type="
-                    scope.row.payStatus == '0'
-                      ? 'warning'
-                      : scope.row.payStatus == '1'
-                      ? 'success'
-                      : 'primary'
-                  "
-                >
-                  {{
-                    scope.row.payStatus == "0"
-                      ? "待缴费"
-                      : scope.row.payStatus == "1"
-                      ? "已缴费"
-                      : "免费"
-                  }}
-                </el-tag>
-              </template></el-table-column
-            >
-            <el-table-column align="center" label="操作">
-              <template slot-scope="scope">
-                <el-button @click="check(scope.row)" type="text" size="small"
-                  >查看</el-button
-                >
-              </template>
-            </el-table-column>
-          </el-table>
-        </el-tab-pane>
-
-        <el-tab-pane label="未通过" name="wtg">
-          <el-table border :data="allData">
-            <el-table-column type="selection" width="45"> </el-table-column>
-            <el-table-column
-              align="center"
-              width="60"
-              label="序号"
-              type="index"
-            ></el-table-column>
-            <el-table-column
-              align="center"
-              label="姓名"
-              prop="userName"
-            ></el-table-column>
-            <el-table-column align="center" width="50" label="性别" prop="sex">
-              <template slot-scope="scope">
-                {{ scope.row.sex == "0" ? "女" : "男" }}
-              </template>
-            </el-table-column>
-            <el-table-column
-              align="center"
-              label="政治面貌"
-              prop="politics"
-            ></el-table-column>
-            <el-table-column
-              label="毕业院校"
-              prop="graduatedSchool"
-            ></el-table-column>
-            <el-table-column
-              width="155"
-              align="center"
-              label="报名时间"
-              prop="createTime"
-            ></el-table-column>
-            <el-table-column
-              align="center"
-              label="报考单位"
-              prop="examUnit"
-            ></el-table-column>
-            <el-table-column
-              align="center"
-              label="报考岗位"
-              prop="recruitmentJob"
-            ></el-table-column>
-            <el-table-column
-              align="center"
-              label="未通过原因"
-              prop="checkResult"
-            >
-              <template slot-scope="scope">
-                <el-tag type="warning">{{ scope.row.checkResult }}</el-tag>
-              </template>
-            </el-table-column>
-
-            <el-table-column align="center" label="操作">
-              <template slot-scope="scope">
-                <el-button @click="check(scope.row)" type="text" size="small"
-                  >查看</el-button
-                >
-              </template>
-            </el-table-column>
-          </el-table>
-        </el-tab-pane>
-      </el-tabs>
+      </el-pagination>
     </div>
-    <div v-show="!status" class="applicationForm">
-      <el-button type="primary" @click="status = true">返回</el-button>
+    <div class="print" v-if="showWrittenPrint == true">
+      <el-button @click="showWrittenPrint = false" type="primary"
+        >返回</el-button
+      >
 
-      <application-form :data="dataList"></application-form>
-      <div class="fj">
-        <p>附件：</p>
-        <a
-          style="display: block"
-          :href="item.url"
-          v-for="item in dataList.annexList"
-          :key="item.id"
-        >
-          {{ item.fileName }}
-        </a>
-      </div>
-      <div class="opinion" style="margin-bottom: 10px">
-        <el-input
-          v-if="params.status == '2'"
-          v-model="opinion"
-          placeholder="请输入审核不通过的原因"
-        ></el-input>
-      </div>
-      <div class="operation">
-        <el-button
-          type="primary"
-          v-if="params.status == '2'"
-          @click="checkAndPass(1)"
-          >审核通过</el-button
-        >
-        <el-button
-          type="warning"
-          v-if="params.status == '2'"
-          @click="checkAndPass(2)"
-          >审核不通过</el-button
-        >
-      </div>
+      <written :personalData="personalData" />
     </div>
-    <el-dialog title="提示" :visible.sync="reasonDialog" width="30%">
-      <el-input placeholder="请输入不通过的理由" v-model="reason"></el-input>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="reasonDialog = false">取 消</el-button>
-        <el-button type="primary" @click="allNoPass">确 定</el-button>
-      </span>
-    </el-dialog>
-    <el-pagination
-      v-if="total > 0 && status == true"
-      style="margin-top: 20px"
-      layout="total,sizes,prev, pager, next"
-      :page-sizes="[10, 20, 30, 40]"
-      :total="total"
-      @size-change="handleSizeChange"
-      :current-page="params.pageNum"
-      @current-change="handleChangePageNum"
-    >
-    </el-pagination>
+    <div class="printInterview" v-if="showInterviewPrint == true">
+      <el-button
+        style="margin: 10px 5%"
+        @click="showInterviewPrint = false"
+        type="primary"
+        >返回</el-button
+      >
+
+      <interview :id="printInterviewId" />
+    </div>
   </div>
 </template>
 <script>
 import * as api from "@/api/examinee";
-// import { getConfirmForm } from "@/api/operation";
-
+import { getWrittenInfo } from "@/api/system";
+import written from "@/views/page/components/written";
+import interview from "@/views/page/components/interview";
 import applicationForm from "@/views/page/components/applicationForm";
+
 export default {
   components: {
     applicationForm,
+    written,
+    interview,
   },
   data() {
     return {
+      printInterviewId: "",
+      showInterviewPrint: false,
+      showWrittenPrint: false, //是否显示打印
+      personalData: {},
       reason: "", //批量审核不通过的理由
       reasonDialog: false,
       idOrName: "", //输入框搜索的值
@@ -391,6 +459,22 @@ export default {
     this.getJobList();
   },
   methods: {
+    // 打印面试准考证
+    printInterview(id) {
+      this.printInterviewId = id;
+      this.showInterviewPrint = true;
+    },
+    // 打印笔试准考证
+    printWritten(id) {
+      // 获取个人打印笔试准考证详细信息
+      getWrittenInfo(id).then((res) => {
+        if (res.code == 200) {
+          this.personalData = res.data;
+          this.showWrittenPrint = true;
+          // this.$bus.$emit("download");
+        }
+      });
+    },
     handleSelectionChange(data) {
       this.params.ids = data.map((item) => {
         return item.id;
@@ -481,7 +565,7 @@ export default {
               });
           });
         } else {
-          this.$message.warning("请输入审核不通过的原因！");
+          this.$message.warning("请输入审核单位意见！");
         }
       }
     },
@@ -534,6 +618,12 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+.print {
+  margin: 10px 5%;
+}
+.printInterview {
+  // margin: 10px 5%;
+}
 .check {
   .content {
     .search {

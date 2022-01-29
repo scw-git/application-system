@@ -48,7 +48,7 @@
                 size="mini"
                 :type="scope.row.ifPost == '1' ? 'danger' : 'primary'"
                 @click="toApplicationForm(scope.row.id)"
-                >{{ scope.row.ifPost == "1" ? "已报名" : "报名" }}</el-button
+                >{{ scope.row.ifPost == "1" ? "再次报名" : "报名" }}</el-button
               >
             </template>
           </el-table-column>
@@ -56,7 +56,8 @@
       </div>
     </div>
     <div class="personData" v-show="progressTag == 2">
-      <div style="display: flex; justify-content: flex-end; margin-right: 10%">
+      <!-- style="display: flex; justify-content: flex-end; margin-right: 10%" -->
+      <div>
         <el-button
           style="margin-left: 45px"
           size="small"
@@ -66,10 +67,11 @@
         >
         <el-button size="small" type="danger" @click="signUp">报名</el-button>
       </div>
-      <el-upload
+      <!-- 附件 -->
+      <!-- <el-upload
         style="margin-left: 45px; margin-top: 10px"
         class="upload-demo"
-        action="/api/examinee/upload-annex"
+        action="/app/api/examinee/upload-annex"
         :data="{ id: this.id }"
         :headers="headers"
         :on-remove="handleRemove"
@@ -79,9 +81,20 @@
       >
         <el-button size="small" type="primary">附件上传</el-button>
         <div slot="tip" class="el-upload__tip">最多上传三个文件</div>
-      </el-upload>
+      </el-upload> -->
 
       <application-form :data="dataList"></application-form>
+      <div class="fj">
+        <p>附件：</p>
+        <a
+          style="display: block"
+          :href="item.url"
+          v-for="item in fileList"
+          :key="item.id"
+        >
+          {{ item.fileName }}
+        </a>
+      </div>
     </div>
     <div class="finish" v-show="progressTag == 3">
       <p style="text-align: center; font-size: 22px; color: red">
@@ -118,12 +131,12 @@ export default {
     this.getExamList();
   },
   methods: {
-    // 删除附件
-    handleRemove(file, fileList) {
-      api.delFj(file.id).then((res) => {
-        this.$message.success("删除成功");
-      });
-    },
+    // // 删除附件
+    // handleRemove(file, fileList) {
+    //   api.delFj(file.id).then((res) => {
+    //     this.$message.success("删除成功");
+    //   });
+    // },
     // 获取附件
     getFj(id) {
       api.getFj(id).then((res) => {

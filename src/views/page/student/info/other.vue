@@ -4,7 +4,7 @@
     <el-form :model="form">
       <el-form-item label="奖惩情况:">
         <el-input
-          maxlength="200"
+          maxlength="500"
           show-word-limit
           type="textarea"
           :rows="5"
@@ -37,8 +37,8 @@
       </el-form-item>
     </el-form>
     <div class="next">
-      <el-button type="primary" @click="next(1)">保存上一步</el-button>
-      <el-button type="primary" @click="next(2)">保存下一步</el-button>
+      <el-button type="primary" @click="next(1)">上一步</el-button>
+      <el-button type="primary" @click="next(2)">下一步</el-button>
     </div>
   </div>
 </template>

@@ -70,7 +70,7 @@
         <el-form-item label="权限标识" prop="roleKey">
           <el-input v-model="form.roleKey" placeholder="请输入"></el-input>
         </el-form-item>
-        <el-form-item label="报考岗位">
+        <el-form-item label="用户状态">
           <el-radio-group v-model="form.status">
             <el-radio label="0">正常</el-radio>
             <el-radio label="1">停用</el-radio>

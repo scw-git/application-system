@@ -1,5 +1,22 @@
 <template>
   <div class="time p15">
+    <el-select clearable v-model="recruitmentJob" placeholder="请选择岗位">
+      <el-option
+        v-for="item in jobList"
+        :key="item"
+        :label="item"
+        :value="item"
+      >
+      </el-option>
+    </el-select>
+    <el-input
+      clearable
+      @keydown.enter.native="getList()"
+      v-model="examName"
+      style="width: 200px; margin: 0 10px"
+      placeholder="请输入考试名称"
+    ></el-input>
+    <el-button size="medium" type="primary" @click="getList()">确定</el-button>
     <div class="table" v-loading="loading">
       <el-table :data="dataList" border>
         <el-table-column
@@ -112,10 +129,14 @@
 </template>
 <script>
 import * as api from "@/api/exam";
+import { getJobList } from "@/api/examinee";
 
 export default {
   data() {
     return {
+      recruitmentJob: "",
+      examName: "",
+      jobList: [],
       total: 0,
       pagination: {
         pageNum: 1,
@@ -133,10 +154,22 @@ export default {
       },
     };
   },
+  watch: {
+    recruitmentJob() {
+      this.getList();
+    },
+  },
   created() {
     this.getList();
+    this.getJobList();
   },
   methods: {
+    // 获取岗位列表
+    getJobList() {
+      getJobList().then((res) => {
+        this.jobList = res.data.recruitmentJob;
+      });
+    },
     handleSizeChange(val) {
       this.pagination.pageSize = val;
       this.getList();
@@ -158,11 +191,17 @@ export default {
     // 获取列表
     getList() {
       this.loading = true;
-      api.getExamTimeList(this.pagination).then((res) => {
-        this.dataList = res.rows;
-        this.total = res.total;
-        this.loading = false;
-      });
+      api
+        .getExamTimeList({
+          ...this.pagination,
+          examName: this.examName,
+          recruitmentJob: this.recruitmentJob,
+        })
+        .then((res) => {
+          this.dataList = res.rows;
+          this.total = res.total;
+          this.loading = false;
+        });
     },
     // 设置成绩查询、打印准考证时间
     submitData() {

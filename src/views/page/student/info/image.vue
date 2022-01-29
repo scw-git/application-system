@@ -6,7 +6,7 @@
         style="margin: 10px 0 0 10px"
         accept=".jpg, .png"
         class="avatar-uploader"
-        action="/api/examinee/personal-picture-upload"
+        action="/app/api/examinee/personal-picture-upload"
         :headers="headers"
         :show-file-list="false"
         :on-success="handleAvatarSuccess"

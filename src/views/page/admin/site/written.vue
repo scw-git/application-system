@@ -117,9 +117,9 @@
             }}
           </template></el-table-column
         >
-        <el-table-column align="center" prop="type" label="试卷类型">
+        <el-table-column align="center" prop="paperType" label="试卷类型">
           <template slot-scope="scope">
-            {{ scope.row.type == null ? "暂无类型" : scope.row.type }}
+            {{ scope.row.paperType == null ? "暂无类型" : scope.row.paperType }}
           </template></el-table-column
         >
         <el-table-column
@@ -141,7 +141,11 @@
           align="center"
           prop="scheduledNumber"
           label="考试安排状态"
-        ></el-table-column>
+        >
+          <template slot-scope="scope">
+            已安排 {{ scope.row.scheduledNumber }}人</template
+          ></el-table-column
+        >
         <el-table-column
           width="80"
           align="center"
@@ -231,24 +235,28 @@
           prop="placeNumber"
         >
           <el-input
-            placeholder="只能输入4位数字"
+            type="number"
+            placeholder="请输入数字，不能以0开头"
             v-model="form.placeNumber"
+            @input="handleInput"
           ></el-input>
         </el-form-item>
 
         <el-form-item v-if="title == '批量新建'" label="考点编号" required>
           <el-input
             type="number"
-            style="width: 100px"
-            placeholder="请输入"
+            style="width: 120px"
+            placeholder="不能以0开头"
             v-model="form.placeStartNumber"
+            @input="handleInput"
           ></el-input
           >~
           <el-input
             type="number"
-            style="width: 100px"
-            placeholder="请输入"
+            style="width: 120px"
+            placeholder="不能以0开头"
             v-model="form.placeEndNumber"
+            @input="handleInput"
           ></el-input>
         </el-form-item>
         <!-- <el-form-item label="考场数量">
@@ -268,7 +276,7 @@
         :model="arrangeForm"
         :rules="rules"
       >
-        <el-form-item label="混合考试">
+        <el-form-item v-if="title1 != '批量安排考场'" label="混合考试">
           <el-select disabled v-model="arrangeForm.mixtureExam">
             <el-option label="是" value="1"> </el-option>
             <el-option label="否" value="0"> </el-option>
@@ -374,11 +382,13 @@ export default {
       form: { mixtureExam: "0" },
       rules: {
         placeName: [{ required: true, message: "请输入", trigger: "blur" }],
-        placeNumber: [
-          { required: true, validator: validateFourNumber, trigger: "blur" },
-        ],
+        // placeNumber: [
+        //   { required: true, validator: validateFourNumber, trigger: "blur" },
+        // ],
 
-        // placeNumber: [{ required: true, message: "请输入", trigger: "change" }],
+        placeNumber: [
+          { required: true, message: "请输入编号", trigger: "change" },
+        ],
         startExamDate: [{ required: true, message: "请选择", trigger: "blur" }],
         placeCount: [{ required: true, message: "请输入", trigger: "blur" }],
         placeAddress: [{ required: true, message: "请输入", trigger: "blur" }],
@@ -410,6 +420,11 @@ export default {
     },
   },
   methods: {
+    handleInput(value) {
+      this.form.placeNumber = value.replace(/^0{1,}/g, " ");
+      this.form.placeStartNumber = value.replace(/^0{1,}/g, " ");
+      this.form.placeEndNumber = value.replace(/^0{1,}/g, " ");
+    },
     getExamineeType() {
       api.getExamineeType().then((res) => {
         this.examineeTypeList = res.rows;
@@ -636,6 +651,11 @@ export default {
     getWritten() {
       this.loading = true;
       api.getWritten({ ...this.pagination, ...this.queryData }).then((res) => {
+        res.rows.forEach((item) => {
+          if (item.startExamDate) {
+            item.startExamDate = item.startExamDate.replace("T", " ");
+          }
+        });
         this.dataList = res.rows;
         this.total = res.total;
         this.loading = false;

@@ -298,7 +298,7 @@
             >
             </el-date-picker>
           </el-form-item>
-          <el-form-item label="离职日期:">
+          <el-form-item label="离职日期:" prop="resignationDate">
             <el-date-picker
               value-format="yyyy-MM-dd"
               v-model="addWork.resignationDate"
@@ -334,10 +334,8 @@
       </el-dialog>
     </div>
     <div class="next">
-      <el-button type="primary" size="small" @click="next(1)"
-        >保存并上一步</el-button
-      >
-      <el-button type="primary" @click="next(2)">保存下一步</el-button>
+      <el-button type="primary" size="small" @click="next(1)">上一步</el-button>
+      <el-button type="primary" @click="next(2)">下一步</el-button>
     </div>
   </div>
 </template>
@@ -353,6 +351,10 @@ export default {
       studyDialog: false,
       rules: {
         admissionDate: [
+          { required: true, message: "请选择日期", trigger: "blur" },
+        ],
+
+        resignationDate: [
           { required: true, message: "请选择日期", trigger: "blur" },
         ],
         entryDate: [{ required: true, message: "请选择日期", trigger: "blur" }],

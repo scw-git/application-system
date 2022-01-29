@@ -23,6 +23,19 @@ service.interceptors.response.use(
         const res = response.data
         if (res.code === 200 || res.code === undefined) {
             return res
+        } else if (res.code == 401) {
+            // 登录过去重新登录
+            let type = JSON.parse(sessionStorage.getItem("loginInfo")).type;
+            if (type == 'student') {
+                this.$router.push("login");
+            } else {
+                this.$router.push("admin");
+            }
+            sessionStorage.removeItem("loginInfo");
+            sessionStorage.removeItem("router");
+            sessionStorage.removeItem("info");
+
+
         } else {
             console.log('错误拦截信息', response.data);
             Message({

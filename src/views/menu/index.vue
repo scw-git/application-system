@@ -10,7 +10,7 @@
     >
       <el-menu-item style="padding-left: 23px" index="student_notice">
         <i class="el-icon-message-solid iconfont"></i>
-        <span slot="title">考试须知</span>
+        <span slot="title">考试通知</span>
       </el-menu-item>
       <el-submenu index="student_info">
         <template slot="title">
@@ -23,6 +23,7 @@
           <el-menu-item index="student_info_work">学习/工作情况</el-menu-item>
           <el-menu-item index="student_info_other">奖惩/特长情况</el-menu-item>
           <el-menu-item index="student_info_home">家庭情况</el-menu-item>
+          <el-menu-item index="student_info_fj">相关证明材料</el-menu-item>
         </el-menu-item-group>
       </el-submenu>
       <el-submenu index="student_operation">

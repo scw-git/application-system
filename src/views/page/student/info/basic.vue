@@ -11,10 +11,14 @@
       >
         <div class="left">
           <el-form-item label="姓名:" prop="name">
-            <el-input placeholder="请输入名字" v-model="form.name"></el-input>
+            <el-input
+              disabled
+              placeholder="请输入名字"
+              v-model="form.name"
+            ></el-input>
           </el-form-item>
           <el-form-item label="性别:" prop="sex">
-            <el-select v-model="form.sex" placeholder="请选择">
+            <el-select disabled v-model="form.sex" placeholder="请选择">
               <el-option label="男" value="1"></el-option>
               <el-option label="女" value="0"></el-option>
             </el-select>
@@ -42,10 +46,11 @@
         </div>
         <div class="right">
           <el-form-item label="身份证号:" prop="certificateNumber">
-            <el-input v-model="form.certificateNumber"></el-input>
+            <el-input disabled v-model="form.certificateNumber"></el-input>
           </el-form-item>
           <el-form-item label="出生日期:" prop="birthday">
             <el-date-picker
+              disabled
               value-format="yyyy-MM-dd"
               v-model="form.birthday"
               type="date"
@@ -112,8 +117,8 @@
       ></el-form>
     </div>
     <div class="next">
-      <el-button type="primary" @click="next(1)">保存并上一步</el-button>
-      <el-button type="primary" @click="next(2)">保存并下一步</el-button>
+      <el-button type="primary" @click="next(1)">上一步</el-button>
+      <el-button type="primary" @click="next(2)">下一步</el-button>
     </div>
   </div>
 </template>

@@ -72,7 +72,7 @@
         ref="upload"
         style="display: inline-block; padding: 0 10px"
         class="upload-demo"
-        action="/api/apply-info/written-batch-import"
+        action="/app/api/apply-info/written-batch-import"
         :limit="1"
         :headers="headers"
         accept=".xlsx, .xls"
@@ -212,7 +212,7 @@
         </span>
       </el-dialog>
     </div>
-    <el-dialog title="发送面试" :visible.sync="dialogVisible" width="30%">
+    <el-dialog title="发送面试" :visible.sync="dialogVisible" width="40%">
       <el-table
         @selection-change="handleInterviewSelectionChange"
         :data="interviewSiteList"
@@ -225,7 +225,12 @@
           type="selection"
         ></el-table-column>
 
-        <el-table-column align="center" prop="time" label="面试时间">
+        <el-table-column
+          width="170"
+          align="center"
+          prop="time"
+          label="面试时间"
+        >
           <template slot-scope="scope">
             {{ scope.row.startExamDate }} <br />{{ scope.row.endExamDate }}
           </template>

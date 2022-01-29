@@ -62,11 +62,23 @@
     <el-button v-if="!isShow" type="primary" @click="isShow = true"
       >返回</el-button
     >
+
     <application-form v-if="!isShow" :data="bmbData"></application-form>
+    <div v-if="!isShow" style="margin-top: 5px" class="fj">
+      <p>附件：</p>
+      <a
+        style="display: block"
+        :href="item.url"
+        v-for="item in fileList"
+        :key="item.id"
+      >
+        {{ item.fileName }}
+      </a>
+    </div>
   </div>
 </template>
 <script>
-import { queryStatus, getDshDetail } from "@/api/operation";
+import { queryStatus, getDshDetail, getFj } from "@/api/operation";
 import applicationForm from "@/views/page/components/applicationForm";
 
 export default {
@@ -79,13 +91,26 @@ export default {
       loading: false,
       dataList: [],
       bmbData: [], //报名表信息
+      fileList: [],
     };
   },
   created() {
     this.queryStatus();
   },
   methods: {
+    // 获取附件
+    getFj() {
+      getFj().then((res) => {
+        if (res.data) {
+          res.data.forEach((item, i) => {
+            res.data[i].name = item.fileName;
+          });
+          this.fileList = res.data;
+        }
+      });
+    },
     showDetail(id) {
+      this.getFj();
       this.isShow = false;
       getDshDetail(id).then((res) => {
         this.bmbData = res.data;

@@ -78,13 +78,8 @@
       </el-dialog>
     </div>
     <div class="next">
-      <el-button size="small" type="primary" @click="next">上一步</el-button>
-      <el-button
-        size="small"
-        type="primary"
-        @click="() => this.$router.push('student_operation_queryAndApply')"
-        >立即报名</el-button
-      >
+      <el-button size="small" type="primary" @click="next(1)">上一步</el-button>
+      <el-button size="small" type="primary" @click="next(2)">下一步</el-button>
     </div>
   </div>
 </template>
@@ -163,8 +158,12 @@ export default {
         this.loading = false;
       });
     },
-    next() {
-      this.$router.push("student_info_other");
+    next(n) {
+      if (n == 1) {
+        this.$router.push("student_info_other");
+      } else {
+        this.$router.push("student_info_fj");
+      }
     },
   },
 };
