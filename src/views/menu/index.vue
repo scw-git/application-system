@@ -56,7 +56,7 @@
       :default-active="adminActiveIndex"
     >
       <el-submenu
-        v-show="router.includes('考生管理')"
+        v-show="router.indexOf('考生管理') != -1"
         index="admin_examinee_check"
       >
         <template slot="title">
@@ -70,7 +70,7 @@
         </el-menu-item-group>
       </el-submenu>
       <el-submenu
-        v-if="router.includes('考试管理')"
+        v-if="router.indexOf('考试管理') != -1"
         index="admin_exam_testPaper"
       >
         <template slot="title">
@@ -83,7 +83,10 @@
           <el-menu-item index="admin_exam_time">时间设置</el-menu-item>
         </el-menu-item-group>
       </el-submenu>
-      <el-submenu v-if="router.includes('考场管理')" index="admin_site_written">
+      <el-submenu
+        v-if="router.indexOf('考场管理') != -1"
+        index="admin_site_written"
+      >
         <template slot="title">
           <i class="el-icon-office-building"></i>
           <span>考场管理</span>
@@ -93,7 +96,10 @@
           <el-menu-item index="admin_site_interview">面试地点设置</el-menu-item>
         </el-menu-item-group>
       </el-submenu>
-      <el-submenu v-if="router.includes('用户管理')" index="admin_user_role">
+      <el-submenu
+        v-if="router.indexOf('用户管理') != -1"
+        index="admin_user_role"
+      >
         <template slot="title">
           <i class="el-icon-user"></i>
           <span>用户管理</span>
@@ -105,7 +111,7 @@
         </el-menu-item-group>
       </el-submenu>
       <el-submenu
-        v-if="router.includes('系统配置')"
+        v-if="router.indexOf('系统配置') != -1"
         index="admin_system_notice"
       >
         <template slot="title">

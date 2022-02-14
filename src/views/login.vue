@@ -123,7 +123,7 @@ import {
   getRouters,
   getCodeImg,
 } from "@/api/login";
-import { encrypt, decrypt } from "@/utils/encrypt";
+// import { encrypt, decrypt } from "@/utils/encrypt"; //引入没有用ie会出问题
 import { validatePw1 } from "@/utils/validator";
 import { register, getCode, verifyCode, resetPassword } from "@/api/register";
 

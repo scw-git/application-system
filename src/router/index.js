@@ -10,6 +10,16 @@ const routes = [
     redirect: '/login',
   },
   {
+    path: '/login',
+    name: 'login',
+    component: () => import('../views/login.vue')
+  },
+  {
+    path: '/register',
+    name: 'register',
+    component: () => import('../views/register.vue')
+  },
+  {
     path: '/ksbm',
     name: 'ksbm',
     component: () => import('../views/loginAdmin.vue')
@@ -177,16 +187,7 @@ const routes = [
     ]
   },
 
-  {
-    path: '/login',
-    name: 'login',
-    component: () => import('../views/login.vue')
-  },
-  {
-    path: '/register',
-    name: 'register',
-    component: () => import('../views/register.vue')
-  },
+
   {
     path: "*",
     component: () => import("../views/404")
