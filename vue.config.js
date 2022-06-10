@@ -18,14 +18,14 @@ module.exports = {
         proxy: {
             '/app/api': {
                 // target: 'http://10.9.2.15:8080',
-                target: 'http://4h09199k66.zicp.vip',
+                target: 'http://qy.czt.gxzf.gov.cn:8001/app/api/',
                 changeOrigin: true,
                 pathRewrite: {
                     '^/app/api': '/'
                 }
             },
             '/profile': {
-                target: 'http://10.9.2.15:8080',
+                target: 'http://qy.czt.gxzf.gov.cn:8001',
                 changeOrigin: true,
                 pathRewrite: {
                     '^/profile': '/profile'

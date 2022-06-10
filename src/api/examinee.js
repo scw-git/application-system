@@ -133,7 +133,14 @@ export function getJobList() {
 
     })
 }
-
+// 批量发送短线
+export function batchSend(data) {
+    return request({
+        url: '/apply-info/batch-send',
+        method: 'post',
+        data
+    })
+}
 
 
 

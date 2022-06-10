@@ -66,6 +66,14 @@
               >批量审核</el-button
             >
           </el-popover>
+          <el-button
+            @click="batchSend"
+            v-show="params.status == '1'"
+            size="medium"
+            type="primary"
+            slot="reference"
+            >批量发送短信</el-button
+          >
         </div>
         <el-tabs
           v-loading="loading"
@@ -138,7 +146,11 @@
             </el-table>
           </el-tab-pane>
           <el-tab-pane label="已通过" name="ytg">
-            <el-table border :data="allData">
+            <el-table
+              @selection-change="handleSelectionChange"
+              border
+              :data="allData"
+            >
               <el-table-column type="selection" width="45"> </el-table-column>
               <el-table-column
                 align="center"
@@ -376,6 +388,18 @@
 
       <interview :id="printInterviewId" />
     </div>
+    <el-dialog title="提示" :visible.sync="dialogVisible" width="30%">
+      <el-input
+        v-model="msg"
+        type="textarea"
+        :rows="2"
+        placeholder="请输入短信内容"
+      ></el-input>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="sendNote">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -393,6 +417,8 @@ export default {
   },
   data() {
     return {
+      msg: "", //批量发送短线时的短信内容
+      dialogVisible: false,
       printInterviewId: "",
       showInterviewPrint: false,
       showWrittenPrint: false, //是否显示打印
@@ -459,6 +485,30 @@ export default {
     this.getJobList();
   },
   methods: {
+    // 批量发送短线
+    batchSend() {
+      if (this.params.ids.length <= 0) {
+        this.$message.warning("请勾选考试！！");
+      } else {
+        this.dialogVisible = true;
+      }
+    },
+    sendNote() {
+      let params = {
+        ids: this.params.ids,
+        msg: this.msg,
+      };
+      if (this.msg === "") {
+        this.$message.warning("请输入内容！");
+        return;
+      }
+      api.batchSend(params).then((res) => {
+        if (res.code === 200) {
+          this.$message.success("发送成功");
+          this.dialogVisible = false;
+        }
+      });
+    },
     // 打印面试准考证
     printInterview(id) {
       this.printInterviewId = id;
