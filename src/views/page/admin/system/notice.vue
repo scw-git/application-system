@@ -71,7 +71,12 @@
         </el-table-column>
       </el-table>
     </div>
-    <el-dialog title="发布通知" :visible.sync="dialogVisible" width="50%">
+    <el-dialog
+      :close-on-click-modal="false"
+      title="发布通知"
+      :visible.sync="dialogVisible"
+      width="50%"
+    >
       <el-form ref="ruleForm" label-width="100px" :model="form" :rules="rules">
         <el-form-item prop="noticeTitle" label="通知标题">
           <el-input v-model="form.noticeTitle"></el-input>

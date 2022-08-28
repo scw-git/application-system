@@ -188,7 +188,7 @@
               type="success"
               @click="openDialog(scope.row.id)"
             >
-              通知面试</el-button
+              进入面试</el-button
             >
             <el-button
               @click="openWrittenScoreDialog(scope.row.id)"
@@ -213,7 +213,13 @@
       </el-dialog>
     </div>
     <el-dialog title="发送面试" :visible.sync="dialogVisible" width="40%">
-      <el-table
+      <el-input
+        v-model="msg"
+        type="textarea"
+        :rows="2"
+        placeholder="请输入短信内容"
+      ></el-input>
+      <!-- <el-table
         @selection-change="handleInterviewSelectionChange"
         :data="interviewSiteList"
         border
@@ -240,7 +246,7 @@
           prop="placeAddress"
           label="面试地点"
         ></el-table-column>
-      </el-table>
+      </el-table> -->
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="confirmSendIntervie">确 定</el-button>
         <el-button @click="dialogVisible = false">取 消</el-button>
@@ -265,6 +271,7 @@ import { saveAs } from "file-saver";
 export default {
   data() {
     return {
+      msg: "",
       jobList: [],
       //搜索参数
       idOrName: "",
@@ -353,33 +360,47 @@ export default {
       }
     },
     confirmSendIntervie() {
-      if (this.selectedArr.length == 1) {
-        if (this.tag) {
-          console.log(9, this.ids);
-          api
-            .allSendIntervie({
-              applyIds: this.selectedIds,
-              facePlaceId: this.ids.faceInfoId,
-            })
-            .then((res) => {
-              if (res.code == 200) {
-                this.$message.success("通知面试成功");
-                this.getWrittenList();
-                this.dialogVisible = false;
-              }
-            });
-        } else {
-          api.confirmSendIntervie(this.ids).then((res) => {
-            if (res.code == 200) {
-              this.$message.success("通知面试成功");
-              this.getWrittenList();
-              this.dialogVisible = false;
-            }
-          });
-        }
-      } else {
-        this.$message.warning("只能选一个面试地址！");
+      let params = {
+        ids: this.selectedIds,
+        msg: this.msg,
+      };
+      if (this.msg === "") {
+        this.$message.warning("请输入内容！");
+        return;
       }
+      api.batchSend(params).then((res) => {
+        if (res.code === 200) {
+          this.$message.success("发送成功");
+          this.dialogVisible = false;
+        }
+      });
+      // if (this.selectedArr.length == 1) {
+      //   if (this.tag) {
+      //     console.log(9, this.ids);
+      //     api
+      //       .allSendIntervie({
+      //         applyIds: this.selectedIds,
+      //         facePlaceId: this.ids.faceInfoId,
+      //       })
+      //       .then((res) => {
+      //         if (res.code == 200) {
+      //           this.$message.success("通知面试成功");
+      //           this.getWrittenList();
+      //           this.dialogVisible = false;
+      //         }
+      //       });
+      //   } else {
+      //     api.confirmSendIntervie(this.ids).then((res) => {
+      //       if (res.code == 200) {
+      //         this.$message.success("通知面试成功");
+      //         this.getWrittenList();
+      //         this.dialogVisible = false;
+      //       }
+      //     });
+      //   }
+      // } else {
+      //   this.$message.warning("只能选一个面试地址！");
+      // }
     },
     handleInterviewSelectionChange(data) {
       this.selectedArr = data;
@@ -388,6 +409,19 @@ export default {
     openDialog(id) {
       this.dialogVisible = true;
       this.ids.id = id;
+      // this.$confirm("确定进入面试吗？", "提示", {
+      //   confirmButtonText: "确定",
+      //   cancelButtonText: "取消",
+      //   type: "warning",
+      // }).then(() => {
+      //   api.confirmSendIntervie(this.ids).then((res) => {
+      //     if (res.code == 200) {
+      //       this.$message.success("进入面试成功");
+      //       this.getWrittenList();
+      //       this.dialogVisible = false;
+      //     }
+      //   });
+      // });
     },
     // 获取面试列表
     getInterviewSiteList() {

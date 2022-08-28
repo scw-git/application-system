@@ -42,7 +42,7 @@
           }}</template
         ></el-table-column
       >
-      <el-table-column label="是否进入面试" align="center" prop="">
+      <!-- <el-table-column label="是否进入面试" align="center" prop="">
         <template slot-scope="scope">
           {{
             scope.row.ifInterview == "1"
@@ -63,7 +63,7 @@
             >打印面试准考证</el-button
           >
         </template>
-      </el-table-column>
+      </el-table-column> -->
     </el-table>
     <el-button
       v-if="isShow"

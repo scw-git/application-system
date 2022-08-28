@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { Message } from 'element-ui'
-
+import router from '@/router/index.js'
 
 
 const service = axios.create({
@@ -24,12 +24,19 @@ service.interceptors.response.use(
         if (res.code === 200 || res.code === undefined) {
             return res
         } else if (res.code == 401) {
+
+            Message({
+                message: res.msg,
+                type: 'error',
+                duration: 3 * 1000
+            })
             // 登录过去重新登录
             let type = JSON.parse(sessionStorage.getItem("loginInfo")).type;
+            console.log(33, type);
             if (type == 'student') {
-                this.$router.push("login");
+                router.push("login");
             } else {
-                this.$router.push("admin");
+                router.push("ksbm");
             }
             sessionStorage.removeItem("loginInfo");
             sessionStorage.removeItem("router");
@@ -37,12 +44,13 @@ service.interceptors.response.use(
 
 
         } else {
-            console.log('错误拦截信息', response.data);
+            // console.log('错误拦截信息', response.data);
             Message({
                 message: response.data.msg,
                 type: 'error',
                 duration: 5 * 1000
             })
+            return res
             // return Promise.reject(res) //会一直挂起
         }
     },

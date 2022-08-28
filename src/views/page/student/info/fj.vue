@@ -11,7 +11,9 @@
       :file-list="fileList"
     >
       <el-button size="small" type="primary">相关证明材料上传</el-button>
-      <!-- <div slot="tip" class="el-upload__tip">最多上传三个文件</div> -->
+      <span style="color: red; font-weight: 700">（非必填项）</span>
+
+      <!-- <div slot="tip" class="el-upload__tip">非必填项</div> -->
     </el-upload>
     <el-button
       style="margin: 10px 48%"

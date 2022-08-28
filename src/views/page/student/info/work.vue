@@ -150,7 +150,7 @@
         class="frame_title"
         style="display: flex; justify-content: space-between"
       >
-        <span>工作经历：</span>
+        <span><span style="color: red">*</span> 工作经历：</span>
         <el-button size="mini" @click="openAddDialog('work')" type="warning"
           >添加</el-button
         >
@@ -298,7 +298,7 @@
             >
             </el-date-picker>
           </el-form-item>
-          <el-form-item label="离职日期:" prop="resignationDate">
+          <el-form-item label="离职日期:">
             <el-date-picker
               value-format="yyyy-MM-dd"
               v-model="addWork.resignationDate"
@@ -527,17 +527,21 @@ export default {
     next(n) {
       this.$refs.ruleForm.validate((valid) => {
         if (valid) {
-          api.saveStudyWork({ ...this.studyAndWork }).then((res) => {
-            if (res.code == 200) {
-              this.$message.success("保存成功");
-              this.getStudyWork();
-              if (n == 1) {
-                this.$router.push("student_info_basic");
-              } else {
-                this.$router.push("student_info_other");
+          if (this.workData.length == 0 || this.studyData.length == 0) {
+            this.$message.warning("请完善信息！");
+          } else {
+            api.saveStudyWork({ ...this.studyAndWork }).then((res) => {
+              if (res.code == 200) {
+                this.$message.success("保存成功");
+                this.getStudyWork();
+                if (n == 1) {
+                  this.$router.push("student_info_basic");
+                } else {
+                  this.$router.push("student_info_other");
+                }
               }
-            }
-          });
+            });
+          }
         }
       });
     },

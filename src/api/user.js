@@ -28,7 +28,7 @@ export function addRole(data) {
 export function updateRoleStatus(data) {
     return request({
         url: '/system/role/changeStatus',
-        method: 'put',
+        method: 'post',
         data
     })
 }
@@ -36,8 +36,8 @@ export function updateRoleStatus(data) {
 // 编辑角色
 export function editRole(data) {
     return request({
-        url: '/system/role',
-        method: 'put',
+        url: '/system/role/edit',
+        method: 'post',
         data
     })
 }
@@ -45,7 +45,7 @@ export function editRole(data) {
 export function delRole(id) {
     return request({
         url: '/system/role/' + id,
-        method: 'delete',
+        method: 'post',
 
     })
 }
@@ -77,8 +77,8 @@ export function saveGroup(data) {
 // 更新组名
 export function updateGroup(data) {
     return request({
-        url: '/system/dept',
-        method: 'put',
+        url: '/system/dept/edit',
+        method: 'post',
         data
     })
 }
@@ -86,7 +86,7 @@ export function updateGroup(data) {
 export function delGroup(id) {
     return request({
         url: '/system/dept/' + id,
-        method: 'delete',
+        method: 'post',
 
     })
 }
@@ -109,8 +109,8 @@ export function addUser(data) {
 // 更新用户
 export function updateUser(data) {
     return request({
-        url: '/system/user',
-        method: 'put',
+        url: '/system/user/edit',
+        method: 'post',
         data
     })
 }
@@ -118,8 +118,7 @@ export function updateUser(data) {
 export function delUser(id) {
     return request({
         url: '/system/user/' + id,
-        method: 'delete',
-
+        method: 'post',
     })
 }
 // 获取用户信息
@@ -143,7 +142,7 @@ export function getUserList(params) {
 export function changeUserStatus(data) {
     return request({
         url: '/system/user/changeStatus',
-        method: 'put',
+        method: 'post',
         data
     })
 }
@@ -151,7 +150,7 @@ export function changeUserStatus(data) {
 export function updatePassword(data) {
     return request({
         url: '/system/user/resetPwd',
-        method: 'put',
+        method: 'post',
         data
     })
 }

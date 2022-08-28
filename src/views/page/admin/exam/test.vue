@@ -228,7 +228,7 @@
         <el-form-item v-if="form.ifPay == '1'" label="考试费用">
           <el-input placeholder="单位元" v-model="form.free"></el-input>
         </el-form-item>
-        <el-form-item label="发布时间" required>
+        <el-form-item label="发布时间" prop="publishDate">
           <el-date-picker
             value-format="yyyy-MM-dd HH:mm:ss"
             v-model="form.publishDate"
@@ -295,6 +295,7 @@ export default {
         applyStartDate: [
           { required: true, message: "请选择", trigger: "blur" },
         ],
+        publishDate: [{ required: true, message: "请选择", trigger: "blur" }],
         applyEndDate: [{ required: true, message: "请选择", trigger: "blur" }],
         ifPay: [{ required: true, message: "请选择", trigger: "blur" }],
       },

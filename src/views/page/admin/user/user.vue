@@ -289,9 +289,11 @@ export default {
         type: "warning",
       }).then(() => {
         api.delUser(id).then((res) => {
-          this.$message.success("删除成功！");
-          this.getUserList();
-          this.dialogVisible = false;
+          if (res.code == 200) {
+            this.$message.success("删除成功！");
+            this.getUserList();
+            this.dialogVisible = false;
+          }
         });
       });
     },

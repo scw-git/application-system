@@ -26,7 +26,7 @@
         </div>
       </el-upload>
       <p>
-        <b> 注意事项：</b> <br />
+        <b> 注意事项：<span style="color: red">（照片必填）</span></b> <br />
         1、上传的照片必须为
         <font style="color: red"
           >近期正面免冠电子证件照片，规格为：jpg/jpeg格式，2MB以下（建议用Photoshop“存储为Web所用格式”指令保存）。</font

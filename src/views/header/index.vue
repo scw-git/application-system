@@ -124,11 +124,22 @@ export default {
       }
     },
     logout() {
-      sessionStorage.removeItem("loginInfo");
-      sessionStorage.removeItem("router");
-      sessionStorage.removeItem("info");
-
-      this.$router.push("login");
+      this.$confirm("确定注销并退出系统吗？", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          if (this.type == "student") {
+            this.$router.push("login");
+          } else {
+            this.$router.push("ksbm");
+          }
+          sessionStorage.removeItem("loginInfo");
+          sessionStorage.removeItem("router");
+          sessionStorage.removeItem("info");
+        })
+        .catch(() => {});
     },
   },
 };

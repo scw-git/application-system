@@ -1,16 +1,22 @@
 <template>
   <div class="login">
     <el-form class="login-from" ref="login" :model="form" :rules="rules">
-      <h2 class="title">广西壮族自治区财政厅公开招聘考试报名系统</h2>
+      <h2 class="title">广西壮族自治区财政厅事业单位公开招聘报名系统</h2>
 
       <div class="notice">
         <span>通知：</span>
         <br />
-        <a
+        <!-- <a
           v-for="item in dataList"
           :key="item.noticeId"
           target="_blank"
           :href="item.noticeContent"
+          >{{ item.noticeTitle }}</a
+        > -->
+        <a
+          v-for="item in dataList"
+          :key="item.noticeId"
+          @click="toDetail(item)"
           >{{ item.noticeTitle }}</a
         >
       </div>
@@ -181,6 +187,17 @@ export default {
     this.getCodeImg();
   },
   methods: {
+    toDetail(data) {
+      if (data.noticeType == "0") {
+        window.open(data.noticeContent, "_blank");
+      } else {
+        this.$message.warning("请登录后查看！");
+        // let { href } = this.$router.resolve({
+        //   path: "notice",
+        // });
+        // window.open(href, "_blank");
+      }
+    },
     // 获取图片的验证码
     getCodeImg() {
       getCodeImg().then((res) => {
@@ -218,11 +235,16 @@ export default {
     getNoticeList() {
       this.dataList = [];
       getNoticeList().then((res) => {
-        res.rows.map((item) => {
-          if (item.noticeType == "0") {
-            this.dataList.push(item);
-          }
+        this.dataList = res.rows;
+        // res.rows.map((item) => {
+        //   if (item.noticeType == "0") {
+        //     this.dataList.push(item);
+        //   }
+        // });
+        let url = this.$router.resolve({
+          path: "/notice",
         });
+        window.open(url.href, "_blank");
       });
     },
     // 重置密码第二步

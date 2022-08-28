@@ -67,6 +67,7 @@
     <div v-if="!isShow" style="margin-top: 5px" class="fj">
       <p>附件：</p>
       <a
+        target="_blank"
         style="display: block"
         :href="item.url"
         v-for="item in fileList"

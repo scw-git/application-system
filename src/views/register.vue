@@ -230,11 +230,11 @@ import { register, getCode } from "@/api/register";
 export default {
   data() {
     let validatePw1 = (rule, value, callback) => {
-      const reg = /(?=.*\d)(?=.*[a-zA-Z])(?=.*[^a-zA-Z0-9]).{8,12}/;
+      const reg = /(?=.*\d)(?=.*[a-zA-Z])(?=.*[^a-zA-Z0-9]).{8,32}/;
       if (value === "") {
         callback("密码不能为空！");
       } else if (!reg.test(value)) {
-        callback("密码规则不正确！");
+        callback("密码由8位以上数字，大小写字母，特殊字符组成");
       } else {
         if (this.phoneRegister.confirPassword != "") {
           this.$refs.phoneRegister.validateField("confirPassword");

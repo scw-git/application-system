@@ -1,7 +1,7 @@
 <template>
   <div class="login">
     <el-form class="login-from" ref="login" :model="form" :rules="rules">
-      <h2 class="title">广西壮族自治区财政厅公开招聘考试报名系统</h2>
+      <h2 class="title">广西壮族自治区财政厅事业单位公开招聘报名系统</h2>
 
       <el-form-item style="margin: 20px 0">
         <el-input

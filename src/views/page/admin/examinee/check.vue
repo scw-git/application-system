@@ -66,6 +66,13 @@
               >批量审核</el-button
             >
           </el-popover>
+          <!-- <el-button
+            style="margin-right: 10px"
+            size="medium"
+            type="primary"
+            @click="printInfo"
+            >下载报名信息表</el-button
+          > -->
           <el-button
             @click="batchSend"
             v-show="params.status == '1'"
@@ -74,6 +81,14 @@
             slot="reference"
             >批量发送短信</el-button
           >
+          <!-- <el-button
+            @click="changeStatus"
+            v-show="params.status == '1'"
+            size="medium"
+            type="primary"
+            slot="reference"
+            >修改审核状态</el-button
+          > -->
         </div>
         <el-tabs
           v-loading="loading"
@@ -133,13 +148,13 @@
                 label="报考岗位"
                 prop="recruitmentJob"
               ></el-table-column>
-              <el-table-column align="center" label="操作">
+              <el-table-column width="150" align="center" label="操作">
                 <template slot-scope="scope">
                   <el-button
                     @click="check(scope.row)"
                     type="primary"
                     size="small"
-                    >审核</el-button
+                    >审核并打印信息表</el-button
                   >
                 </template>
               </el-table-column>
@@ -219,26 +234,38 @@
                   </el-tag>
                 </template></el-table-column
               >
-              <el-table-column align="center" width="330" label="操作">
-                <template slot-scope="scope">
-                  <el-button
-                    type="primary"
-                    @click="check(scope.row)"
-                    size="small"
-                    >查看</el-button
-                  >
-                  <el-button
-                    type="primary"
-                    @click="printWritten(scope.row.id)"
-                    size="small"
-                    >打印笔试准考证</el-button
-                  >
-                  <el-button
-                    type="primary"
-                    @click="printInterview(scope.row.id)"
-                    size="small"
-                    >打印面试准考证</el-button
-                  >
+              <el-table-column align="center" width="280" label="操作">
+                <template class="op" slot-scope="scope">
+                  <div class="one">
+                    <el-button
+                      style="margin-bottom: 5px"
+                      type="primary"
+                      @click="openDialog(scope.row.id)"
+                      size="small"
+                      >修改审核状态</el-button
+                    >
+                    <el-button
+                      style="margin-bottom: 5px"
+                      type="primary"
+                      @click="check(scope.row)"
+                      size="small"
+                      >查看并打印信息表</el-button
+                    >
+                  </div>
+                  <div class="two">
+                    <el-button
+                      type="primary"
+                      @click="printWritten(scope.row.id)"
+                      size="small"
+                      >打印笔试准考证</el-button
+                    >
+                    <el-button
+                      type="primary"
+                      @click="printInterview(scope.row.id)"
+                      size="small"
+                      >打印面试准考证</el-button
+                    >
+                  </div>
                 </template>
               </el-table-column>
             </el-table>
@@ -306,7 +333,7 @@
               <el-table-column align="center" label="操作">
                 <template slot-scope="scope">
                   <el-button @click="check(scope.row)" type="text" size="small"
-                    >查看</el-button
+                    >查看并打印信息表</el-button
                   >
                 </template>
               </el-table-column>
@@ -317,7 +344,7 @@
       <div v-show="!status" class="applicationForm">
         <el-button type="primary" @click="status = true">返回</el-button>
 
-        <application-form :data="dataList"></application-form>
+        <application-form id="getPdf" :data="dataList"></application-form>
         <div class="fj">
           <p>附件：</p>
           <a
@@ -349,6 +376,7 @@
             @click="checkAndPass(2)"
             >审核不通过</el-button
           >
+          <el-button type="primary" @click="printPdf">下载打印</el-button>
         </div>
       </div>
       <el-dialog title="提示" :visible.sync="reasonDialog" width="30%">
@@ -400,6 +428,18 @@
         <el-button type="primary" @click="sendNote">确 定</el-button>
       </span>
     </el-dialog>
+    <el-dialog title="提示" :visible.sync="dialogVisible1" width="30%">
+      <el-input
+        v-model="opinion"
+        type="textarea"
+        :rows="2"
+        placeholder="请输入不通过的理由"
+      ></el-input>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible1 = false">取 消</el-button>
+        <el-button type="primary" @click="changeStatus">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -408,6 +448,7 @@ import { getWrittenInfo } from "@/api/system";
 import written from "@/views/page/components/written";
 import interview from "@/views/page/components/interview";
 import applicationForm from "@/views/page/components/applicationForm";
+import { getPdf } from "@/utils/htmlToPdf";
 
 export default {
   components: {
@@ -418,6 +459,7 @@ export default {
   data() {
     return {
       msg: "", //批量发送短线时的短信内容
+      dialogVisible1: false,
       dialogVisible: false,
       printInterviewId: "",
       showInterviewPrint: false,
@@ -485,6 +527,32 @@ export default {
     this.getJobList();
   },
   methods: {
+    openDialog(id) {
+      this.id = id;
+      this.dialogVisible1 = true;
+    },
+    changeStatus() {
+      if (this.opinion) {
+        this.$confirm("确定审核不通过？", "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning",
+        }).then(() => {
+          api
+            .checkNoPass({ checkResult: this.opinion, id: this.id })
+            .then((res) => {
+              this.getData();
+              this.$message.success("审核不通过");
+              this.dialogVisible1 = false;
+            });
+        });
+      } else {
+        this.$message.warning("请输入修改审核意见的理由！");
+      }
+    },
+    printPdf() {
+      getPdf("#getPdf");
+    },
     // 批量发送短线
     batchSend() {
       if (this.params.ids.length <= 0) {
@@ -508,6 +576,14 @@ export default {
           this.dialogVisible = false;
         }
       });
+    },
+    // 批量下载报名表
+    printInfo() {
+      if (this.params.ids.length > 0) {
+        // getPdf("#getPdf");
+      } else {
+        this.$message.warning("请勾选要下载的人员");
+      }
     },
     // 打印面试准考证
     printInterview(id) {
@@ -668,6 +744,13 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+.op {
+  // display: flex;
+  // justify-content: center;
+  // align-items: center;
+  text-align: center;
+  // white-space:
+}
 .print {
   margin: 10px 5%;
 }

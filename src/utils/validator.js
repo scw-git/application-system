@@ -30,11 +30,11 @@ function validateId(rule, value, callback) {
     }
 }
 function validatePw1(rule, value, callback) {
-    const reg = /(?=.*\d)(?=.*[a-zA-Z])(?=.*[^a-zA-Z0-9]).{8,12}/;
+    const reg = /(?=.*\d)(?=.*[a-zA-Z])(?=.*[^a-zA-Z0-9]).{8,20}/;
     if (value === '') {
         callback('密码不能为空！')
     } else if (!reg.test(value)) {
-        callback('密码规则不正确！')
+        callback('密码由8位以上数字，大小写字母，特殊字符组成！')
     } else {
         //成功的情况一定要写，否则校验成功不执行代码
         callback()

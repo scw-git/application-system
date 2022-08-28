@@ -67,9 +67,23 @@
           批量导入成绩</el-button
         >
       </el-upload>
+      <el-button
+        style="margin-left: 10px"
+        @click="openDialog1"
+        size="medium"
+        type="primary"
+      >
+        发送短信</el-button
+      >
     </div>
     <div class="table" v-loading="loading">
-      <el-table @filter-change="filterChange" border :data="dataList">
+      <el-table
+        @selection-change="handleSelectionChange"
+        @filter-change="filterChange"
+        border
+        :data="dataList"
+      >
+        <el-table-column type="selection" width="45"> </el-table-column>
         <el-table-column align="center" label="序号" type="index" width="50">
         </el-table-column>
         <el-table-column width="80px" align="center" prop="name" label="姓名">
@@ -158,6 +172,18 @@
       @current-change="handleChangePageNum"
     >
     </el-pagination>
+    <el-dialog title="发送短信" :visible.sync="dialogVisible" width="30%">
+      <el-input
+        v-model="msg"
+        type="textarea"
+        :rows="2"
+        placeholder="请输入短信内容"
+      ></el-input>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="sendNote">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -167,6 +193,9 @@ import { downloadFile } from "@/utils/downloadFile";
 export default {
   data() {
     return {
+      selectedIds: [],
+      msg: "",
+      dialogVisible: false,
       jobList: [],
       //搜索参数
       idOrName: "",
@@ -208,6 +237,36 @@ export default {
     },
   },
   methods: {
+    sendNote() {
+      let params = {
+        ids: this.selectedIds,
+        msg: this.msg,
+      };
+      if (this.msg === "") {
+        this.$message.warning("请输入内容！");
+        return;
+      }
+      api.batchSend(params).then((res) => {
+        if (res.code === 200) {
+          this.$message.success("发送成功");
+          this.getInterviewList();
+          this.dialogVisible = false;
+        }
+      });
+    },
+    openDialog1() {
+      this.msg = "";
+      if (this.selectedIds.length == 0) {
+        this.$message.warning("请选择考生！");
+      } else {
+        this.dialogVisible = true;
+      }
+    },
+    handleSelectionChange(data) {
+      this.selectedIds = data.map((item) => {
+        return item.id;
+      });
+    },
     filterChange(filters) {
       if (filters.interview) {
         this.pagination.isAsc = filters.interview[0];

@@ -238,7 +238,7 @@
             type="number"
             placeholder="请输入数字，不能以0开头"
             v-model="form.placeNumber"
-            @input="handleInput"
+            @input="(val) => handleInput(val, 1)"
           ></el-input>
         </el-form-item>
 
@@ -248,7 +248,7 @@
             style="width: 120px"
             placeholder="不能以0开头"
             v-model="form.placeStartNumber"
-            @input="handleInput"
+            @input="(val) => handleInput(val, 2)"
           ></el-input
           >~
           <el-input
@@ -256,7 +256,7 @@
             style="width: 120px"
             placeholder="不能以0开头"
             v-model="form.placeEndNumber"
-            @input="handleInput"
+            @input="(val) => handleInput(val, 3)"
           ></el-input>
         </el-form-item>
         <!-- <el-form-item label="考场数量">
@@ -420,10 +420,14 @@ export default {
     },
   },
   methods: {
-    handleInput(value) {
-      this.form.placeNumber = value.replace(/^0{1,}/g, " ");
-      this.form.placeStartNumber = value.replace(/^0{1,}/g, " ");
-      this.form.placeEndNumber = value.replace(/^0{1,}/g, " ");
+    handleInput(value, n) {
+      if (n == 1) {
+        this.form.placeNumber = value.replace(/^0{1,}/g, " ");
+      } else if (n == 2) {
+        this.form.placeStartNumber = value.replace(/^0{1,}/g, " ");
+      } else {
+        this.form.placeEndNumber = value.replace(/^0{1,}/g, " ");
+      }
     },
     getExamineeType() {
       api.getExamineeType().then((res) => {

@@ -10,6 +10,11 @@ const routes = [
     redirect: '/login',
   },
   {
+    path: '/notice',
+    name: 'notice',
+    component: () => import('../views/notice.vue')
+  },
+  {
     path: '/login',
     name: 'login',
     component: () => import('../views/login.vue')
@@ -200,7 +205,7 @@ const router = new VueRouter({
   mode: "history",
 })
 
-const whiteList = ['login', 'register', 'ksbm']
+const whiteList = ['login', 'register', 'ksbm', 'notice']
 router.beforeEach(function (to, from, next) {
   // 白名单免登录
   if (whiteList.indexOf(to.name) != -1) {

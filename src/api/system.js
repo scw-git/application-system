@@ -42,15 +42,15 @@ export function addNotice(data) {
 
 export function updateNotice(data) {
     return request({
-        url: '/system/notice',
-        method: 'put',
+        url: '/system/notice/edit',
+        method: 'post',
         data
     })
 }
 export function delNotice(id) {
     return request({
         url: '/system/notice/' + id,
-        method: 'delete',
+        method: 'post',
 
     })
 }
