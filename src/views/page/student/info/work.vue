@@ -150,7 +150,11 @@
         class="frame_title"
         style="display: flex; justify-content: space-between"
       >
-        <span><span style="color: red">*</span> 工作经历：</span>
+        <span
+          ><span style="color: red">*</span> 工作经历<span style="color: red"
+            >(请从最近的经历开始填写)</span
+          ></span
+        >
         <el-button size="mini" @click="openAddDialog('work')" type="warning"
           >添加</el-button
         >

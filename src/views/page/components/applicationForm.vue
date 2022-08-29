@@ -6,7 +6,7 @@
       <div class="title">
         <h1>
           广西壮族自治区财政厅厅属事业单位
-          <br />2020年度公开招聘工作人员报名表
+          <br />{{ year }}年度公开招聘工作人员报名表
         </h1>
       </div>
       <div class="body">
@@ -133,15 +133,18 @@
               </span>
               <br />
               <div v-if="data.workExperience">
-                <span v-for="item in data.workExperience" :key="item.id">{{
-                  item.entryDate +
-                  " 至 " +
-                  item.resignationDate +
-                  " " +
-                  item.currentUnit +
-                  " " +
-                  item.jobTitle
-                }}</span>
+                <span v-for="item in data.workExperience" :key="item.id"
+                  >{{
+                    item.entryDate +
+                    " 至 " +
+                    item.resignationDate +
+                    " " +
+                    item.currentUnit +
+                    " " +
+                    item.jobTitle
+                  }}
+                  <br
+                /></span>
               </div>
             </td>
           </tr>
@@ -196,6 +199,7 @@ export default {
   props: ["data"],
   data() {
     return {
+      year: new Date().getFullYear(),
       dataList: [
         {
           unit: "广西财会培训考试中心",

@@ -241,10 +241,6 @@ export default {
         //     this.dataList.push(item);
         //   }
         // });
-        let url = this.$router.resolve({
-          path: "/notice",
-        });
-        window.open(url.href, "_blank");
       });
     },
     // 重置密码第二步

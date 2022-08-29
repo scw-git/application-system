@@ -376,6 +376,8 @@ export default {
                 // this.$router.push("login");
                 this.showOk = true;
                 this.loading = false;
+              } else {
+                this.loading = false;
               }
             })
             .catch(() => {

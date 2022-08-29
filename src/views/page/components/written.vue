@@ -4,9 +4,11 @@
       <div class="applicationForm">
         <div class="left">
           <div class="title">
-            <span>广西壮族自治区财政厅事业部</span> <br />
+            <!-- <span>广西壮族自治区财政厅事业部</span> <br />
             <span> {{ time.year }}年{{ time.stage }}全国事业单位笔试准考证</span
-            ><br />
+            ><br /> -->
+            <span>广西财政厅厅属事业单位</span><br />
+            <span>2022年度公开招聘工作人员笔试准考证</span>
           </div>
           <img
             crossOrigin="Anonymous"
